@@ -152,6 +152,7 @@ function ProductsPage() {
   const [saved, setSaved] = useState<Set<string>>(new Set());
   const [quickView, setQuickView] = useState<Product | null>(null);
   const [bagPing, setBagPing] = useState(false);
+  const [tagsExpanded, setTagsExpanded] = useState(false);
 
   const filtered = useMemo(() => {
     let list = category === "All" ? [...products] : products.filter((p) => p.category === category);
@@ -210,31 +211,18 @@ function ProductsPage() {
         <div className="absolute inset-0 -z-10 opacity-60" style={{
           background: "radial-gradient(900px 400px at 80% 20%, color-mix(in oklab, var(--brand) 22%, transparent), transparent), radial-gradient(700px 350px at 10% 90%, color-mix(in oklab, var(--pop) 18%, transparent), transparent)",
         }} />
-        <div className="px-4 sm:px-8 lg:px-12 pt-10 sm:pt-16 pb-12 sm:pb-20">
+        <div className="px-4 sm:px-8 lg:px-12 pt-8 sm:pt-12 pb-10 sm:pb-14">
           <div className="max-w-[1400px] mx-auto">
-            <div className="flex flex-wrap items-center gap-3 text-[11px] uppercase tracking-[0.25em] text-muted-foreground">
-              <span className="size-2 rounded-full bg-pop animate-pulse" />
-              <span>The Catalogue · {products.length} objects</span>
-              <span className="text-foreground/30">/</span>
-              <span>Updated weekly</span>
-              <span className="text-foreground/30">/</span>
-              <span>Worldwide shipping</span>
-            </div>
-            <div className="mt-6 grid lg:grid-cols-[1.1fr_0.9fr] gap-8 lg:gap-16 lg:items-end">
-              <h1 className="font-serif text-[2.5rem] sm:text-6xl lg:text-[5.5rem] leading-[0.92] tracking-tight">
-                Every object<br />
-                <span className="italic text-brand">we’ve made,</span><br />
-                <span className="text-foreground/40">in one place.</span>
-              </h1>
-              <div className="flex flex-col gap-5">
-                <p className="text-sm sm:text-base text-foreground/70 leading-relaxed">
-                  Filter, sort, and search the full Studio Kinetic catalogue — from milled aluminum tools to cold-pressed botanicals. Built in small batches, finished by hand, photographed in our Brooklyn loft.
-                </p>
+            <div className="flex items-center justify-between gap-3 mb-5 sm:mb-6">
+              <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-muted-foreground">
+                <span className="size-2 rounded-full bg-pop animate-pulse" />
+                <span>Shop by category</span>
               </div>
+              <span className="text-[11px] uppercase tracking-widest text-muted-foreground">{products.length} objects</span>
             </div>
 
             {/* Hero category feature chips — all 6 */}
-            <div className="mt-10 sm:mt-14 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3">
               {heroCategories.map((c) => {
                 const count = c === "All" ? products.length : products.filter((p) => p.category === c).length;
                 const active = c === category;
@@ -264,28 +252,73 @@ function ProductsPage() {
         </div>
       </section>
 
-      {/* Quick-tag scroll bar */}
+      {/* Quick-tag bar — collapsed by default, click to expand into a horizontal scroller */}
       <div className="border-b border-foreground/10 bg-foreground/[0.02] relative">
-        <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-background to-transparent z-10" />
-        <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-background to-transparent z-10" />
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-8 lg:px-12 py-3 flex items-center gap-2 overflow-x-auto scrollbar-none">
+        {tagsExpanded && (
+          <>
+            <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-background to-transparent z-10" />
+            <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-background to-transparent z-10" />
+          </>
+        )}
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-8 lg:px-12 py-3 flex items-center gap-2">
           <span className="text-[10px] uppercase tracking-widest text-muted-foreground shrink-0 mr-1">Quick</span>
-          {quickTags.map((t) => {
-            const active = t.key === tag;
-            return (
+
+          {!tagsExpanded ? (
+            <>
+              <div className="flex items-center gap-2 flex-1 overflow-hidden">
+                {quickTags.slice(0, 4).map((t) => {
+                  const active = t.key === tag;
+                  return (
+                    <button
+                      key={t.key}
+                      onClick={() => setTag(t.key)}
+                      className={`shrink-0 inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-medium transition-all ${
+                        active
+                          ? "bg-ink text-cream border-ink"
+                          : "bg-background text-foreground/70 border-foreground/15 hover:border-foreground/40 hover:text-foreground"
+                      }`}
+                    >
+                      {t.label}
+                    </button>
+                  );
+                })}
+              </div>
               <button
-                key={t.key}
-                onClick={() => setTag(t.key)}
-                className={`shrink-0 inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-medium transition-all ${
-                  active
-                    ? "bg-ink text-cream border-ink"
-                    : "bg-background text-foreground/70 border-foreground/15 hover:border-foreground/40 hover:text-foreground"
-                }`}
+                onClick={() => setTagsExpanded(true)}
+                className="shrink-0 inline-flex items-center gap-1.5 rounded-full bg-ink text-cream px-3 py-1 text-[11px] font-bold uppercase tracking-widest hover:scale-[1.04] transition-transform"
               >
-                {t.label}
+                +{quickTags.length - 4} more →
               </button>
-            );
-          })}
+            </>
+          ) : (
+            <>
+              <div className="flex items-center gap-2 flex-1 overflow-x-auto scrollbar-none animate-fade-in">
+                {quickTags.map((t) => {
+                  const active = t.key === tag;
+                  return (
+                    <button
+                      key={t.key}
+                      onClick={() => setTag(t.key)}
+                      className={`shrink-0 inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-medium transition-all ${
+                        active
+                          ? "bg-ink text-cream border-ink"
+                          : "bg-background text-foreground/70 border-foreground/15 hover:border-foreground/40 hover:text-foreground"
+                      }`}
+                    >
+                      {t.label}
+                    </button>
+                  );
+                })}
+              </div>
+              <button
+                onClick={() => setTagsExpanded(false)}
+                aria-label="Collapse tags"
+                className="shrink-0 size-7 grid place-items-center rounded-full border border-foreground/15 text-foreground/60 hover:border-foreground/40 hover:text-foreground transition-colors relative z-20"
+              >
+                ✕
+              </button>
+            </>
+          )}
         </div>
       </div>
 
