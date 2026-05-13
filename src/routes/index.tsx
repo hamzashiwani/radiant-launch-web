@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState, type FormEvent, type MouseEvent as ReactMouseEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type FormEvent, type MouseEvent as ReactMouseEvent, type ReactNode, type RefObject } from "react";
 import hero1 from "@/assets/hero-1.jpg";
 import hero2 from "@/assets/hero-2.jpg";
 import hero3 from "@/assets/hero-3.jpg";
@@ -631,7 +631,7 @@ function ProductTiltCard({
 
   return (
     <article
-      ref={ref as React.RefObject<HTMLElement>}
+      ref={ref as RefObject<HTMLElement>}
       onMouseMove={handleMove}
       onMouseLeave={handleLeave}
       className={className}
