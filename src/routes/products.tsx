@@ -64,6 +64,21 @@ const categoryIcons: Record<FilterCategory, string> = {
   "Home & Living": "⌂",
 };
 
+// Primary categories shown as feature chips at the top (highest count + All).
+const primaryCategories: FilterCategory[] = ["All", "Home & Living", "Tech"];
+const secondaryCategories: FilterCategory[] = ["Fashion", "Beauty", "Gym"];
+
+const materialsTicker = [
+  "Anodized aluminum",
+  "Brushed brass",
+  "Munken Pure 120gsm",
+  "Grade 2 titanium",
+  "Cold-pressed botanicals",
+  "Glazed ceramic",
+  "PBT keycaps",
+  "Vegetable-tanned leather",
+];
+
 type SortKey = "featured" | "price-asc" | "price-desc" | "rating" | "newest";
 
 const sortOptions: { key: SortKey; label: string }[] = [
