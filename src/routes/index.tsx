@@ -531,9 +531,6 @@ function ProductShowcase() {
                   <h3 className="text-sm font-semibold tracking-tight truncate">{p.name}</h3>
                   <div className="mt-2 flex items-baseline gap-1.5">
                     <span className="text-sm font-semibold">{p.price}</span>
-                    {p.oldPrice ? (
-                      <span className="text-[10px] text-muted-foreground line-through">{p.oldPrice}</span>
-                    ) : null}
                     <span className="ml-auto text-[9px] font-mono uppercase tracking-widest text-muted-foreground">{p.status}</span>
                   </div>
                 </div>
