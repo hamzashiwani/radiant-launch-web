@@ -256,31 +256,9 @@ function ProductsPage() {
         </div>
       </div>
 
-      {/* Toolbar */}
-      <section className="px-4 sm:px-8 lg:px-12 py-6 border-b border-foreground/10 sticky top-[57px] sm:top-[65px] z-30 bg-background/85 backdrop-blur-md">
-        <div className="max-w-[1400px] mx-auto flex flex-col gap-4">
-          <div className="flex flex-wrap gap-2">
-            {categories.map((c) => {
-              const count = c === "All" ? products.length : products.filter((p) => p.category === c).length;
-              const active = c === category;
-              return (
-                <button
-                  key={c}
-                  onClick={() => setCategory(c)}
-                  className={`group inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-[12px] font-medium transition-all ${
-                    active
-                      ? "bg-ink text-cream border-ink"
-                      : "bg-background text-foreground/70 border-foreground/15 hover:border-foreground/40 hover:text-foreground"
-                  }`}
-                >
-                  <span className="text-base leading-none">{categoryIcons[c]}</span>
-                  {c}
-                  <span className={`text-[10px] tabular-nums ${active ? "text-cream/60" : "text-muted-foreground"}`}>{count}</span>
-                </button>
-              );
-            })}
-          </div>
-
+      {/* Toolbar — search & sort */}
+      <section className="px-4 sm:px-8 lg:px-12 py-4 border-b border-foreground/10 sticky top-[57px] sm:top-[65px] z-30 bg-background/85 backdrop-blur-md">
+        <div className="max-w-[1400px] mx-auto">
           <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
             <div className="relative flex-1 max-w-md">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">⌕</span>
@@ -288,7 +266,7 @@ function ProductsPage() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search materials, names, finishes..."
-                className="w-full pl-9 pr-3 py-2.5 rounded-full bg-foreground/[0.04] border border-foreground/10 text-sm focus:outline-none focus:border-foreground/40 transition-colors"
+                className="w-full pl-9 pr-3 py-2 rounded-full bg-foreground/[0.04] border border-foreground/10 text-sm focus:outline-none focus:border-foreground/40 transition-colors"
               />
             </div>
             <div className="flex flex-wrap gap-1.5 items-center">
@@ -297,7 +275,7 @@ function ProductsPage() {
                 <button
                   key={opt.key}
                   onClick={() => setSort(opt.key)}
-                  className={`px-3 py-1.5 rounded-full text-[11px] font-medium transition-all ${
+                  className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all ${
                     sort === opt.key
                       ? "bg-foreground text-background"
                       : "bg-foreground/[0.04] text-foreground/70 hover:bg-foreground/[0.08]"
@@ -310,6 +288,22 @@ function ProductsPage() {
           </div>
         </div>
       </section>
+
+      {/* Materials marquee */}
+      <div className="border-b border-foreground/10 bg-ink text-cream overflow-hidden">
+        <div className="flex gap-6 sm:gap-10 py-2.5 whitespace-nowrap animate-[marquee_35s_linear_infinite] text-[11px] uppercase tracking-[0.3em]">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <span key={i} className="flex items-center gap-6 sm:gap-10 shrink-0">
+              {materialsTicker.map((m) => (
+                <span key={m + i} className="flex items-center gap-6 sm:gap-10">
+                  <span className="text-pop">✦</span>
+                  <span>{m}</span>
+                </span>
+              ))}
+            </span>
+          ))}
+        </div>
+      </div>
 
       {/* Grid */}
       <section className="px-4 sm:px-8 lg:px-12 py-10 sm:py-16">
