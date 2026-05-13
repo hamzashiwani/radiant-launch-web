@@ -424,38 +424,88 @@ function ProductShowcase() {
           </article>
 
           {/* Marquee promo column */}
-          <aside className="lg:col-span-5 grid grid-rows-2 gap-6">
-            <div className="relative overflow-hidden rounded-3xl bg-mint text-ink p-8 flex flex-col justify-between">
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.25em] mb-2 opacity-70">Limited drop</p>
-                <h4 className="text-2xl font-semibold tracking-tight leading-tight">
-                  Free engraving on any titanium piece this week.
+          {/* Creative side column — Studio Pulse + 3D color palette */}
+          <aside className="lg:col-span-5 grid grid-rows-[1.1fr_1fr] gap-6">
+            {/* 3D stacked color story */}
+            <div className="relative overflow-hidden rounded-3xl bg-cream p-8 flex flex-col justify-between" style={{ perspective: "1200px" }}>
+              <div className="relative z-10">
+                <p className="text-[10px] font-bold uppercase tracking-[0.25em] mb-2 text-brand">This season</p>
+                <h4 className="text-2xl font-semibold tracking-tight leading-tight text-ink max-w-[18ch]">
+                  Six tones, one mood. Built to live together.
                 </h4>
               </div>
-              <button className="self-start mt-4 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest underline underline-offset-4">
-                Shop wear →
-              </button>
-              <span aria-hidden className="absolute -right-6 -bottom-6 text-[140px] font-bold leading-none text-ink/10 select-none">★</span>
+              <div
+                aria-hidden
+                className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-2"
+                style={{ transformStyle: "preserve-3d", transform: "rotateY(-22deg) rotateX(8deg)" }}
+              >
+                {[
+                  { c: "var(--brand)", d: "0ms" },
+                  { c: "var(--pop)", d: "120ms" },
+                  { c: "var(--mint)", d: "240ms" },
+                  { c: "var(--ink)", d: "360ms" },
+                  { c: "var(--brand-soft)", d: "480ms" },
+                ].map((s, i) => (
+                  <div
+                    key={i}
+                    className="w-10 h-32 md:h-40 rounded-2xl shadow-[0_18px_40px_-18px_rgba(0,0,0,0.45)] animate-fade-up"
+                    style={{ background: s.c, transform: `translateZ(${i * 14}px) translateY(${i % 2 ? -6 : 6}px)`, animationDelay: s.d }}
+                  />
+                ))}
+              </div>
+              <div className="relative z-10 mt-6 flex items-center gap-3">
+                <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink/60">Palette · SS-26</span>
+                <span className="h-px flex-1 bg-ink/15" />
+                <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink">5 / 24</span>
+              </div>
             </div>
-            <div className="relative overflow-hidden rounded-3xl bg-ink text-cream p-8 flex flex-col justify-between">
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.25em] mb-2 text-pop">Member offer</p>
-                <h4 className="text-2xl font-semibold tracking-tight leading-tight">
-                  20% off your first order. Code <span className="text-pop">KINETIC20</span>.
-                </h4>
+
+            {/* Live studio pulse */}
+            <div className="relative overflow-hidden rounded-3xl bg-ink text-cream p-7 flex flex-col gap-4">
+              <div className="flex items-center justify-between">
+                <span className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.25em]">
+                  <span className="relative flex size-2">
+                    <span className="absolute inline-flex h-full w-full rounded-full bg-mint opacity-70 animate-ping" />
+                    <span className="relative inline-flex size-2 rounded-full bg-mint" />
+                  </span>
+                  Studio pulse · live
+                </span>
+                <span className="text-[10px] font-mono text-cream/50">{new Date().getFullYear()}</span>
               </div>
-              <div className="overflow-hidden mt-4 -mx-8">
-                <div className="flex gap-6 whitespace-nowrap animate-[ticker_22s_linear_infinite] text-xs font-mono uppercase tracking-widest text-cream/60">
-                  {Array.from({ length: 2 }).map((_, k) => (
-                    <span key={k} className="flex gap-6">
-                      {["Free returns", "Carbon-neutral ship", "Studio crafted", "Lifetime repair"].map((t) => (
-                        <span key={t} className="inline-flex items-center gap-6">
-                          {t} <span className="text-pop">✦</span>
-                        </span>
-                      ))}
+
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { k: "Now browsing", v: "1,284" },
+                  { k: "Bagged today", v: "316" },
+                  { k: "Ships in", v: "24h" },
+                ].map((s) => (
+                  <div key={s.k} className="rounded-xl bg-cream/5 p-2.5">
+                    <p className="text-[9px] font-mono uppercase tracking-widest text-cream/50 leading-tight">{s.k}</p>
+                    <p className="mt-1 text-lg font-semibold tabular-nums text-pop">{s.v}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="rounded-xl bg-cream/5 p-3 flex flex-col gap-1.5 overflow-hidden">
+                {[
+                  { who: "Mira K.", what: "bagged the Arc Task Lamp", when: "12s" },
+                  { who: "Jonas", what: "saved Monolith Speaker", when: "44s" },
+                  { who: "Aiko", what: "bought Amber Glow Serum", when: "1m" },
+                ].map((a, i) => (
+                  <div
+                    key={a.who}
+                    className="flex items-center gap-2.5 text-xs animate-fade-up"
+                    style={{ animationDelay: `${i * 140}ms` }}
+                  >
+                    <span className="size-6 rounded-full bg-gradient-to-br from-brand to-pop grid place-items-center text-[10px] font-bold text-ink">
+                      {a.who[0]}
                     </span>
-                  ))}
-                </div>
+                    <span className="flex-1 truncate text-cream/80">
+                      <span className="text-cream font-semibold">{a.who}</span> {a.what}
+                    </span>
+                    <span className="font-mono text-[9px] text-cream/40">{a.when}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </aside>
