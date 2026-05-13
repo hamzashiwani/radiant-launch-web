@@ -147,7 +147,7 @@ function BlogPage() {
         <div className="hidden md:flex gap-8">
           <Link to="/blog" className="text-sm font-medium text-foreground transition-colors">Journal</Link>
           <Link to="/products" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">Shop</Link>
-          <Link to="/" hash="studio" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">Studio</Link>
+          <Link to="/" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">Studio</Link>
         </div>
         <Link to="/" className="inline-flex items-center gap-2 bg-ink text-cream rounded-full px-3.5 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-bold uppercase tracking-widest hover:scale-[1.04] transition-transform">
           ← Home
