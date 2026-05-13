@@ -147,9 +147,16 @@ function ProductsPage() {
   const [category, setCategory] = useState<FilterCategory>("All");
   const [sort, setSort] = useState<SortKey>("featured");
   const [query, setQuery] = useState("");
+  const [tag, setTag] = useState<QuickTagKey>("all");
+  const [bag, setBag] = useState<string[]>([]);
+  const [saved, setSaved] = useState<Set<string>>(new Set());
+  const [quickView, setQuickView] = useState<Product | null>(null);
+  const [bagPing, setBagPing] = useState(false);
 
   const filtered = useMemo(() => {
     let list = category === "All" ? [...products] : products.filter((p) => p.category === category);
+    const tagDef = quickTags.find((t) => t.key === tag);
+    if (tagDef) list = list.filter(tagDef.match);
     if (query.trim()) {
       const q = query.toLowerCase();
       list = list.filter((p) => p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q) || p.materials.toLowerCase().includes(q));
@@ -161,7 +168,20 @@ function ProductsPage() {
       case "newest": list.sort((a, b) => Number(b.year) - Number(a.year)); break;
     }
     return list;
-  }, [category, sort, query]);
+  }, [category, sort, query, tag]);
+
+  const addToBag = (id: string) => {
+    setBag((b) => [...b, id]);
+    setBagPing(true);
+    window.setTimeout(() => setBagPing(false), 600);
+  };
+  const toggleSaved = (id: string) => {
+    setSaved((s) => {
+      const next = new Set(s);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -173,9 +193,16 @@ function ProductsPage() {
           <Link to="/products" className="text-sm font-medium text-foreground hover:text-foreground transition-colors">Shop</Link>
           <Link to="/" hash="studio" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">Studio</Link>
         </div>
-        <Link to="/" className="inline-flex items-center gap-2 bg-ink text-cream rounded-full px-3.5 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-bold uppercase tracking-widest hover:scale-[1.04] transition-transform">
-          ← Home
-        </Link>
+        <div className="flex items-center gap-2">
+          <div className={`relative inline-flex items-center gap-1.5 bg-ink text-cream rounded-full px-3 py-1.5 text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-transform ${bagPing ? "scale-110" : ""}`}>
+            <span>Bag</span>
+            <span className="bg-pop text-pop-foreground rounded-full px-1.5 min-w-5 text-center tabular-nums">{bag.length}</span>
+            {bagPing && <span className="absolute inset-0 rounded-full bg-pop/40 animate-ping" />}
+          </div>
+          <Link to="/" className="hidden sm:inline-flex items-center gap-2 border border-foreground/15 rounded-full px-3 py-1.5 text-[10px] sm:text-xs font-bold uppercase tracking-widest hover:border-foreground/40 transition-colors">
+            ← Home
+          </Link>
+        </div>
       </nav>
 
       {/* Hero */}
@@ -218,28 +245,28 @@ function ProductsPage() {
               </div>
             </div>
 
-            {/* Primary category feature chips */}
-            <div className="mt-10 sm:mt-14 grid grid-cols-3 gap-2 sm:gap-4">
-              {primaryCategories.map((c) => {
+            {/* Hero category feature chips — all 6 */}
+            <div className="mt-10 sm:mt-14 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3">
+              {heroCategories.map((c) => {
                 const count = c === "All" ? products.length : products.filter((p) => p.category === c).length;
                 const active = c === category;
                 return (
                   <button
                     key={c}
                     onClick={() => setCategory(c)}
-                    className={`group relative overflow-hidden rounded-2xl border text-left p-4 sm:p-5 transition-all ${
+                    className={`group relative overflow-hidden rounded-2xl border text-left p-3 sm:p-4 transition-all ${
                       active
                         ? "bg-ink text-cream border-ink shadow-[0_20px_40px_-20px_rgba(0,0,0,0.5)]"
-                        : "bg-card border-foreground/10 hover:border-foreground/40 hover:-translate-y-0.5"
+                        : "bg-card border-foreground/10 hover:border-foreground/40 hover:-translate-y-0.5 hover:shadow-[0_12px_24px_-12px_rgba(0,0,0,0.25)]"
                     }`}
                   >
                     <div className="flex items-start justify-between">
-                      <span className={`text-2xl sm:text-3xl leading-none ${active ? "text-pop" : "text-foreground/60"}`}>{categoryIcons[c]}</span>
+                      <span className={`text-xl sm:text-2xl leading-none ${active ? "text-pop" : "text-foreground/60"}`}>{categoryIcons[c]}</span>
                       <span className={`text-[10px] tabular-nums uppercase tracking-widest ${active ? "text-cream/60" : "text-muted-foreground"}`}>{String(count).padStart(2, "0")}</span>
                     </div>
-                    <div className="mt-6 sm:mt-10 font-serif text-lg sm:text-2xl tracking-tight">{c}</div>
+                    <div className="mt-5 sm:mt-8 font-serif text-base sm:text-xl tracking-tight leading-tight">{c}</div>
                     <div className={`text-[10px] uppercase tracking-widest mt-1 ${active ? "text-cream/60" : "text-muted-foreground"}`}>
-                      {active ? "Now showing" : "Tap to filter"}
+                      {active ? "Showing" : "Filter"}
                     </div>
                   </button>
                 );
@@ -249,34 +276,28 @@ function ProductsPage() {
         </div>
       </section>
 
-      {/* Secondary categories bar */}
-      <div className="border-b border-foreground/10 bg-foreground/[0.02]">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-8 lg:px-12 py-3 flex items-center gap-3 overflow-x-auto">
-          <span className="text-[10px] uppercase tracking-widest text-muted-foreground shrink-0">Also</span>
-          {secondaryCategories.map((c) => {
-            const count = products.filter((p) => p.category === c).length;
-            const active = c === category;
+      {/* Quick-tag scroll bar */}
+      <div className="border-b border-foreground/10 bg-foreground/[0.02] relative">
+        <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-background to-transparent z-10" />
+        <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-background to-transparent z-10" />
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-8 lg:px-12 py-3 flex items-center gap-2 overflow-x-auto scrollbar-none">
+          <span className="text-[10px] uppercase tracking-widest text-muted-foreground shrink-0 mr-1">Quick</span>
+          {quickTags.map((t) => {
+            const active = t.key === tag;
             return (
               <button
-                key={c}
-                onClick={() => setCategory(c)}
-                className={`shrink-0 inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-medium transition-all ${
+                key={t.key}
+                onClick={() => setTag(t.key)}
+                className={`shrink-0 inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-medium transition-all ${
                   active
                     ? "bg-ink text-cream border-ink"
                     : "bg-background text-foreground/70 border-foreground/15 hover:border-foreground/40 hover:text-foreground"
                 }`}
               >
-                <span className="text-xs">{categoryIcons[c]}</span>
-                {c}
-                <span className={`text-[10px] tabular-nums ${active ? "text-cream/60" : "text-muted-foreground"}`}>{count}</span>
+                {t.label}
               </button>
             );
           })}
-          {(category !== "All" || query) && (
-            <button onClick={() => { setCategory("All"); setQuery(""); }} className="ml-auto shrink-0 text-[10px] uppercase tracking-widest text-foreground/60 hover:text-foreground underline underline-offset-4">
-              Reset
-            </button>
-          )}
         </div>
       </div>
 
