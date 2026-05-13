@@ -148,6 +148,55 @@ const articles: Article[] = [
   },
 ];
 
+type InteractiveCard = {
+  id: string;
+  tag: string;
+  title: string;
+  excerpt: string;
+  meta: string;
+  image: string;
+  accent: "brand" | "pop" | "mint" | "ink";
+};
+
+const interactiveCards: InteractiveCard[] = [
+  {
+    id: "ic1",
+    tag: "Field Notes",
+    title: "A week inside a Tokyo type foundry",
+    excerpt: "Inkstones, glyph proofs, and the slow architecture of a 14,000-character family.",
+    meta: "Photo essay · 12 frames",
+    image: blog2,
+    accent: "brand",
+  },
+  {
+    id: "ic2",
+    tag: "Interview",
+    title: "Anya Mehta on designing for stillness",
+    excerpt: "The London-based art director on whitespace, refusal, and the politics of not shouting.",
+    meta: "Long read · 14 min",
+    image: blog4,
+    accent: "pop",
+  },
+  {
+    id: "ic3",
+    tag: "Toolkit",
+    title: "Ten micro-interactions worth stealing",
+    excerpt: "A live, copy-paste reel of the small motion details that make interfaces feel alive.",
+    meta: "Interactive · 10 demos",
+    image: blog3,
+    accent: "mint",
+  },
+  {
+    id: "ic4",
+    tag: "Essay",
+    title: "The quiet return of the print object",
+    excerpt: "Risograph zines, hand-bound annuals, and why studios are pressing things again.",
+    meta: "Essay · 7 min",
+    image: blog1,
+    accent: "ink",
+  },
+];
+
 const marqueeTopics = [
   "Spatial Design",
   "Editorial Systems",
@@ -510,6 +559,125 @@ function ProductShowcase() {
 }
 
 function BlogSection() {
+  return <BlogSectionInner />;
+}
+
+const accentClasses: Record<InteractiveCard["accent"], { bg: string; chip: string; ring: string; halo: string }> = {
+  brand: { bg: "bg-brand text-brand-foreground", chip: "bg-brand-foreground/15 text-brand-foreground", ring: "ring-brand/40", halo: "bg-pop/40" },
+  pop:   { bg: "bg-pop text-pop-foreground",     chip: "bg-pop-foreground/15 text-pop-foreground",     ring: "ring-pop/40",   halo: "bg-brand/40" },
+  mint:  { bg: "bg-mint text-ink",               chip: "bg-ink/10 text-ink",                            ring: "ring-mint/60",  halo: "bg-brand/30" },
+  ink:   { bg: "bg-ink text-cream",              chip: "bg-cream/10 text-cream",                        ring: "ring-ink/40",   halo: "bg-pop/30" },
+};
+
+function InteractiveBlogCards({
+  cards,
+  saved,
+  onToggleSave,
+  hoverId,
+  onHover,
+}: {
+  cards: InteractiveCard[];
+  saved: string[];
+  onToggleSave: (id: string) => void;
+  hoverId: string | null;
+  onHover: (id: string | null) => void;
+}) {
+  return (
+    <div className="mb-14">
+      <div className="flex items-end justify-between mb-6">
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground flex items-center gap-2">
+            <span className="size-1.5 rounded-full bg-pop" />
+            More from the journal · Interactive
+          </p>
+          <h3 className="mt-2 text-2xl md:text-3xl font-semibold tracking-tight">
+            Hover, flip, and save what catches your eye.
+          </h3>
+        </div>
+        <a href="#" data-cursor="Browse" className="hidden md:inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-foreground/70 hover:text-ink transition-colors">
+          All entries <span aria-hidden>→</span>
+        </a>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        {cards.map((c, i) => {
+          const a = accentClasses[c.accent];
+          const isHover = hoverId === c.id;
+          const isSaved = saved.includes(c.id);
+          return (
+            <a
+              key={c.id}
+              href="#"
+              data-cursor="Read"
+              onMouseEnter={() => onHover(c.id)}
+              onMouseLeave={() => onHover(null)}
+              className={`group relative overflow-hidden rounded-3xl ring-1 ${a.ring} ring-inset ${a.bg} aspect-[3/4] flex flex-col justify-between p-5 transition-transform duration-500 ease-out hover:-translate-y-1`}
+              style={{ animation: `fade-in-up 0.7s cubic-bezier(0.19,1,0.22,1) ${i * 80}ms both` }}
+            >
+              {/* Background image revealed on hover */}
+              <div
+                aria-hidden
+                className="absolute inset-0 transition-opacity duration-500"
+                style={{ opacity: isHover ? 0.55 : 0 }}
+              >
+                <img src={c.image} alt="" className="w-full h-full object-cover" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+              </div>
+              {/* Halo blob */}
+              <div
+                aria-hidden
+                className={`absolute -bottom-16 -right-16 size-48 rounded-full blur-3xl ${a.halo} transition-transform duration-700`}
+                style={{ transform: isHover ? "scale(1.4)" : "scale(1)" }}
+              />
+
+              <div className="relative flex items-start justify-between">
+                <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest ${a.chip}`}>
+                  {c.tag}
+                </span>
+                <button
+                  type="button"
+                  onClick={(e) => { e.preventDefault(); onToggleSave(c.id); }}
+                  aria-label={isSaved ? "Unsave" : "Save"}
+                  className={`size-8 grid place-items-center rounded-full transition-all ${
+                    isSaved ? "bg-cream text-ink scale-110" : "bg-black/15 text-current hover:bg-black/25"
+                  }`}
+                >
+                  <svg viewBox="0 0 24 24" fill={isSaved ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" className="size-3.5">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="relative">
+                <h4 className="text-xl md:text-2xl font-semibold tracking-tight leading-[1.1] text-balance mb-3">
+                  {c.title}
+                </h4>
+                <p
+                  className="text-sm text-pretty leading-snug opacity-80 transition-all duration-500 overflow-hidden"
+                  style={{ maxHeight: isHover ? "120px" : "0px", opacity: isHover ? 0.9 : 0 }}
+                >
+                  {c.excerpt}
+                </p>
+                <div className="mt-3 flex items-center justify-between text-[10px] font-mono uppercase tracking-[0.2em] opacity-70">
+                  <span>{c.meta}</span>
+                  <span
+                    aria-hidden
+                    className="inline-flex items-center gap-1 transition-transform duration-500"
+                    style={{ transform: isHover ? "translateX(4px)" : "translateX(0)" }}
+                  >
+                    Read →
+                  </span>
+                </div>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function BlogSectionInner() {
   const allTags = ["All", ...Array.from(new Set([featuredArticle, ...articles].map((a) => a.tag)))];
   const [tag, setTag] = useState<string>("All");
   const [hoverId, setHoverId] = useState<string | null>(null);
@@ -622,6 +790,15 @@ function BlogSection() {
             </div>
           </a>
         )}
+
+        {/* Interactive cards — sit between the featured story and the index list */}
+        <InteractiveBlogCards
+          cards={interactiveCards}
+          saved={saved}
+          onToggleSave={toggleSave}
+          hoverId={hoverId}
+          onHover={setHoverId}
+        />
 
         {/* Interactive list */}
         <ul
