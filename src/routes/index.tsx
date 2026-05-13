@@ -608,6 +608,61 @@ function BlogSection() {
   return <BlogSectionInner />;
 }
 
+function Tilt3DCard({
+  children,
+  className,
+  index,
+  onEnter,
+  onLeave,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  index: number;
+  onEnter?: () => void;
+  onLeave?: () => void;
+}) {
+  const ref = useRef<HTMLAnchorElement | null>(null);
+
+  const handleMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const el = ref.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width;
+    const y = (e.clientY - r.top) / r.height;
+    const rx = (0.5 - y) * 14;
+    const ry = (x - 0.5) * 18;
+    el.style.setProperty("--mx", `${x * 100}%`);
+    el.style.setProperty("--my", `${y * 100}%`);
+    el.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-6px) scale(1.02)`;
+  };
+
+  const handleLeave = () => {
+    const el = ref.current;
+    if (el) el.style.transform = "perspective(900px) rotateX(0) rotateY(0) translateY(0) scale(1)";
+    onLeave?.();
+  };
+
+  return (
+    <a
+      ref={ref}
+      href="#"
+      data-cursor="Read"
+      onMouseEnter={onEnter}
+      onMouseMove={handleMove}
+      onMouseLeave={handleLeave}
+      className={className}
+      style={{
+        transformStyle: "preserve-3d",
+        transition: "transform 500ms cubic-bezier(0.19,1,0.22,1)",
+        animation: `fade-in-up 0.7s cubic-bezier(0.19,1,0.22,1) ${index * 80}ms both`,
+        willChange: "transform",
+      }}
+    >
+      {children}
+    </a>
+  );
+}
+
 const accentClasses: Record<InteractiveCard["accent"], { bg: string; chip: string; ring: string; halo: string }> = {
   brand: { bg: "bg-brand text-brand-foreground", chip: "bg-brand-foreground/15 text-brand-foreground", ring: "ring-brand/40", halo: "bg-pop/40" },
   pop:   { bg: "bg-pop text-pop-foreground",     chip: "bg-pop-foreground/15 text-pop-foreground",     ring: "ring-pop/40",   halo: "bg-brand/40" },
