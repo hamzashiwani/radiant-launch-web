@@ -672,6 +672,15 @@ function BlogSection() {
           </a>
         )}
 
+        {/* Interactive cards — sit between the featured story and the index list */}
+        <InteractiveBlogCards
+          cards={interactiveCards}
+          saved={saved}
+          onToggleSave={toggleSave}
+          hoverId={hoverId}
+          onHover={setHoverId}
+        />
+
         {/* Interactive list */}
         <ul
           className="border-t border-foreground/10"
