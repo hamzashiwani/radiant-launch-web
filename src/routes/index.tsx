@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState, type FormEvent, type MouseEvent as ReactMouseEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type FormEvent, type MouseEvent as ReactMouseEvent, type ReactNode, type RefObject } from "react";
 import hero1 from "@/assets/hero-1.jpg";
 import hero2 from "@/assets/hero-2.jpg";
 import hero3 from "@/assets/hero-3.jpg";
@@ -235,12 +235,12 @@ function Hero() {
         </div>
       ))}
 
-      <div className="relative h-full flex flex-col justify-end px-8 pb-16">
+      <div className="relative h-full flex flex-col justify-end px-4 sm:px-8 pb-12 sm:pb-16">
         <div className="max-w-screen-xl mx-auto w-full">
-          <p key={`l-${active}`} className="text-xs font-medium uppercase tracking-[0.2em] mb-3 opacity-70 animate-fade-up">
+          <p key={`l-${active}`} className="text-[10px] sm:text-xs font-medium uppercase tracking-[0.2em] mb-3 opacity-70 animate-fade-up">
             {slides[active].label}
           </p>
-          <h1 key={`t-${active}`} className="text-4xl md:text-6xl lg:text-7xl font-semibold tracking-tighter text-balance leading-none mb-6 animate-fade-up">
+          <h1 key={`t-${active}`} className="text-[2.25rem] sm:text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tighter text-balance leading-[1.02] sm:leading-none mb-5 sm:mb-6 animate-fade-up">
             {slides[active].title[0]}
             <br />
             {slides[active].title[1]}
@@ -257,13 +257,13 @@ function Hero() {
         </div>
       </div>
 
-      <div className="absolute bottom-8 right-8 flex gap-2">
+      <div className="absolute bottom-4 sm:bottom-8 right-4 sm:right-8 flex gap-2">
         {slides.map((_, i) => (
           <button
             key={i}
             onClick={() => setActive(i)}
             aria-label={`Go to slide ${i + 1}`}
-            className={`h-1 w-12 transition-colors ${i === active ? "bg-foreground" : "bg-foreground/15 hover:bg-foreground/30"}`}
+            className={`h-1 w-8 sm:w-12 transition-colors ${i === active ? "bg-foreground" : "bg-foreground/15 hover:bg-foreground/30"}`}
           />
         ))}
       </div>
@@ -300,45 +300,50 @@ function ProductShowcase() {
 
   const featured = products[3]; // Arc Task Lamp as the hero
 
+  // Trending = top 3 by rating × reviews (simple synthetic ranking)
+  const trending = [...products]
+    .sort((a, b) => b.rating * b.reviews - a.rating * a.reviews)
+    .slice(0, 3);
+
   return (
-    <section id="work" className="relative py-24 px-8 overflow-hidden" style={{ background: "var(--gradient-cream)" }}>
+    <section id="work" className="relative py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 overflow-hidden" style={{ background: "var(--gradient-cream)" }}>
       {/* Decorative blob */}
       <div
         aria-hidden
-        className="absolute -top-32 -right-40 size-[520px] bg-brand/25 blur-3xl animate-blob pointer-events-none"
+        className="absolute -top-32 -right-40 size-[320px] sm:size-[520px] bg-brand/25 blur-3xl animate-blob pointer-events-none"
       />
       <div
         aria-hidden
-        className="absolute bottom-10 -left-40 size-[420px] bg-mint/40 blur-3xl animate-blob pointer-events-none"
+        className="absolute bottom-10 -left-40 size-[280px] sm:size-[420px] bg-mint/40 blur-3xl animate-blob pointer-events-none"
         style={{ animationDelay: "-7s" }}
       />
 
       <div className="relative max-w-screen-xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-5 mb-8 sm:mb-10">
           <div>
-            <span className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-brand mb-4">
+            <span className="inline-flex items-center gap-2 text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.2em] text-brand mb-3 sm:mb-4">
               <span className="size-1.5 rounded-full bg-brand animate-pulse" />
-              Shop the drop · 06 pieces
+              Trending & featured · {products.length} pieces
             </span>
-            <h2 className="text-4xl md:text-6xl font-semibold tracking-tight text-balance leading-[0.95]">
-              Pick your{" "}
+            <h2 className="text-[2rem] sm:text-4xl md:text-6xl font-semibold tracking-tight text-balance leading-[1] md:leading-[0.95]">
+              Objects people are{" "}
               <span className="italic font-light bg-gradient-to-r from-brand to-pop bg-clip-text text-transparent">
-                favourite thing.
+                obsessing over.
               </span>
             </h2>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             <div className="hidden md:flex items-center gap-2 text-xs text-muted-foreground">
-              <span className="size-2 rounded-full bg-mint" />
-              Free shipping over $200
+              <span className="size-2 rounded-full bg-mint animate-pulse" />
+              Stock updates live
             </div>
-            <button className="relative inline-flex items-center gap-2 bg-ink text-cream rounded-full px-5 py-3 text-xs font-semibold uppercase tracking-widest hover:scale-[1.03] transition-transform" data-cursor="View Cart">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="size-4">
+            <button className="relative inline-flex items-center gap-2 bg-ink text-cream rounded-full px-4 sm:px-5 py-2.5 sm:py-3 text-[10px] sm:text-xs font-semibold uppercase tracking-widest hover:scale-[1.03] transition-transform" data-cursor="View Cart">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="size-3.5 sm:size-4">
                 <path d="M3 4h2l2.4 12.4a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6" />
                 <circle cx="9" cy="21" r="1.5" /><circle cx="18" cy="21" r="1.5" />
               </svg>
-              Cart
+              Bag
               <span className="ml-1 inline-flex min-w-5 h-5 items-center justify-center rounded-full bg-brand text-brand-foreground text-[10px] font-mono px-1.5">
                 {cart.length}
               </span>
@@ -347,8 +352,8 @@ function ProductShowcase() {
         </div>
 
         {/* Category filter — icon-driven, prominent */}
-        <div className="relative mb-10 -mx-2 px-2 overflow-x-auto">
-          <div className="flex items-stretch gap-3 min-w-max">
+        <div className="relative mb-8 sm:mb-10 -mx-4 sm:-mx-2 px-4 sm:px-2 overflow-x-auto scrollbar-none">
+          <div className="flex items-stretch gap-2.5 sm:gap-3 min-w-max">
             {productCategories.map((c) => {
               const count = c === "All" ? products.length : products.filter((p) => p.category === c).length;
               const selected = c === category;
@@ -357,19 +362,19 @@ function ProductShowcase() {
                   key={c}
                   onClick={() => setCategory(c)}
                   data-cursor="Filter"
-                  className={`group relative flex items-center gap-3 px-5 py-3 rounded-2xl transition-all duration-300 ${
+                  className={`group relative flex items-center gap-2.5 sm:gap-3 px-3.5 sm:px-5 py-2.5 sm:py-3 rounded-2xl transition-all duration-300 ${
                     selected
                       ? "bg-ink text-cream shadow-[0_12px_30px_-12px_rgba(0,0,0,0.45)] scale-[1.03]"
                       : "bg-background border border-foreground/10 text-foreground/70 hover:text-ink hover:border-foreground/40 hover:-translate-y-0.5"
                   }`}
                 >
-                  <span className={`size-9 grid place-items-center rounded-xl text-base transition-colors ${
+                  <span className={`size-8 sm:size-9 grid place-items-center rounded-xl text-sm sm:text-base transition-colors ${
                     selected ? "bg-pop text-pop-foreground" : "bg-foreground/5 group-hover:bg-brand/15"
                   }`}>
                     {categoryIcons[c]}
                   </span>
                   <span className="text-left">
-                    <span className="block text-xs font-bold uppercase tracking-widest leading-tight">{c}</span>
+                    <span className="block text-[11px] sm:text-xs font-bold uppercase tracking-widest leading-tight">{c}</span>
                     <span className={`block text-[10px] font-mono leading-tight ${selected ? "text-pop" : "text-muted-foreground"}`}>
                       {count} {count === 1 ? "item" : "items"}
                     </span>
@@ -381,20 +386,20 @@ function ProductShowcase() {
         </div>
 
         {/* Hero featured product */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-12">
-          <article className="lg:col-span-7 relative overflow-hidden rounded-3xl bg-brand text-brand-foreground p-8 md:p-12 group">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 mb-10 sm:mb-12">
+          <article className="lg:col-span-7 relative overflow-hidden rounded-3xl bg-brand text-brand-foreground p-6 sm:p-8 md:p-12 group">
             <div aria-hidden className="absolute -bottom-20 -right-20 size-[420px] bg-pop/40 rounded-full blur-3xl" />
-            <div className="relative grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-              <div>
-                <span className="inline-flex items-center gap-2 bg-pop text-pop-foreground rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest mb-5">
+            <div className="relative grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 items-center">
+              <div className="order-2 md:order-1">
+                <span className="inline-flex items-center gap-2 bg-pop text-pop-foreground rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest mb-4 sm:mb-5">
                   ★ Editor's pick
                 </span>
-                <h3 className="text-3xl md:text-5xl font-semibold tracking-tight leading-[1] mb-4">
+                <h3 className="text-2xl sm:text-3xl md:text-5xl font-semibold tracking-tight leading-[1] mb-3 sm:mb-4">
                   {featured.name}
                 </h3>
-                <p className="text-brand-foreground/80 text-pretty mb-6 max-w-sm">{featured.desc}</p>
-                <div className="flex items-baseline gap-3 mb-6">
-                  <span className="text-3xl font-semibold">{featured.price}</span>
+                <p className="text-sm sm:text-base text-brand-foreground/80 text-pretty mb-5 sm:mb-6 max-w-sm">{featured.desc}</p>
+                <div className="flex items-baseline gap-3 mb-5 sm:mb-6">
+                  <span className="text-2xl sm:text-3xl font-semibold">{featured.price}</span>
                   <StarRow rating={featured.rating} />
                   <span className="text-xs opacity-70">({featured.reviews})</span>
                 </div>
@@ -402,14 +407,14 @@ function ProductShowcase() {
                   <button
                     onClick={() => toggle(cart, setCart, featured.id)}
                     data-cursor="Add"
-                    className="inline-flex items-center gap-2 bg-cream text-ink rounded-full px-5 py-3 text-xs font-bold uppercase tracking-widest hover:scale-[1.03] transition-transform"
+                    className="inline-flex items-center gap-2 bg-cream text-ink rounded-full px-4 sm:px-5 py-2.5 sm:py-3 text-[11px] sm:text-xs font-bold uppercase tracking-widest hover:scale-[1.03] transition-transform"
                   >
                     {cart.includes(featured.id) ? "Added ✓" : "Add to bag"}
                   </button>
                   <button
                     onClick={() => toggle(wishlist, setWishlist, featured.id)}
                     aria-label="Save to wishlist"
-                    className="inline-flex items-center justify-center size-11 rounded-full bg-brand-foreground/10 hover:bg-brand-foreground/20 transition-colors"
+                    className="inline-flex items-center justify-center size-10 sm:size-11 rounded-full bg-brand-foreground/10 hover:bg-brand-foreground/20 transition-colors"
                   >
                     <svg viewBox="0 0 24 24" fill={wishlist.includes(featured.id) ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" className="size-4">
                       <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.6z"/>
@@ -417,111 +422,102 @@ function ProductShowcase() {
                   </button>
                 </div>
               </div>
-              <div className="relative aspect-square rounded-2xl overflow-hidden bg-brand-foreground/10">
+              <div className="order-1 md:order-2 relative aspect-square rounded-2xl overflow-hidden bg-brand-foreground/10">
                 <img src={featured.image} alt={featured.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
               </div>
             </div>
           </article>
 
-          {/* Marquee promo column */}
-          {/* Creative side column — Studio Pulse + 3D color palette */}
-          <aside className="lg:col-span-5 grid grid-rows-[1.1fr_1fr] gap-6">
-            {/* 3D stacked color story */}
-            <div className="relative overflow-hidden rounded-3xl bg-cream p-8 flex flex-col justify-between" style={{ perspective: "1200px" }}>
-              <div className="relative z-10">
-                <p className="text-[10px] font-bold uppercase tracking-[0.25em] mb-2 text-brand">This season</p>
-                <h4 className="text-2xl font-semibold tracking-tight leading-tight text-ink max-w-[18ch]">
-                  Six tones, one mood. Built to live together.
-                </h4>
-              </div>
-              <div
-                aria-hidden
-                className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-2"
-                style={{ transformStyle: "preserve-3d", transform: "rotateY(-22deg) rotateX(8deg)" }}
-              >
-                {[
-                  { c: "var(--brand)", d: "0ms" },
-                  { c: "var(--pop)", d: "120ms" },
-                  { c: "var(--mint)", d: "240ms" },
-                  { c: "var(--ink)", d: "360ms" },
-                  { c: "var(--brand-soft)", d: "480ms" },
-                ].map((s, i) => (
-                  <div
-                    key={i}
-                    className="w-10 h-32 md:h-40 rounded-2xl shadow-[0_18px_40px_-18px_rgba(0,0,0,0.45)] animate-fade-up"
-                    style={{ background: s.c, transform: `translateZ(${i * 14}px) translateY(${i % 2 ? -6 : 6}px)`, animationDelay: s.d }}
-                  />
-                ))}
-              </div>
-              <div className="relative z-10 mt-6 flex items-center gap-3">
-                <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink/60">Palette · SS-26</span>
-                <span className="h-px flex-1 bg-ink/15" />
-                <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink">5 / 24</span>
-              </div>
-            </div>
-
-            {/* Live studio pulse */}
-            <div className="relative overflow-hidden rounded-3xl bg-ink text-cream p-7 flex flex-col gap-4">
-              <div className="flex items-center justify-between">
-                <span className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.25em]">
-                  <span className="relative flex size-2">
-                    <span className="absolute inline-flex h-full w-full rounded-full bg-mint opacity-70 animate-ping" />
-                    <span className="relative inline-flex size-2 rounded-full bg-mint" />
-                  </span>
-                  Studio pulse · live
+          {/* Side column — Trending leaderboard (products only) */}
+          <aside className="lg:col-span-5 relative overflow-hidden rounded-3xl bg-ink text-cream p-6 sm:p-7 flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <span className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.25em]">
+                <span className="relative flex size-2">
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-mint opacity-70 animate-ping" />
+                  <span className="relative inline-flex size-2 rounded-full bg-mint" />
                 </span>
-                <span className="text-[10px] font-mono text-cream/50">{new Date().getFullYear()}</span>
-              </div>
+                Trending now · top 3
+              </span>
+              <span className="text-[10px] font-mono text-cream/40">updated 2m ago</span>
+            </div>
+            <h3 className="text-xl sm:text-2xl font-semibold tracking-tight leading-tight">
+              What people are <span className="italic font-light text-pop">picking up</span> this week.
+            </h3>
 
-              <div className="grid grid-cols-3 gap-2">
-                {[
-                  { k: "Now browsing", v: "1,284" },
-                  { k: "Bagged today", v: "316" },
-                  { k: "Ships in", v: "24h" },
-                ].map((s) => (
-                  <div key={s.k} className="rounded-xl bg-cream/5 p-2.5">
-                    <p className="text-[9px] font-mono uppercase tracking-widest text-cream/50 leading-tight">{s.k}</p>
-                    <p className="mt-1 text-lg font-semibold tabular-nums text-pop">{s.v}</p>
-                  </div>
-                ))}
-              </div>
-
-              <div className="rounded-xl bg-cream/5 p-3 flex flex-col gap-1.5 overflow-hidden">
-                {[
-                  { who: "Mira K.", what: "bagged the Arc Task Lamp", when: "12s" },
-                  { who: "Jonas", what: "saved Monolith Speaker", when: "44s" },
-                  { who: "Aiko", what: "bought Amber Glow Serum", when: "1m" },
-                ].map((a, i) => (
-                  <div
-                    key={a.who}
-                    className="flex items-center gap-2.5 text-xs animate-fade-up"
-                    style={{ animationDelay: `${i * 140}ms` }}
+            <ul className="flex flex-col gap-2.5 mt-1">
+              {trending.map((p, i) => {
+                const inCart = cart.includes(p.id);
+                return (
+                  <li
+                    key={p.id}
+                    className="group relative flex items-center gap-3 rounded-2xl bg-cream/5 hover:bg-cream/10 p-2.5 sm:p-3 transition-colors animate-fade-up"
+                    style={{ animationDelay: `${i * 120}ms` }}
                   >
-                    <span className="size-6 rounded-full bg-gradient-to-br from-brand to-pop grid place-items-center text-[10px] font-bold text-ink">
-                      {a.who[0]}
+                    <span className="font-mono text-[10px] uppercase tracking-widest text-pop tabular-nums w-5 shrink-0">
+                      0{i + 1}
                     </span>
-                    <span className="flex-1 truncate text-cream/80">
-                      <span className="text-cream font-semibold">{a.who}</span> {a.what}
-                    </span>
-                    <span className="font-mono text-[9px] text-cream/40">{a.when}</span>
-                  </div>
-                ))}
-              </div>
+                    <div className={`relative size-12 sm:size-14 shrink-0 rounded-xl overflow-hidden ${p.swatch}`}>
+                      <img src={p.image} alt="" className="absolute inset-0 w-full h-full object-cover mix-blend-multiply" loading="lazy" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[10px] font-mono uppercase tracking-widest text-cream/50 truncate">{p.category}</p>
+                      <p className="text-sm font-semibold tracking-tight truncate">{p.name}</p>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <StarRow rating={p.rating} />
+                        <span className="text-[10px] font-mono text-cream/40 tabular-nums">{p.reviews} reviews</span>
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-end gap-1.5 shrink-0">
+                      <span className="text-sm font-semibold tabular-nums">{p.price}</span>
+                      <button
+                        type="button"
+                        onClick={() => toggle(cart, setCart, p.id)}
+                        className={`text-[9px] font-bold uppercase tracking-widest rounded-full px-2.5 py-1 transition-colors ${
+                          inCart ? "bg-mint text-ink" : "bg-cream text-ink hover:bg-pop hover:text-pop-foreground"
+                        }`}
+                      >
+                        {inCart ? "✓ Bag" : "+ Bag"}
+                      </button>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+
+            <div className="mt-auto pt-2 flex items-center justify-between text-[10px] font-mono uppercase tracking-widest text-cream/50">
+              <span>Live ranking · by bags this week</span>
+              <a href="#" className="text-pop hover:underline">See all →</a>
             </div>
           </aside>
         </div>
 
-        {/* Compact product grid — 4 cols on desktop */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
+        {/* Section divider for the catalogue */}
+        <div className="flex items-end justify-between mb-5 sm:mb-6">
+          <div>
+            <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground flex items-center gap-2">
+              <span className="size-1.5 rounded-full bg-brand" />
+              The full collection · {filtered.length} items
+            </p>
+            <h3 className="mt-2 text-xl sm:text-2xl md:text-3xl font-semibold tracking-tight">
+              Tilt, hover, drop into your bag.
+            </h3>
+          </div>
+          <span className="hidden sm:inline-flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
+            <span className="size-1.5 rounded-full bg-pop animate-pulse" /> Hover to feel it
+          </span>
+        </div>
+
+        {/* Compact product grid — 4 cols on desktop, with 3D tilt */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-4 md:gap-5" style={{ perspective: "1200px" }}>
           {filtered.map((p) => {
             const inCart = cart.includes(p.id);
             const liked = wishlist.includes(p.id);
             return (
-              <article
+              <ProductTiltCard
                 key={p.id}
-                className="group relative rounded-2xl overflow-hidden bg-background outline-1 -outline-offset-1 outline-foreground/5 hover:outline-foreground/25 transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_20px_40px_-20px_rgba(0,0,0,0.25)]"
+                className="group relative rounded-2xl overflow-hidden bg-background outline-1 -outline-offset-1 outline-foreground/5 hover:outline-foreground/25 hover:shadow-[0_25px_50px_-25px_rgba(0,0,0,0.35)]"
               >
-                <div className={`relative aspect-[4/5] overflow-hidden ${p.swatch}`}>
+                <div className={`relative aspect-[4/5] overflow-hidden ${p.swatch}`} style={{ transform: "translateZ(20px)" }}>
                   <img
                     src={p.image}
                     alt={p.name}
@@ -548,10 +544,10 @@ function ProductShowcase() {
                     onClick={() => toggle(wishlist, setWishlist, p.id)}
                     aria-label={liked ? "Remove from wishlist" : "Add to wishlist"}
                     data-cursor={liked ? "Saved" : "Save"}
-                    className={`absolute top-10 right-3 size-8 rounded-full grid place-items-center backdrop-blur transition-all duration-300 ${
+                    className={`absolute top-10 right-3 size-8 rounded-full grid place-items-center backdrop-blur transition-all duration-300 z-10 ${
                       liked
                         ? "bg-brand text-brand-foreground scale-100 opacity-100"
-                        : "bg-background/85 text-foreground opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 hover:bg-background"
+                        : "bg-background/85 text-foreground opacity-100 sm:opacity-0 sm:-translate-y-1 sm:group-hover:opacity-100 sm:group-hover:translate-y-0 hover:bg-background"
                     }`}
                   >
                     <svg viewBox="0 0 24 24" fill={liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" className="size-3.5">
@@ -559,8 +555,8 @@ function ProductShowcase() {
                     </svg>
                   </button>
 
-                  {/* Hover quick add */}
-                  <div className="absolute inset-x-3 bottom-3 translate-y-[140%] group-hover:translate-y-0 transition-transform duration-500 ease-out">
+                  {/* Quick add — visible on mobile, slides up on desktop hover */}
+                  <div className="absolute inset-x-3 bottom-3 sm:translate-y-[140%] sm:group-hover:translate-y-0 transition-transform duration-500 ease-out">
                     <button
                       onClick={() => toggle(cart, setCart, p.id)}
                       data-cursor={inCart ? "In cart" : "Quick add"}
@@ -573,18 +569,18 @@ function ProductShowcase() {
                   </div>
                 </div>
 
-                <div className="p-3.5">
+                <div className="p-3 sm:p-3.5" style={{ transform: "translateZ(35px)" }}>
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-[9px] font-mono uppercase tracking-widest text-muted-foreground truncate">{p.category}</span>
                     <StarRow rating={p.rating} />
                   </div>
-                  <h3 className="text-sm font-semibold tracking-tight truncate">{p.name}</h3>
+                  <h4 className="text-sm font-semibold tracking-tight truncate">{p.name}</h4>
                   <div className="mt-2 flex items-baseline gap-1.5">
                     <span className="text-sm font-semibold">{p.price}</span>
                     <span className="ml-auto text-[9px] font-mono uppercase tracking-widest text-muted-foreground">{p.status}</span>
                   </div>
                 </div>
-              </article>
+              </ProductTiltCard>
             );
           })}
         </div>
@@ -593,8 +589,8 @@ function ProductShowcase() {
           <p className="text-sm text-muted-foreground py-8">No objects in this category yet.</p>
         )}
 
-        <div className="mt-12 flex justify-center">
-          <a href="#" data-cursor="Shop all" className="inline-flex items-center gap-3 bg-ink text-cream rounded-full pl-2 pr-5 py-2 text-xs font-bold uppercase tracking-widest hover:scale-[1.03] transition-transform">
+        <div className="mt-10 sm:mt-12 flex justify-center">
+          <a href="#" data-cursor="Shop all" className="inline-flex items-center gap-3 bg-ink text-cream rounded-full pl-2 pr-4 sm:pr-5 py-2 text-[11px] sm:text-xs font-bold uppercase tracking-widest hover:scale-[1.03] transition-transform">
             <span className="size-7 rounded-full bg-pop text-pop-foreground grid place-items-center">→</span>
             Shop the full catalogue
           </a>
@@ -608,58 +604,45 @@ function BlogSection() {
   return <BlogSectionInner />;
 }
 
-function Tilt3DCard({
+function ProductTiltCard({
   children,
   className,
-  index,
-  onEnter,
-  onLeave,
 }: {
   children: ReactNode;
   className?: string;
-  index: number;
-  onEnter?: () => void;
-  onLeave?: () => void;
 }) {
-  const ref = useRef<HTMLAnchorElement | null>(null);
+  const ref = useRef<HTMLElement | null>(null);
 
-  const handleMove = (e: ReactMouseEvent<HTMLAnchorElement>) => {
+  const handleMove = (e: ReactMouseEvent<HTMLElement>) => {
     const el = ref.current;
     if (!el) return;
     const r = el.getBoundingClientRect();
     const x = (e.clientX - r.left) / r.width;
     const y = (e.clientY - r.top) / r.height;
-    const rx = (0.5 - y) * 14;
-    const ry = (x - 0.5) * 18;
-    el.style.setProperty("--mx", `${x * 100}%`);
-    el.style.setProperty("--my", `${y * 100}%`);
-    el.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-6px) scale(1.02)`;
+    const rx = (0.5 - y) * 10;
+    const ry = (x - 0.5) * 12;
+    el.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) translateY(-6px) scale(1.02)`;
   };
 
   const handleLeave = () => {
     const el = ref.current;
-    if (el) el.style.transform = "perspective(900px) rotateX(0) rotateY(0) translateY(0) scale(1)";
-    onLeave?.();
+    if (el) el.style.transform = "rotateX(0) rotateY(0) translateY(0) scale(1)";
   };
 
   return (
-    <a
-      ref={ref}
-      href="#"
-      data-cursor="Read"
-      onMouseEnter={onEnter}
+    <article
+      ref={ref as RefObject<HTMLElement>}
       onMouseMove={handleMove}
       onMouseLeave={handleLeave}
       className={className}
       style={{
         transformStyle: "preserve-3d",
-        transition: "transform 500ms cubic-bezier(0.19,1,0.22,1)",
-        animation: `fade-in-up 0.7s cubic-bezier(0.19,1,0.22,1) ${index * 80}ms both`,
+        transition: "transform 450ms cubic-bezier(0.19,1,0.22,1)",
         willChange: "transform",
       }}
     >
       {children}
-    </a>
+    </article>
   );
 }
 
@@ -683,100 +666,175 @@ function InteractiveBlogCards({
   hoverId: string | null;
   onHover: (id: string | null) => void;
 }) {
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
+  const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
+
+  useEffect(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+
+    const update = () => {
+      const sRect = scroller.getBoundingClientRect();
+      const center = sRect.left + sRect.width / 2;
+      itemRefs.current.forEach((el) => {
+        if (!el) return;
+        const r = el.getBoundingClientRect();
+        const itemCenter = r.left + r.width / 2;
+        // Distance from viewport-center of scroller, normalised to half-width
+        const dist = (itemCenter - center) / (sRect.width / 2);
+        const clamped = Math.max(-1.2, Math.min(1.2, dist));
+        const rotateY = clamped * -28;
+        const scale = 1 - Math.min(0.18, Math.abs(clamped) * 0.18);
+        const translateZ = -Math.abs(clamped) * 80;
+        const opacity = 1 - Math.min(0.45, Math.abs(clamped) * 0.45);
+        el.style.transform = `translateZ(${translateZ}px) rotateY(${rotateY}deg) scale(${scale})`;
+        el.style.opacity = String(opacity);
+        el.style.zIndex = String(100 - Math.round(Math.abs(clamped) * 100));
+      });
+    };
+
+    update();
+    scroller.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      scroller.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, [cards.length]);
+
+  const scrollBy = (dir: 1 | -1) => {
+    const s = scrollerRef.current;
+    if (!s) return;
+    s.scrollBy({ left: dir * (s.clientWidth * 0.7), behavior: "smooth" });
+  };
+
   return (
-    <div className="mb-14">
-      <div className="flex items-end justify-between mb-6">
+    <div className="mb-12 sm:mb-14">
+      <div className="flex items-end justify-between mb-5 sm:mb-6 gap-4">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground flex items-center gap-2">
             <span className="size-1.5 rounded-full bg-pop" />
-            More from the journal · Interactive
+            Journal carousel · Drag, swipe, scroll
           </p>
-          <h3 className="mt-2 text-2xl md:text-3xl font-semibold tracking-tight">
-            Hover, flip, and save what catches your eye.
+          <h3 className="mt-2 text-xl sm:text-2xl md:text-3xl font-semibold tracking-tight">
+            A 3D reel of recent stories.
           </h3>
         </div>
-        <a href="#" data-cursor="Browse" className="hidden md:inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-foreground/70 hover:text-ink transition-colors">
-          All entries <span aria-hidden>→</span>
-        </a>
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            aria-label="Scroll left"
+            onClick={() => scrollBy(-1)}
+            className="size-9 sm:size-10 grid place-items-center rounded-full bg-foreground/5 hover:bg-foreground/10 text-foreground transition-colors"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="size-4"><path d="M15 18l-6-6 6-6" /></svg>
+          </button>
+          <button
+            type="button"
+            aria-label="Scroll right"
+            onClick={() => scrollBy(1)}
+            className="size-9 sm:size-10 grid place-items-center rounded-full bg-ink text-cream hover:bg-brand transition-colors"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="size-4"><path d="M9 6l6 6-6 6" /></svg>
+          </button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        {cards.map((c, i) => {
-          const a = accentClasses[c.accent];
-          const isHover = hoverId === c.id;
-          const isSaved = saved.includes(c.id);
-          return (
-            <Tilt3DCard
-              key={c.id}
-              index={i}
-              className={`group relative overflow-hidden rounded-3xl ring-1 ${a.ring} ring-inset ${a.bg} aspect-[3/4] flex flex-col justify-between p-5`}
-              onEnter={() => onHover(c.id)}
-              onLeave={() => onHover(null)}
-            >
-              {/* Background image revealed on hover */}
+      {/* Horizontal 3D scroller */}
+      <div className="relative -mx-4 sm:-mx-6 lg:-mx-8">
+        {/* Edge fades */}
+        <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-10 sm:w-16 z-10 bg-gradient-to-r from-background to-transparent" />
+        <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-10 sm:w-16 z-10 bg-gradient-to-l from-background to-transparent" />
+
+        <div
+          ref={scrollerRef}
+          className="flex gap-4 sm:gap-5 overflow-x-auto snap-x snap-mandatory scroll-smooth px-4 sm:px-6 lg:px-8 py-6 sm:py-8 scrollbar-none"
+          style={{ perspective: "1400px", perspectiveOrigin: "center", scrollbarWidth: "none" }}
+        >
+          {cards.map((c, i) => {
+            const a = accentClasses[c.accent];
+            const isHover = hoverId === c.id;
+            const isSaved = saved.includes(c.id);
+            return (
               <div
-                aria-hidden
-                className="absolute inset-0 transition-opacity duration-500"
-                style={{ opacity: isHover ? 0.55 : 0 }}
+                key={c.id}
+                ref={(el) => { itemRefs.current[i] = el; }}
+                className="snap-center shrink-0 w-[78%] xs:w-[68%] sm:w-[56%] md:w-[44%] lg:w-[34%] xl:w-[28%]"
+                style={{
+                  transformStyle: "preserve-3d",
+                  transition: "transform 380ms cubic-bezier(0.19,1,0.22,1), opacity 380ms ease",
+                  willChange: "transform, opacity",
+                }}
               >
-                <img src={c.image} alt="" className="w-full h-full object-cover" loading="lazy" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-              </div>
-              {/* Halo blob */}
-              <div
-                aria-hidden
-                className={`absolute -bottom-16 -right-16 size-48 rounded-full blur-3xl ${a.halo} transition-transform duration-700`}
-                style={{ transform: isHover ? "scale(1.4)" : "scale(1)" }}
-              />
-
-              <div className="relative flex items-start justify-between" style={{ transform: "translateZ(40px)" }}>
-                <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest ${a.chip}`}>
-                  {c.tag}
-                </span>
-                <button
-                  type="button"
-                  onClick={(e) => { e.preventDefault(); onToggleSave(c.id); }}
-                  aria-label={isSaved ? "Unsave" : "Save"}
-                  className={`size-8 grid place-items-center rounded-full transition-all ${
-                    isSaved ? "bg-cream text-ink scale-110" : "bg-black/15 text-current hover:bg-black/25"
-                  }`}
+                <a
+                  href="#"
+                  data-cursor="Read"
+                  onMouseEnter={() => onHover(c.id)}
+                  onMouseLeave={() => onHover(null)}
+                  className={`group relative block overflow-hidden rounded-3xl ring-1 ${a.ring} ring-inset ${a.bg} aspect-[3/4] p-5 sm:p-6`}
+                  style={{ boxShadow: "0 30px 60px -30px rgba(0,0,0,0.45)" }}
                 >
-                  <svg viewBox="0 0 24 24" fill={isSaved ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" className="size-3.5">
-                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-                  </svg>
-                </button>
-              </div>
-
-              <div className="relative" style={{ transform: "translateZ(60px)" }}>
-                <h4 className="text-xl md:text-2xl font-semibold tracking-tight leading-[1.1] text-balance mb-3">
-                  {c.title}
-                </h4>
-                <p
-                  className="text-sm text-pretty leading-snug opacity-80 transition-all duration-500 overflow-hidden"
-                  style={{ maxHeight: isHover ? "120px" : "0px", opacity: isHover ? 0.9 : 0 }}
-                >
-                  {c.excerpt}
-                </p>
-                <div className="mt-3 flex items-center justify-between text-[10px] font-mono uppercase tracking-[0.2em] opacity-70">
-                  <span>{c.meta}</span>
-                  <span
+                  {/* Background image revealed on hover */}
+                  <div
                     aria-hidden
-                    className="inline-flex items-center gap-1 transition-transform duration-500"
-                    style={{ transform: isHover ? "translateX(4px)" : "translateX(0)" }}
+                    className="absolute inset-0 transition-opacity duration-500"
+                    style={{ opacity: isHover ? 0.55 : 0 }}
                   >
-                    Read →
-                  </span>
-                </div>
+                    <img src={c.image} alt="" className="w-full h-full object-cover" loading="lazy" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                  </div>
+                  {/* Halo blob */}
+                  <div
+                    aria-hidden
+                    className={`absolute -bottom-16 -right-16 size-48 rounded-full blur-3xl ${a.halo} transition-transform duration-700`}
+                    style={{ transform: isHover ? "scale(1.4)" : "scale(1)" }}
+                  />
+
+                  <div className="relative h-full flex flex-col justify-between">
+                    <div className="flex items-start justify-between">
+                      <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest ${a.chip}`}>
+                        {c.tag}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={(e) => { e.preventDefault(); onToggleSave(c.id); }}
+                        aria-label={isSaved ? "Unsave" : "Save"}
+                        className={`size-8 grid place-items-center rounded-full transition-all ${
+                          isSaved ? "bg-cream text-ink scale-110" : "bg-black/15 text-current hover:bg-black/25"
+                        }`}
+                      >
+                        <svg viewBox="0 0 24 24" fill={isSaved ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" className="size-3.5">
+                          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                        </svg>
+                      </button>
+                    </div>
+
+                    <div>
+                      <span className="block font-mono text-[10px] uppercase tracking-[0.25em] opacity-60 mb-2">
+                        Issue · 0{i + 1}
+                      </span>
+                      <h4 className="text-xl sm:text-2xl md:text-3xl font-semibold tracking-tight leading-[1.05] text-balance mb-3">
+                        {c.title}
+                      </h4>
+                      <p className="text-sm text-pretty leading-snug opacity-85 mb-4 line-clamp-3">
+                        {c.excerpt}
+                      </p>
+                      <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-[0.2em] opacity-75">
+                        <span>{c.meta}</span>
+                        <span aria-hidden className="inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform duration-500">
+                          Read →
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </a>
               </div>
-              {/* Glossy highlight */}
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                style={{ background: "radial-gradient(600px circle at var(--mx,50%) var(--my,0%), rgba(255,255,255,0.18), transparent 40%)" }}
-              />
-            </Tilt3DCard>
-          );
-        })}
+            );
+          })}
+
+          {/* Trailing spacer so last card can center */}
+          <div aria-hidden className="shrink-0 w-2" />
+        </div>
       </div>
     </div>
   );
@@ -800,22 +858,22 @@ function BlogSectionInner() {
   return (
     <section
       id="intel"
-      className="relative py-20 md:py-24 px-8 bg-background"
+      className="relative py-16 sm:py-20 md:py-24 px-4 sm:px-6 lg:px-8 bg-background overflow-hidden"
       onMouseMove={(e) => setCoords({ x: e.clientX, y: e.clientY })}
     >
       <div className="max-w-screen-xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-5 sm:gap-6 mb-8 sm:mb-10">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground mb-4 flex items-center gap-2">
+            <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground mb-3 sm:mb-4 flex items-center gap-2">
               <span className="size-1.5 rounded-full bg-brand animate-pulse" />
               Journal · {list.length + (showFeatured ? 1 : 0)} entries
             </p>
-            <h2 className="text-4xl md:text-6xl font-semibold tracking-tight text-balance leading-[0.95]">
+            <h2 className="text-[2rem] sm:text-4xl md:text-6xl font-semibold tracking-tight text-balance leading-[1] md:leading-[0.95]">
               Stories worth <span className="italic font-light text-muted-foreground">reading slowly.</span>
             </h2>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 -mx-1 px-1 overflow-x-auto scrollbar-none">
             {allTags.map((t) => {
               const selected = t === tag;
               return (
@@ -823,7 +881,7 @@ function BlogSectionInner() {
                   key={t}
                   onClick={() => setTag(t)}
                   data-cursor="Filter"
-                  className={`text-[11px] font-semibold uppercase tracking-widest px-3.5 py-2 rounded-full transition-all ${
+                  className={`text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-full transition-all whitespace-nowrap ${
                     selected
                       ? "bg-ink text-cream scale-[1.04]"
                       : "bg-background border border-foreground/15 text-foreground/70 hover:text-ink hover:border-foreground/40"
@@ -843,7 +901,7 @@ function BlogSectionInner() {
             data-cursor="Read featured"
             onMouseEnter={() => setHoverId(featuredArticle.id)}
             onMouseLeave={() => setHoverId(null)}
-            className="group relative grid grid-cols-1 lg:grid-cols-12 gap-0 mb-14 overflow-hidden rounded-3xl bg-ink text-cream"
+            className="group relative grid grid-cols-1 lg:grid-cols-12 gap-0 mb-12 sm:mb-14 overflow-hidden rounded-3xl bg-ink text-cream"
           >
             <div className="lg:col-span-7 relative aspect-[16/10] lg:aspect-auto overflow-hidden">
               <img
@@ -856,21 +914,21 @@ function BlogSectionInner() {
                 ★ Featured
               </span>
             </div>
-            <div className="lg:col-span-5 p-8 md:p-12 flex flex-col justify-between gap-8">
+            <div className="lg:col-span-5 p-6 sm:p-8 md:p-12 flex flex-col justify-between gap-6 sm:gap-8">
               <div>
-                <div className="flex items-center gap-3 text-[10px] font-mono uppercase tracking-[0.2em] text-cream/60 mb-5">
+                <div className="flex items-center flex-wrap gap-2 sm:gap-3 text-[10px] font-mono uppercase tracking-[0.2em] text-cream/60 mb-4 sm:mb-5">
                   <span className="text-pop">{featuredArticle.tag}</span>
                   <span>·</span>
                   <span>{featuredArticle.readTime}</span>
                   <span>·</span>
                   <span>{featuredArticle.date}</span>
                 </div>
-                <h3 className="text-3xl md:text-4xl font-semibold tracking-tight leading-[1.05] mb-5 text-balance">
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight leading-[1.05] mb-4 sm:mb-5 text-balance">
                   {featuredArticle.title}
                 </h3>
-                <p className="text-cream/70 text-pretty max-w-md">{featuredArticle.excerpt}</p>
+                <p className="text-sm sm:text-base text-cream/70 text-pretty max-w-md">{featuredArticle.excerpt}</p>
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-3">
                 <span className="text-xs text-cream/60">
                   By <span className="text-cream">{featuredArticle.author}</span>
                 </span>
@@ -879,7 +937,7 @@ function BlogSectionInner() {
                     type="button"
                     onClick={(e) => { e.preventDefault(); toggleSave(featuredArticle.id); }}
                     aria-label={saved.includes(featuredArticle.id) ? "Unsave" : "Save"}
-                    className={`size-10 rounded-full grid place-items-center transition-all ${
+                    className={`size-9 sm:size-10 rounded-full grid place-items-center transition-all ${
                       saved.includes(featuredArticle.id) ? "bg-brand text-brand-foreground scale-110" : "bg-cream/10 text-cream hover:bg-cream/20"
                     }`}
                   >
@@ -887,7 +945,7 @@ function BlogSectionInner() {
                       <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
                     </svg>
                   </button>
-                  <span className="inline-flex items-center gap-2 bg-cream text-ink rounded-full px-4 py-2.5 text-xs font-bold uppercase tracking-widest group-hover:bg-pop group-hover:text-pop-foreground transition-colors">
+                  <span className="inline-flex items-center gap-2 bg-cream text-ink rounded-full px-3.5 sm:px-4 py-2 sm:py-2.5 text-[11px] sm:text-xs font-bold uppercase tracking-widest group-hover:bg-pop group-hover:text-pop-foreground transition-colors">
                     Read story →
                   </span>
                 </div>
@@ -930,7 +988,7 @@ function BlogSectionInner() {
                         {a.index}
                       </span>
                       <h3
-                        className="col-span-10 md:col-span-6 text-2xl md:text-3xl font-medium tracking-tight transition-transform duration-500 ease-out"
+                        className="col-span-10 md:col-span-6 text-lg sm:text-2xl md:text-3xl font-medium tracking-tight transition-transform duration-500 ease-out"
                         style={{ transform: active ? "translateX(8px)" : "translateX(0)" }}
                       >
                         <span className="bg-gradient-to-r from-brand to-brand bg-no-repeat bg-[length:0%_2px] bg-[position:0_100%] group-hover:bg-[length:100%_2px] transition-[background-size] duration-500">
@@ -943,6 +1001,11 @@ function BlogSectionInner() {
                       <span className="hidden md:block md:col-span-2 md:text-right font-mono text-[11px] text-muted-foreground tabular-nums">
                         {a.readTime}
                       </span>
+                    </div>
+                    <div className="md:hidden mt-1 flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
+                      <span>{a.tag}</span>
+                      <span>·</span>
+                      <span className="tabular-nums">{a.readTime}</span>
                     </div>
                   </a>
                   {/* Hover progress bar */}
@@ -1087,14 +1150,14 @@ function Index() {
     <main className="bg-background text-foreground selection:bg-foreground/10">
       {/* Top announcement marquee — site-wide creative touch */}
       <div className="relative z-50 bg-ink text-cream py-2 overflow-hidden border-b border-cream/10">
-        <div className="flex gap-10 whitespace-nowrap animate-[ticker_30s_linear_infinite] text-[11px] font-mono uppercase tracking-[0.25em]">
+        <div className="flex gap-8 sm:gap-10 whitespace-nowrap animate-[ticker_30s_linear_infinite] text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.25em]">
           {Array.from({ length: 3 }).map((_, k) => (
-            <span key={k} className="flex gap-10 items-center shrink-0">
-              <span>✦ Free shipping over $200</span>
+            <span key={k} className="flex gap-8 sm:gap-10 items-center shrink-0">
+              <span>✦ New drop · Beauty + Gym now live</span>
               <span className="text-pop">/</span>
-              <span>New drop · Beauty + Gym now live</span>
+              <span>Studio crafted · made in small batches</span>
               <span className="text-pop">/</span>
-              <span>Use code <span className="text-pop">KINETIC20</span> for 20% off</span>
+              <span>Trending · Arc Task Lamp · C-Series Input</span>
               <span className="text-pop">/</span>
               <span>Lifetime repair on all apparatus</span>
               <span className="text-pop">/</span>
@@ -1103,14 +1166,14 @@ function Index() {
         </div>
       </div>
 
-      <nav className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-foreground/5 py-4 px-8 flex justify-between items-center">
-        <span className="font-semibold tracking-tight text-base">STUDIO_KINETIC</span>
+      <nav className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-foreground/5 py-3 sm:py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center gap-3">
+        <span className="font-semibold tracking-tight text-sm sm:text-base">STUDIO_KINETIC</span>
         <div className="hidden md:flex gap-8">
           <a href="#intel" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">Journal</a>
           <a href="#work" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">Shop</a>
           <a href="#studio" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">Studio</a>
         </div>
-        <a href="#work" className="hidden md:inline-flex items-center gap-2 bg-ink text-cream rounded-full px-4 py-2 text-xs font-bold uppercase tracking-widest hover:scale-[1.04] transition-transform">
+        <a href="#work" className="inline-flex items-center gap-2 bg-ink text-cream rounded-full px-3.5 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-bold uppercase tracking-widest hover:scale-[1.04] transition-transform">
           Shop drop →
         </a>
       </nav>
@@ -1122,11 +1185,11 @@ function Index() {
       <ProductShowcase />
 
       <footer id="studio" className="border-t border-border">
-        <section className="py-20 px-8 border-b border-border">
-          <div className="max-w-screen-xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
+        <section className="py-14 sm:py-20 px-4 sm:px-6 lg:px-8 border-b border-border">
+          <div className="max-w-screen-xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 sm:gap-12 items-end">
             <div className="lg:col-span-6">
               <p className="text-xs font-medium uppercase tracking-[0.25em] text-muted-foreground mb-4">Dispatch — Monthly</p>
-              <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-balance max-w-[18ch]">
+              <h2 className="text-[2rem] sm:text-4xl md:text-5xl font-semibold tracking-tight text-balance max-w-[18ch]">
                 Field notes from the studio, delivered.
               </h2>
             </div>
@@ -1135,10 +1198,10 @@ function Index() {
             </div>
           </div>
         </section>
-        <div className="py-12 px-8">
-          <div className="max-w-screen-xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-            <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest">© 2024 Studio Kinetic. All rights reserved.</p>
-            <div className="flex gap-8">
+        <div className="py-10 sm:py-12 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-screen-xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 sm:gap-8 text-center md:text-left">
+            <p className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-widest">© 2024 Studio Kinetic. All rights reserved.</p>
+            <div className="flex gap-6 sm:gap-8">
               <a href="#" className="text-xs font-medium uppercase tracking-widest">Instagram</a>
               <a href="#" className="text-xs font-medium uppercase tracking-widest">LinkedIn</a>
               <a href="#" className="text-xs font-medium uppercase tracking-widest">Contact</a>
