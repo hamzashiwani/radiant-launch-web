@@ -224,7 +224,8 @@ function ProductsPage() {
         </div>
       </nav>
 
-      {/* Hero */}
+      {/* Hero — only on first page */}
+      {currentPage === 1 && (
       <section className="relative overflow-hidden border-b border-foreground/10">
         <div className="absolute inset-0 -z-10 opacity-60" style={{
           background: "radial-gradient(900px 400px at 80% 20%, color-mix(in oklab, var(--brand) 22%, transparent), transparent), radial-gradient(700px 350px at 10% 90%, color-mix(in oklab, var(--pop) 18%, transparent), transparent)",
@@ -247,7 +248,7 @@ function ProductsPage() {
                 return (
                   <button
                     key={c}
-                    onClick={() => setCategory(c)}
+                    onClick={() => setCategoryAndReset(c)}
                     className={`group relative overflow-hidden rounded-2xl border text-left p-3 sm:p-4 transition-all ${
                       active
                         ? "bg-ink text-cream border-ink shadow-[0_20px_40px_-20px_rgba(0,0,0,0.5)]"
@@ -269,8 +270,10 @@ function ProductsPage() {
           </div>
         </div>
       </section>
+      )}
 
-      {/* Quick-tag bar — collapsed by default, click to expand into a horizontal scroller */}
+      {/* Quick-tag bar — only on first page */}
+      {currentPage === 1 && (
       <div className="border-b border-foreground/10 bg-foreground/[0.02] relative">
         {tagsExpanded && (
           <>
@@ -289,7 +292,7 @@ function ProductsPage() {
                   return (
                     <button
                       key={t.key}
-                      onClick={() => setTag(t.key)}
+                      onClick={() => setTagAndReset(t.key)}
                       className={`shrink-0 inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-medium transition-all ${
                         active
                           ? "bg-ink text-cream border-ink"
@@ -316,7 +319,7 @@ function ProductsPage() {
                   return (
                     <button
                       key={t.key}
-                      onClick={() => setTag(t.key)}
+                      onClick={() => setTagAndReset(t.key)}
                       className={`shrink-0 inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-medium transition-all ${
                         active
                           ? "bg-ink text-cream border-ink"
@@ -339,6 +342,7 @@ function ProductsPage() {
           )}
         </div>
       </div>
+      )}
 
       {/* Toolbar — search & sort */}
       <section className="px-4 sm:px-8 lg:px-12 py-4 border-b border-foreground/10 sticky top-[57px] sm:top-[65px] z-30 bg-background/85 backdrop-blur-md">
@@ -348,7 +352,7 @@ function ProductsPage() {
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">⌕</span>
               <input
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={(e) => setQueryAndReset(e.target.value)}
                 placeholder="Search materials, names, finishes..."
                 className="w-full pl-9 pr-3 py-2 rounded-full bg-foreground/[0.04] border border-foreground/10 text-sm focus:outline-none focus:border-foreground/40 transition-colors"
               />
@@ -358,7 +362,7 @@ function ProductsPage() {
               {sortOptions.map((opt) => (
                 <button
                   key={opt.key}
-                  onClick={() => setSort(opt.key)}
+                  onClick={() => setSortAndReset(opt.key)}
                   className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all ${
                     sort === opt.key
                       ? "bg-foreground text-background"
