@@ -651,14 +651,12 @@ function InteractiveBlogCards({
           const isHover = hoverId === c.id;
           const isSaved = saved.includes(c.id);
           return (
-            <a
+            <Tilt3DCard
               key={c.id}
-              href="#"
-              data-cursor="Read"
-              onMouseEnter={() => onHover(c.id)}
-              onMouseLeave={() => onHover(null)}
-              className={`group relative overflow-hidden rounded-3xl ring-1 ${a.ring} ring-inset ${a.bg} aspect-[3/4] flex flex-col justify-between p-5 transition-transform duration-500 ease-out hover:-translate-y-1`}
-              style={{ animation: `fade-in-up 0.7s cubic-bezier(0.19,1,0.22,1) ${i * 80}ms both` }}
+              index={i}
+              className={`group relative overflow-hidden rounded-3xl ring-1 ${a.ring} ring-inset ${a.bg} aspect-[3/4] flex flex-col justify-between p-5`}
+              onEnter={() => onHover(c.id)}
+              onLeave={() => onHover(null)}
             >
               {/* Background image revealed on hover */}
               <div
@@ -676,7 +674,7 @@ function InteractiveBlogCards({
                 style={{ transform: isHover ? "scale(1.4)" : "scale(1)" }}
               />
 
-              <div className="relative flex items-start justify-between">
+              <div className="relative flex items-start justify-between" style={{ transform: "translateZ(40px)" }}>
                 <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest ${a.chip}`}>
                   {c.tag}
                 </span>
@@ -694,7 +692,7 @@ function InteractiveBlogCards({
                 </button>
               </div>
 
-              <div className="relative">
+              <div className="relative" style={{ transform: "translateZ(60px)" }}>
                 <h4 className="text-xl md:text-2xl font-semibold tracking-tight leading-[1.1] text-balance mb-3">
                   {c.title}
                 </h4>
@@ -715,7 +713,13 @@ function InteractiveBlogCards({
                   </span>
                 </div>
               </div>
-            </a>
+              {/* Glossy highlight */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                style={{ background: "radial-gradient(600px circle at var(--mx,50%) var(--my,0%), rgba(255,255,255,0.18), transparent 40%)" }}
+              />
+            </Tilt3DCard>
           );
         })}
       </div>
