@@ -53,26 +53,25 @@ type Product = {
   category: Category;
   desc: string;
   price: string;
-  oldPrice?: string;
   year: string;
   materials: string;
   image: string;
   status: "In Stock" | "Pre-Order" | "Limited";
-  badge?: "New" | "Bestseller" | "-20%" | "Hot";
+  badge?: "New" | "Bestseller" | "Studio Pick" | "Hot";
   swatch: string;
   rating: number;
   reviews: number;
 };
 
 const products: Product[] = [
-  { id: "p1", index: "01", name: "Anodized Sorter", category: "Home & Living", desc: "Precision-cut aluminum desk system. Six modular bays, anodized in graphite.", price: "$120", oldPrice: "$150", year: "2024", materials: "Anodized aluminum / cork base", image: product1, status: "In Stock", badge: "-20%", swatch: "bg-cream", rating: 4.8, reviews: 124 },
+  { id: "p1", index: "01", name: "Anodized Sorter", category: "Home & Living", desc: "Precision-cut aluminum desk system. Six modular bays, anodized in graphite.", price: "$120", year: "2024", materials: "Anodized aluminum / cork base", image: product1, status: "In Stock", badge: "Studio Pick", swatch: "bg-cream", rating: 4.8, reviews: 124 },
   { id: "p2", index: "02", name: "C-Series Input", category: "Tech", desc: "Transparent polycarbonate keyboard with hot-swappable switches.", price: "$240", year: "2024", materials: "Polycarbonate / PBT keycaps", image: product2, status: "Limited", badge: "Hot", swatch: "bg-mint/40", rating: 4.9, reviews: 312 },
   { id: "p3", index: "03", name: "Kinetic Vol. 1", category: "Home & Living", desc: "280 pages of visual research on motion, type, and the digital sublime.", price: "$65", year: "2024", materials: "Munken Pure 120gsm / 280pp", image: product3, status: "In Stock", badge: "Bestseller", swatch: "bg-pop/30", rating: 4.7, reviews: 89 },
   { id: "p4", index: "04", name: "Arc Task Lamp", category: "Home & Living", desc: "Sculptural ceramic base with a brushed brass arm. Warm 2700K diffused beam.", price: "$320", year: "2024", materials: "Glazed ceramic / solid brass", image: product4, status: "Pre-Order", badge: "New", swatch: "bg-brand-soft", rating: 4.6, reviews: 41 },
-  { id: "p5", index: "05", name: "Field Chronograph", category: "Fashion", desc: "Brushed titanium analog with a sandblasted dial. NATO-spec woven nylon strap.", price: "$480", oldPrice: "$540", year: "2024", materials: "Grade 2 titanium / nylon", image: product5, status: "Limited", badge: "-20%", swatch: "bg-cream", rating: 4.9, reviews: 207 },
+  { id: "p5", index: "05", name: "Field Chronograph", category: "Fashion", desc: "Brushed titanium analog with a sandblasted dial. NATO-spec woven nylon strap.", price: "$480", year: "2024", materials: "Grade 2 titanium / nylon", image: product5, status: "Limited", badge: "Studio Pick", swatch: "bg-cream", rating: 4.9, reviews: 207 },
   { id: "p6", index: "06", name: "Monolith Speaker", category: "Tech", desc: "Modular two-way active monitor. Aluminum enclosure milled from a single block.", price: "$890", year: "2025", materials: "Milled aluminum / silk dome", image: product6, status: "Pre-Order", badge: "New", swatch: "bg-mint/40", rating: 5.0, reviews: 18 },
   { id: "p7", index: "07", name: "Amber Glow Serum", category: "Beauty", desc: "Cold-pressed botanical serum in apothecary-grade amber glass with a brass dropper.", price: "$58", year: "2024", materials: "Amber glass / brass / 30ml", image: product7, status: "In Stock", badge: "New", swatch: "bg-pop/30", rating: 4.8, reviews: 96 },
-  { id: "p8", index: "08", name: "Cast Iron Bell 16kg", category: "Gym", desc: "Single-cast iron kettlebell with hand-stitched leather grip. Powder-coated matte black.", price: "$145", oldPrice: "$170", year: "2024", materials: "Cast iron / vegetable-tanned leather", image: product8, status: "In Stock", badge: "Bestseller", swatch: "bg-brand-soft", rating: 4.9, reviews: 211 },
+  { id: "p8", index: "08", name: "Cast Iron Bell 16kg", category: "Gym", desc: "Single-cast iron kettlebell with hand-stitched leather grip. Powder-coated matte black.", price: "$145", year: "2024", materials: "Cast iron / vegetable-tanned leather", image: product8, status: "In Stock", badge: "Bestseller", swatch: "bg-brand-soft", rating: 4.9, reviews: 211 },
 ];
 
 
@@ -286,7 +285,7 @@ function StarRow({ rating }: { rating: number }) {
 const badgeStyles: Record<NonNullable<Product["badge"]>, string> = {
   New: "bg-mint text-ink",
   Bestseller: "bg-pop text-pop-foreground",
-  "-20%": "bg-brand text-brand-foreground",
+  "Studio Pick": "bg-brand text-brand-foreground",
   Hot: "bg-ink text-cream",
 };
 
