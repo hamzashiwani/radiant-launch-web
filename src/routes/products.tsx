@@ -494,6 +494,68 @@ function ProductsPage() {
           </Link>
         </div>
       </section>
+
+      {/* Quick view modal */}
+      {quickView && (
+        <div
+          className="fixed inset-0 z-[60] grid place-items-center p-4 sm:p-6 bg-ink/60 backdrop-blur-sm animate-fade-in"
+          onClick={() => setQuickView(null)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-3xl bg-background rounded-2xl border border-foreground/10 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.5)] overflow-hidden grid sm:grid-cols-2 animate-scale-in"
+          >
+            <button
+              onClick={() => setQuickView(null)}
+              aria-label="Close"
+              className="absolute top-3 right-3 z-10 size-8 grid place-items-center rounded-full bg-background/90 backdrop-blur border border-foreground/10 hover:scale-110 transition-transform"
+            >
+              ✕
+            </button>
+            <div className={`relative aspect-square sm:aspect-auto ${quickView.swatch}`}>
+              <img src={quickView.image} alt={quickView.name} className="absolute inset-0 w-full h-full object-cover mix-blend-multiply" />
+              <span className="absolute top-3 left-3 text-[10px] font-bold tracking-widest uppercase bg-background/90 backdrop-blur px-2 py-1 rounded-full">
+                {quickView.index} · {quickView.category}
+              </span>
+            </div>
+            <div className="p-6 sm:p-8 flex flex-col gap-4">
+              <div>
+                <div className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground">{quickView.status} · {quickView.year}</div>
+                <h3 className="font-serif text-3xl sm:text-4xl leading-tight mt-2">{quickView.name}</h3>
+                <div className="flex items-center gap-3 mt-2">
+                  <span className="font-mono text-xl font-semibold tabular-nums">{quickView.price}</span>
+                  <span className="text-[11px] text-muted-foreground flex items-center gap-1">
+                    <span className="text-pop">★</span>
+                    <span className="font-medium text-foreground tabular-nums">{quickView.rating.toFixed(1)}</span>
+                    <span>({quickView.reviews} reviews)</span>
+                  </span>
+                </div>
+              </div>
+              <p className="text-sm text-foreground/70 leading-relaxed">{quickView.desc}</p>
+              <div className="rounded-lg bg-foreground/[0.04] px-3 py-2 text-[11px] uppercase tracking-widest text-muted-foreground">
+                Materials · <span className="text-foreground normal-case tracking-normal">{quickView.materials}</span>
+              </div>
+              <div className="mt-auto flex gap-2">
+                <button
+                  onClick={() => { addToBag(quickView.id); setQuickView(null); }}
+                  className="flex-1 bg-ink text-cream rounded-full py-3 text-xs font-bold uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-transform"
+                >
+                  + Add to bag · {quickView.price}
+                </button>
+                <button
+                  onClick={() => toggleSaved(quickView.id)}
+                  className={`size-12 grid place-items-center rounded-full border transition-colors ${
+                    saved.has(quickView.id) ? "border-pop text-pop bg-pop/10" : "border-foreground/15 hover:border-foreground/40"
+                  }`}
+                  aria-label="Save"
+                >
+                  {saved.has(quickView.id) ? "♥" : "♡"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
