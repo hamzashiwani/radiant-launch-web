@@ -1043,7 +1043,7 @@ function BlogSectionInner() {
                         {a.index}
                       </span>
                       <h3
-                        className="col-span-10 md:col-span-6 text-2xl md:text-3xl font-medium tracking-tight transition-transform duration-500 ease-out"
+                        className="col-span-10 md:col-span-6 text-lg sm:text-2xl md:text-3xl font-medium tracking-tight transition-transform duration-500 ease-out"
                         style={{ transform: active ? "translateX(8px)" : "translateX(0)" }}
                       >
                         <span className="bg-gradient-to-r from-brand to-brand bg-no-repeat bg-[length:0%_2px] bg-[position:0_100%] group-hover:bg-[length:100%_2px] transition-[background-size] duration-500">
@@ -1056,6 +1056,11 @@ function BlogSectionInner() {
                       <span className="hidden md:block md:col-span-2 md:text-right font-mono text-[11px] text-muted-foreground tabular-nums">
                         {a.readTime}
                       </span>
+                    </div>
+                    <div className="md:hidden mt-1 flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
+                      <span>{a.tag}</span>
+                      <span>·</span>
+                      <span className="tabular-nums">{a.readTime}</span>
                     </div>
                   </a>
                   {/* Hover progress bar */}
@@ -1200,14 +1205,14 @@ function Index() {
     <main className="bg-background text-foreground selection:bg-foreground/10">
       {/* Top announcement marquee — site-wide creative touch */}
       <div className="relative z-50 bg-ink text-cream py-2 overflow-hidden border-b border-cream/10">
-        <div className="flex gap-10 whitespace-nowrap animate-[ticker_30s_linear_infinite] text-[11px] font-mono uppercase tracking-[0.25em]">
+        <div className="flex gap-8 sm:gap-10 whitespace-nowrap animate-[ticker_30s_linear_infinite] text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.25em]">
           {Array.from({ length: 3 }).map((_, k) => (
-            <span key={k} className="flex gap-10 items-center shrink-0">
-              <span>✦ Free shipping over $200</span>
+            <span key={k} className="flex gap-8 sm:gap-10 items-center shrink-0">
+              <span>✦ New drop · Beauty + Gym now live</span>
               <span className="text-pop">/</span>
-              <span>New drop · Beauty + Gym now live</span>
+              <span>Studio crafted · made in small batches</span>
               <span className="text-pop">/</span>
-              <span>Use code <span className="text-pop">KINETIC20</span> for 20% off</span>
+              <span>Trending · Arc Task Lamp · C-Series Input</span>
               <span className="text-pop">/</span>
               <span>Lifetime repair on all apparatus</span>
               <span className="text-pop">/</span>
@@ -1216,14 +1221,14 @@ function Index() {
         </div>
       </div>
 
-      <nav className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-foreground/5 py-4 px-8 flex justify-between items-center">
-        <span className="font-semibold tracking-tight text-base">STUDIO_KINETIC</span>
+      <nav className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-foreground/5 py-3 sm:py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center gap-3">
+        <span className="font-semibold tracking-tight text-sm sm:text-base">STUDIO_KINETIC</span>
         <div className="hidden md:flex gap-8">
           <a href="#intel" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">Journal</a>
           <a href="#work" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">Shop</a>
           <a href="#studio" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">Studio</a>
         </div>
-        <a href="#work" className="hidden md:inline-flex items-center gap-2 bg-ink text-cream rounded-full px-4 py-2 text-xs font-bold uppercase tracking-widest hover:scale-[1.04] transition-transform">
+        <a href="#work" className="inline-flex items-center gap-2 bg-ink text-cream rounded-full px-3.5 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-bold uppercase tracking-widest hover:scale-[1.04] transition-transform">
           Shop drop →
         </a>
       </nav>
@@ -1235,11 +1240,11 @@ function Index() {
       <ProductShowcase />
 
       <footer id="studio" className="border-t border-border">
-        <section className="py-20 px-8 border-b border-border">
-          <div className="max-w-screen-xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
+        <section className="py-14 sm:py-20 px-4 sm:px-6 lg:px-8 border-b border-border">
+          <div className="max-w-screen-xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 sm:gap-12 items-end">
             <div className="lg:col-span-6">
               <p className="text-xs font-medium uppercase tracking-[0.25em] text-muted-foreground mb-4">Dispatch — Monthly</p>
-              <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-balance max-w-[18ch]">
+              <h2 className="text-[2rem] sm:text-4xl md:text-5xl font-semibold tracking-tight text-balance max-w-[18ch]">
                 Field notes from the studio, delivered.
               </h2>
             </div>
@@ -1248,10 +1253,10 @@ function Index() {
             </div>
           </div>
         </section>
-        <div className="py-12 px-8">
-          <div className="max-w-screen-xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-            <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest">© 2024 Studio Kinetic. All rights reserved.</p>
-            <div className="flex gap-8">
+        <div className="py-10 sm:py-12 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-screen-xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 sm:gap-8 text-center md:text-left">
+            <p className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-widest">© 2024 Studio Kinetic. All rights reserved.</p>
+            <div className="flex gap-6 sm:gap-8">
               <a href="#" className="text-xs font-medium uppercase tracking-widest">Instagram</a>
               <a href="#" className="text-xs font-medium uppercase tracking-widest">LinkedIn</a>
               <a href="#" className="text-xs font-medium uppercase tracking-widest">Contact</a>
