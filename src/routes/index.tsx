@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type FormEvent, type MouseEvent as ReactMouseEvent, type ReactNode, type RefObject } from "react";
 import hero1 from "@/assets/hero-1.jpg";
 import hero2 from "@/assets/hero-2.jpg";
@@ -590,10 +590,10 @@ function ProductShowcase() {
         )}
 
         <div className="mt-10 sm:mt-12 flex justify-center">
-          <a href="#" data-cursor="Shop all" className="inline-flex items-center gap-3 bg-ink text-cream rounded-full pl-2 pr-4 sm:pr-5 py-2 text-[11px] sm:text-xs font-bold uppercase tracking-widest hover:scale-[1.03] transition-transform">
+          <Link to="/products" data-cursor="Shop all" className="inline-flex items-center gap-3 bg-ink text-cream rounded-full pl-2 pr-4 sm:pr-5 py-2 text-[11px] sm:text-xs font-bold uppercase tracking-widest hover:scale-[1.03] transition-transform">
             <span className="size-7 rounded-full bg-pop text-pop-foreground grid place-items-center">→</span>
             Shop the full catalogue
-          </a>
+          </Link>
         </div>
       </div>
     </section>
@@ -1170,12 +1170,12 @@ function Index() {
         <span className="font-semibold tracking-tight text-sm sm:text-base">STUDIO_KINETIC</span>
          <div className="hidden md:flex gap-8">
            <a href="#intel" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">Blogs</a>
-           <a href="#work" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">Shop</a>
+           <Link to="/products" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">Shop</Link>
            <a href="#studio" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">Studio</a>
          </div>
-        <a href="#work" className="inline-flex items-center gap-2 bg-ink text-cream rounded-full px-3.5 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-bold uppercase tracking-widest hover:scale-[1.04] transition-transform">
+        <Link to="/products" className="inline-flex items-center gap-2 bg-ink text-cream rounded-full px-3.5 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-bold uppercase tracking-widest hover:scale-[1.04] transition-transform">
           Shop drop →
-        </a>
+        </Link>
       </nav>
 
       <Hero />
