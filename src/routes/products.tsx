@@ -153,6 +153,8 @@ function ProductsPage() {
   const [quickView, setQuickView] = useState<Product | null>(null);
   const [bagPing, setBagPing] = useState(false);
   const [tagsExpanded, setTagsExpanded] = useState(false);
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 8;
 
   const filtered = useMemo(() => {
     let list = category === "All" ? [...products] : products.filter((p) => p.category === category);
@@ -170,6 +172,22 @@ function ProductsPage() {
     }
     return list;
   }, [category, sort, query, tag]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+  const paginated = useMemo(
+    () => filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
+    [filtered, currentPage],
+  );
+  const goToPage = (p: number) => {
+    const next = Math.max(1, Math.min(totalPages, p));
+    setPage(next);
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  const setCategoryAndReset = (c: FilterCategory) => { setCategory(c); setPage(1); };
+  const setTagAndReset = (k: QuickTagKey) => { setTag(k); setPage(1); };
+  const setSortAndReset = (s: SortKey) => { setSort(s); setPage(1); };
+  const setQueryAndReset = (q: string) => { setQuery(q); setPage(1); };
 
   const addToBag = (id: string) => {
     setBag((b) => [...b, id]);
@@ -206,7 +224,8 @@ function ProductsPage() {
         </div>
       </nav>
 
-      {/* Hero */}
+      {/* Hero — only on first page */}
+      {currentPage === 1 && (
       <section className="relative overflow-hidden border-b border-foreground/10">
         <div className="absolute inset-0 -z-10 opacity-60" style={{
           background: "radial-gradient(900px 400px at 80% 20%, color-mix(in oklab, var(--brand) 22%, transparent), transparent), radial-gradient(700px 350px at 10% 90%, color-mix(in oklab, var(--pop) 18%, transparent), transparent)",
@@ -229,7 +248,7 @@ function ProductsPage() {
                 return (
                   <button
                     key={c}
-                    onClick={() => setCategory(c)}
+                    onClick={() => setCategoryAndReset(c)}
                     className={`group relative overflow-hidden rounded-2xl border text-left p-3 sm:p-4 transition-all ${
                       active
                         ? "bg-ink text-cream border-ink shadow-[0_20px_40px_-20px_rgba(0,0,0,0.5)]"
@@ -251,8 +270,10 @@ function ProductsPage() {
           </div>
         </div>
       </section>
+      )}
 
-      {/* Quick-tag bar — collapsed by default, click to expand into a horizontal scroller */}
+      {/* Quick-tag bar — only on first page */}
+      {currentPage === 1 && (
       <div className="border-b border-foreground/10 bg-foreground/[0.02] relative">
         {tagsExpanded && (
           <>
@@ -271,7 +292,7 @@ function ProductsPage() {
                   return (
                     <button
                       key={t.key}
-                      onClick={() => setTag(t.key)}
+                      onClick={() => setTagAndReset(t.key)}
                       className={`shrink-0 inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-medium transition-all ${
                         active
                           ? "bg-ink text-cream border-ink"
@@ -298,7 +319,7 @@ function ProductsPage() {
                   return (
                     <button
                       key={t.key}
-                      onClick={() => setTag(t.key)}
+                      onClick={() => setTagAndReset(t.key)}
                       className={`shrink-0 inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-medium transition-all ${
                         active
                           ? "bg-ink text-cream border-ink"
@@ -321,6 +342,7 @@ function ProductsPage() {
           )}
         </div>
       </div>
+      )}
 
       {/* Toolbar — search & sort */}
       <section className="px-4 sm:px-8 lg:px-12 py-4 border-b border-foreground/10 sticky top-[57px] sm:top-[65px] z-30 bg-background/85 backdrop-blur-md">
@@ -330,7 +352,7 @@ function ProductsPage() {
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">⌕</span>
               <input
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={(e) => setQueryAndReset(e.target.value)}
                 placeholder="Search materials, names, finishes..."
                 className="w-full pl-9 pr-3 py-2 rounded-full bg-foreground/[0.04] border border-foreground/10 text-sm focus:outline-none focus:border-foreground/40 transition-colors"
               />
@@ -340,7 +362,7 @@ function ProductsPage() {
               {sortOptions.map((opt) => (
                 <button
                   key={opt.key}
-                  onClick={() => setSort(opt.key)}
+                  onClick={() => setSortAndReset(opt.key)}
                   className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all ${
                     sort === opt.key
                       ? "bg-foreground text-background"
@@ -355,7 +377,8 @@ function ProductsPage() {
         </div>
       </section>
 
-      {/* Materials marquee */}
+      {/* Materials marquee — only on first page */}
+      {currentPage === 1 && (
       <div className="border-b border-foreground/10 bg-ink text-cream overflow-hidden">
         <div className="flex gap-6 sm:gap-10 py-2.5 whitespace-nowrap animate-[marquee_35s_linear_infinite] text-[11px] uppercase tracking-[0.3em]">
           {Array.from({ length: 4 }).map((_, i) => (
@@ -370,13 +393,14 @@ function ProductsPage() {
           ))}
         </div>
       </div>
+      )}
 
       {/* Grid */}
       <section className="px-4 sm:px-8 lg:px-12 py-8 sm:py-12">
         <div className="max-w-[1400px] mx-auto">
           <div className="flex items-end justify-between mb-6 sm:mb-8 flex-wrap gap-3">
             <div>
-              <div className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground">{category} · {sort.replace("-", " ")}</div>
+              <div className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground">{category} · {sort.replace("-", " ")} · Page {currentPage} of {totalPages}</div>
               <h2 className="font-serif text-2xl sm:text-4xl mt-1 tracking-tight">
                 {filtered.length} {filtered.length === 1 ? "object" : "objects"}
                 <span className="text-foreground/30"> / showing</span>
@@ -391,11 +415,12 @@ function ProductsPage() {
           {filtered.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-3xl font-serif italic text-muted-foreground">Nothing matches.</p>
-              <button onClick={() => { setQuery(""); setCategory("All"); }} className="mt-4 text-sm underline underline-offset-4">Reset filters</button>
+              <button onClick={() => { setQueryAndReset(""); setCategoryAndReset("All"); }} className="mt-4 text-sm underline underline-offset-4">Reset filters</button>
             </div>
           ) : (
+          <>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
-              {filtered.map((p, idx) => (
+              {paginated.map((p, idx) => (
                 <ProductTiltCard key={p.id} className="group relative">
                   <article className="relative bg-card rounded-xl border border-foreground/10 overflow-hidden h-full flex flex-col shadow-[0_1px_0_rgba(0,0,0,0.04)] hover:shadow-[0_24px_48px_-24px_rgba(0,0,0,0.35)] transition-shadow">
                     <button
@@ -464,6 +489,42 @@ function ProductsPage() {
                 </ProductTiltCard>
               ))}
             </div>
+            {totalPages > 1 && (
+              <div className="mt-10 flex items-center justify-center gap-2 flex-wrap">
+                <button
+                  onClick={() => goToPage(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-foreground/15 px-4 py-2 text-[11px] font-bold uppercase tracking-widest hover:border-foreground/40 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  ← Prev
+                </button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
+                  const active = p === currentPage;
+                  return (
+                    <button
+                      key={p}
+                      onClick={() => goToPage(p)}
+                      aria-current={active ? "page" : undefined}
+                      className={`size-10 grid place-items-center rounded-full text-sm font-semibold tabular-nums transition-all ${
+                        active
+                          ? "bg-ink text-cream scale-110 shadow-[0_8px_20px_-8px_rgba(0,0,0,0.4)]"
+                          : "bg-foreground/[0.04] text-foreground/70 hover:bg-foreground/[0.08] hover:text-foreground"
+                      }`}
+                    >
+                      {p}
+                    </button>
+                  );
+                })}
+                <button
+                  onClick={() => goToPage(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-ink text-cream px-4 py-2 text-[11px] font-bold uppercase tracking-widest hover:scale-[1.04] transition-transform disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:scale-100"
+                >
+                  Next →
+                </button>
+              </div>
+            )}
+          </>
           )}
         </div>
       </section>
