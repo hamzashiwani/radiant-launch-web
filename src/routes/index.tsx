@@ -235,12 +235,12 @@ function Hero() {
         </div>
       ))}
 
-      <div className="relative h-full flex flex-col justify-end px-8 pb-16">
+      <div className="relative h-full flex flex-col justify-end px-4 sm:px-8 pb-12 sm:pb-16">
         <div className="max-w-screen-xl mx-auto w-full">
-          <p key={`l-${active}`} className="text-xs font-medium uppercase tracking-[0.2em] mb-3 opacity-70 animate-fade-up">
+          <p key={`l-${active}`} className="text-[10px] sm:text-xs font-medium uppercase tracking-[0.2em] mb-3 opacity-70 animate-fade-up">
             {slides[active].label}
           </p>
-          <h1 key={`t-${active}`} className="text-4xl md:text-6xl lg:text-7xl font-semibold tracking-tighter text-balance leading-none mb-6 animate-fade-up">
+          <h1 key={`t-${active}`} className="text-[2.25rem] sm:text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tighter text-balance leading-[1.02] sm:leading-none mb-5 sm:mb-6 animate-fade-up">
             {slides[active].title[0]}
             <br />
             {slides[active].title[1]}
@@ -257,13 +257,13 @@ function Hero() {
         </div>
       </div>
 
-      <div className="absolute bottom-8 right-8 flex gap-2">
+      <div className="absolute bottom-4 sm:bottom-8 right-4 sm:right-8 flex gap-2">
         {slides.map((_, i) => (
           <button
             key={i}
             onClick={() => setActive(i)}
             aria-label={`Go to slide ${i + 1}`}
-            className={`h-1 w-12 transition-colors ${i === active ? "bg-foreground" : "bg-foreground/15 hover:bg-foreground/30"}`}
+            className={`h-1 w-8 sm:w-12 transition-colors ${i === active ? "bg-foreground" : "bg-foreground/15 hover:bg-foreground/30"}`}
           />
         ))}
       </div>
