@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent, type MouseEvent as ReactMouseEvent, type ReactNode } from "react";
 import hero1 from "@/assets/hero-1.jpg";
 import hero2 from "@/assets/hero-2.jpg";
 import hero3 from "@/assets/hero-3.jpg";
@@ -615,7 +615,7 @@ function Tilt3DCard({
   onEnter,
   onLeave,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   index: number;
   onEnter?: () => void;
@@ -623,7 +623,7 @@ function Tilt3DCard({
 }) {
   const ref = useRef<HTMLAnchorElement | null>(null);
 
-  const handleMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleMove = (e: ReactMouseEvent<HTMLAnchorElement>) => {
     const el = ref.current;
     if (!el) return;
     const r = el.getBoundingClientRect();
