@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent, type MouseEvent as ReactMouseEvent, type ReactNode } from "react";
 import hero1 from "@/assets/hero-1.jpg";
 import hero2 from "@/assets/hero-2.jpg";
 import hero3 from "@/assets/hero-3.jpg";
@@ -53,26 +53,25 @@ type Product = {
   category: Category;
   desc: string;
   price: string;
-  oldPrice?: string;
   year: string;
   materials: string;
   image: string;
   status: "In Stock" | "Pre-Order" | "Limited";
-  badge?: "New" | "Bestseller" | "-20%" | "Hot";
+  badge?: "New" | "Bestseller" | "Studio Pick" | "Hot";
   swatch: string;
   rating: number;
   reviews: number;
 };
 
 const products: Product[] = [
-  { id: "p1", index: "01", name: "Anodized Sorter", category: "Home & Living", desc: "Precision-cut aluminum desk system. Six modular bays, anodized in graphite.", price: "$120", oldPrice: "$150", year: "2024", materials: "Anodized aluminum / cork base", image: product1, status: "In Stock", badge: "-20%", swatch: "bg-cream", rating: 4.8, reviews: 124 },
+  { id: "p1", index: "01", name: "Anodized Sorter", category: "Home & Living", desc: "Precision-cut aluminum desk system. Six modular bays, anodized in graphite.", price: "$120", year: "2024", materials: "Anodized aluminum / cork base", image: product1, status: "In Stock", badge: "Studio Pick", swatch: "bg-cream", rating: 4.8, reviews: 124 },
   { id: "p2", index: "02", name: "C-Series Input", category: "Tech", desc: "Transparent polycarbonate keyboard with hot-swappable switches.", price: "$240", year: "2024", materials: "Polycarbonate / PBT keycaps", image: product2, status: "Limited", badge: "Hot", swatch: "bg-mint/40", rating: 4.9, reviews: 312 },
   { id: "p3", index: "03", name: "Kinetic Vol. 1", category: "Home & Living", desc: "280 pages of visual research on motion, type, and the digital sublime.", price: "$65", year: "2024", materials: "Munken Pure 120gsm / 280pp", image: product3, status: "In Stock", badge: "Bestseller", swatch: "bg-pop/30", rating: 4.7, reviews: 89 },
   { id: "p4", index: "04", name: "Arc Task Lamp", category: "Home & Living", desc: "Sculptural ceramic base with a brushed brass arm. Warm 2700K diffused beam.", price: "$320", year: "2024", materials: "Glazed ceramic / solid brass", image: product4, status: "Pre-Order", badge: "New", swatch: "bg-brand-soft", rating: 4.6, reviews: 41 },
-  { id: "p5", index: "05", name: "Field Chronograph", category: "Fashion", desc: "Brushed titanium analog with a sandblasted dial. NATO-spec woven nylon strap.", price: "$480", oldPrice: "$540", year: "2024", materials: "Grade 2 titanium / nylon", image: product5, status: "Limited", badge: "-20%", swatch: "bg-cream", rating: 4.9, reviews: 207 },
+  { id: "p5", index: "05", name: "Field Chronograph", category: "Fashion", desc: "Brushed titanium analog with a sandblasted dial. NATO-spec woven nylon strap.", price: "$480", year: "2024", materials: "Grade 2 titanium / nylon", image: product5, status: "Limited", badge: "Studio Pick", swatch: "bg-cream", rating: 4.9, reviews: 207 },
   { id: "p6", index: "06", name: "Monolith Speaker", category: "Tech", desc: "Modular two-way active monitor. Aluminum enclosure milled from a single block.", price: "$890", year: "2025", materials: "Milled aluminum / silk dome", image: product6, status: "Pre-Order", badge: "New", swatch: "bg-mint/40", rating: 5.0, reviews: 18 },
   { id: "p7", index: "07", name: "Amber Glow Serum", category: "Beauty", desc: "Cold-pressed botanical serum in apothecary-grade amber glass with a brass dropper.", price: "$58", year: "2024", materials: "Amber glass / brass / 30ml", image: product7, status: "In Stock", badge: "New", swatch: "bg-pop/30", rating: 4.8, reviews: 96 },
-  { id: "p8", index: "08", name: "Cast Iron Bell 16kg", category: "Gym", desc: "Single-cast iron kettlebell with hand-stitched leather grip. Powder-coated matte black.", price: "$145", oldPrice: "$170", year: "2024", materials: "Cast iron / vegetable-tanned leather", image: product8, status: "In Stock", badge: "Bestseller", swatch: "bg-brand-soft", rating: 4.9, reviews: 211 },
+  { id: "p8", index: "08", name: "Cast Iron Bell 16kg", category: "Gym", desc: "Single-cast iron kettlebell with hand-stitched leather grip. Powder-coated matte black.", price: "$145", year: "2024", materials: "Cast iron / vegetable-tanned leather", image: product8, status: "In Stock", badge: "Bestseller", swatch: "bg-brand-soft", rating: 4.9, reviews: 211 },
 ];
 
 
@@ -286,7 +285,7 @@ function StarRow({ rating }: { rating: number }) {
 const badgeStyles: Record<NonNullable<Product["badge"]>, string> = {
   New: "bg-mint text-ink",
   Bestseller: "bg-pop text-pop-foreground",
-  "-20%": "bg-brand text-brand-foreground",
+  "Studio Pick": "bg-brand text-brand-foreground",
   Hot: "bg-ink text-cream",
 };
 
@@ -425,38 +424,88 @@ function ProductShowcase() {
           </article>
 
           {/* Marquee promo column */}
-          <aside className="lg:col-span-5 grid grid-rows-2 gap-6">
-            <div className="relative overflow-hidden rounded-3xl bg-mint text-ink p-8 flex flex-col justify-between">
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.25em] mb-2 opacity-70">Limited drop</p>
-                <h4 className="text-2xl font-semibold tracking-tight leading-tight">
-                  Free engraving on any titanium piece this week.
+          {/* Creative side column — Studio Pulse + 3D color palette */}
+          <aside className="lg:col-span-5 grid grid-rows-[1.1fr_1fr] gap-6">
+            {/* 3D stacked color story */}
+            <div className="relative overflow-hidden rounded-3xl bg-cream p-8 flex flex-col justify-between" style={{ perspective: "1200px" }}>
+              <div className="relative z-10">
+                <p className="text-[10px] font-bold uppercase tracking-[0.25em] mb-2 text-brand">This season</p>
+                <h4 className="text-2xl font-semibold tracking-tight leading-tight text-ink max-w-[18ch]">
+                  Six tones, one mood. Built to live together.
                 </h4>
               </div>
-              <button className="self-start mt-4 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest underline underline-offset-4">
-                Shop wear →
-              </button>
-              <span aria-hidden className="absolute -right-6 -bottom-6 text-[140px] font-bold leading-none text-ink/10 select-none">★</span>
+              <div
+                aria-hidden
+                className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-2"
+                style={{ transformStyle: "preserve-3d", transform: "rotateY(-22deg) rotateX(8deg)" }}
+              >
+                {[
+                  { c: "var(--brand)", d: "0ms" },
+                  { c: "var(--pop)", d: "120ms" },
+                  { c: "var(--mint)", d: "240ms" },
+                  { c: "var(--ink)", d: "360ms" },
+                  { c: "var(--brand-soft)", d: "480ms" },
+                ].map((s, i) => (
+                  <div
+                    key={i}
+                    className="w-10 h-32 md:h-40 rounded-2xl shadow-[0_18px_40px_-18px_rgba(0,0,0,0.45)] animate-fade-up"
+                    style={{ background: s.c, transform: `translateZ(${i * 14}px) translateY(${i % 2 ? -6 : 6}px)`, animationDelay: s.d }}
+                  />
+                ))}
+              </div>
+              <div className="relative z-10 mt-6 flex items-center gap-3">
+                <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink/60">Palette · SS-26</span>
+                <span className="h-px flex-1 bg-ink/15" />
+                <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink">5 / 24</span>
+              </div>
             </div>
-            <div className="relative overflow-hidden rounded-3xl bg-ink text-cream p-8 flex flex-col justify-between">
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.25em] mb-2 text-pop">Member offer</p>
-                <h4 className="text-2xl font-semibold tracking-tight leading-tight">
-                  20% off your first order. Code <span className="text-pop">KINETIC20</span>.
-                </h4>
+
+            {/* Live studio pulse */}
+            <div className="relative overflow-hidden rounded-3xl bg-ink text-cream p-7 flex flex-col gap-4">
+              <div className="flex items-center justify-between">
+                <span className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.25em]">
+                  <span className="relative flex size-2">
+                    <span className="absolute inline-flex h-full w-full rounded-full bg-mint opacity-70 animate-ping" />
+                    <span className="relative inline-flex size-2 rounded-full bg-mint" />
+                  </span>
+                  Studio pulse · live
+                </span>
+                <span className="text-[10px] font-mono text-cream/50">{new Date().getFullYear()}</span>
               </div>
-              <div className="overflow-hidden mt-4 -mx-8">
-                <div className="flex gap-6 whitespace-nowrap animate-[ticker_22s_linear_infinite] text-xs font-mono uppercase tracking-widest text-cream/60">
-                  {Array.from({ length: 2 }).map((_, k) => (
-                    <span key={k} className="flex gap-6">
-                      {["Free returns", "Carbon-neutral ship", "Studio crafted", "Lifetime repair"].map((t) => (
-                        <span key={t} className="inline-flex items-center gap-6">
-                          {t} <span className="text-pop">✦</span>
-                        </span>
-                      ))}
+
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { k: "Now browsing", v: "1,284" },
+                  { k: "Bagged today", v: "316" },
+                  { k: "Ships in", v: "24h" },
+                ].map((s) => (
+                  <div key={s.k} className="rounded-xl bg-cream/5 p-2.5">
+                    <p className="text-[9px] font-mono uppercase tracking-widest text-cream/50 leading-tight">{s.k}</p>
+                    <p className="mt-1 text-lg font-semibold tabular-nums text-pop">{s.v}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="rounded-xl bg-cream/5 p-3 flex flex-col gap-1.5 overflow-hidden">
+                {[
+                  { who: "Mira K.", what: "bagged the Arc Task Lamp", when: "12s" },
+                  { who: "Jonas", what: "saved Monolith Speaker", when: "44s" },
+                  { who: "Aiko", what: "bought Amber Glow Serum", when: "1m" },
+                ].map((a, i) => (
+                  <div
+                    key={a.who}
+                    className="flex items-center gap-2.5 text-xs animate-fade-up"
+                    style={{ animationDelay: `${i * 140}ms` }}
+                  >
+                    <span className="size-6 rounded-full bg-gradient-to-br from-brand to-pop grid place-items-center text-[10px] font-bold text-ink">
+                      {a.who[0]}
                     </span>
-                  ))}
-                </div>
+                    <span className="flex-1 truncate text-cream/80">
+                      <span className="text-cream font-semibold">{a.who}</span> {a.what}
+                    </span>
+                    <span className="font-mono text-[9px] text-cream/40">{a.when}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </aside>
@@ -532,9 +581,6 @@ function ProductShowcase() {
                   <h3 className="text-sm font-semibold tracking-tight truncate">{p.name}</h3>
                   <div className="mt-2 flex items-baseline gap-1.5">
                     <span className="text-sm font-semibold">{p.price}</span>
-                    {p.oldPrice ? (
-                      <span className="text-[10px] text-muted-foreground line-through">{p.oldPrice}</span>
-                    ) : null}
                     <span className="ml-auto text-[9px] font-mono uppercase tracking-widest text-muted-foreground">{p.status}</span>
                   </div>
                 </div>
@@ -560,6 +606,61 @@ function ProductShowcase() {
 
 function BlogSection() {
   return <BlogSectionInner />;
+}
+
+function Tilt3DCard({
+  children,
+  className,
+  index,
+  onEnter,
+  onLeave,
+}: {
+  children: ReactNode;
+  className?: string;
+  index: number;
+  onEnter?: () => void;
+  onLeave?: () => void;
+}) {
+  const ref = useRef<HTMLAnchorElement | null>(null);
+
+  const handleMove = (e: ReactMouseEvent<HTMLAnchorElement>) => {
+    const el = ref.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width;
+    const y = (e.clientY - r.top) / r.height;
+    const rx = (0.5 - y) * 14;
+    const ry = (x - 0.5) * 18;
+    el.style.setProperty("--mx", `${x * 100}%`);
+    el.style.setProperty("--my", `${y * 100}%`);
+    el.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-6px) scale(1.02)`;
+  };
+
+  const handleLeave = () => {
+    const el = ref.current;
+    if (el) el.style.transform = "perspective(900px) rotateX(0) rotateY(0) translateY(0) scale(1)";
+    onLeave?.();
+  };
+
+  return (
+    <a
+      ref={ref}
+      href="#"
+      data-cursor="Read"
+      onMouseEnter={onEnter}
+      onMouseMove={handleMove}
+      onMouseLeave={handleLeave}
+      className={className}
+      style={{
+        transformStyle: "preserve-3d",
+        transition: "transform 500ms cubic-bezier(0.19,1,0.22,1)",
+        animation: `fade-in-up 0.7s cubic-bezier(0.19,1,0.22,1) ${index * 80}ms both`,
+        willChange: "transform",
+      }}
+    >
+      {children}
+    </a>
+  );
 }
 
 const accentClasses: Record<InteractiveCard["accent"], { bg: string; chip: string; ring: string; halo: string }> = {
@@ -605,14 +706,12 @@ function InteractiveBlogCards({
           const isHover = hoverId === c.id;
           const isSaved = saved.includes(c.id);
           return (
-            <a
+            <Tilt3DCard
               key={c.id}
-              href="#"
-              data-cursor="Read"
-              onMouseEnter={() => onHover(c.id)}
-              onMouseLeave={() => onHover(null)}
-              className={`group relative overflow-hidden rounded-3xl ring-1 ${a.ring} ring-inset ${a.bg} aspect-[3/4] flex flex-col justify-between p-5 transition-transform duration-500 ease-out hover:-translate-y-1`}
-              style={{ animation: `fade-in-up 0.7s cubic-bezier(0.19,1,0.22,1) ${i * 80}ms both` }}
+              index={i}
+              className={`group relative overflow-hidden rounded-3xl ring-1 ${a.ring} ring-inset ${a.bg} aspect-[3/4] flex flex-col justify-between p-5`}
+              onEnter={() => onHover(c.id)}
+              onLeave={() => onHover(null)}
             >
               {/* Background image revealed on hover */}
               <div
@@ -630,7 +729,7 @@ function InteractiveBlogCards({
                 style={{ transform: isHover ? "scale(1.4)" : "scale(1)" }}
               />
 
-              <div className="relative flex items-start justify-between">
+              <div className="relative flex items-start justify-between" style={{ transform: "translateZ(40px)" }}>
                 <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest ${a.chip}`}>
                   {c.tag}
                 </span>
@@ -648,7 +747,7 @@ function InteractiveBlogCards({
                 </button>
               </div>
 
-              <div className="relative">
+              <div className="relative" style={{ transform: "translateZ(60px)" }}>
                 <h4 className="text-xl md:text-2xl font-semibold tracking-tight leading-[1.1] text-balance mb-3">
                   {c.title}
                 </h4>
@@ -669,7 +768,13 @@ function InteractiveBlogCards({
                   </span>
                 </div>
               </div>
-            </a>
+              {/* Glossy highlight */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                style={{ background: "radial-gradient(600px circle at var(--mx,50%) var(--my,0%), rgba(255,255,255,0.18), transparent 40%)" }}
+              />
+            </Tilt3DCard>
           );
         })}
       </div>
