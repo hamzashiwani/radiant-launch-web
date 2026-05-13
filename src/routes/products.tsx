@@ -377,7 +377,8 @@ function ProductsPage() {
         </div>
       </section>
 
-      {/* Materials marquee */}
+      {/* Materials marquee — only on first page */}
+      {currentPage === 1 && (
       <div className="border-b border-foreground/10 bg-ink text-cream overflow-hidden">
         <div className="flex gap-6 sm:gap-10 py-2.5 whitespace-nowrap animate-[marquee_35s_linear_infinite] text-[11px] uppercase tracking-[0.3em]">
           {Array.from({ length: 4 }).map((_, i) => (
@@ -392,13 +393,14 @@ function ProductsPage() {
           ))}
         </div>
       </div>
+      )}
 
       {/* Grid */}
       <section className="px-4 sm:px-8 lg:px-12 py-8 sm:py-12">
         <div className="max-w-[1400px] mx-auto">
           <div className="flex items-end justify-between mb-6 sm:mb-8 flex-wrap gap-3">
             <div>
-              <div className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground">{category} · {sort.replace("-", " ")}</div>
+              <div className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground">{category} · {sort.replace("-", " ")} · Page {currentPage} of {totalPages}</div>
               <h2 className="font-serif text-2xl sm:text-4xl mt-1 tracking-tight">
                 {filtered.length} {filtered.length === 1 ? "object" : "objects"}
                 <span className="text-foreground/30"> / showing</span>
@@ -413,11 +415,12 @@ function ProductsPage() {
           {filtered.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-3xl font-serif italic text-muted-foreground">Nothing matches.</p>
-              <button onClick={() => { setQuery(""); setCategory("All"); }} className="mt-4 text-sm underline underline-offset-4">Reset filters</button>
+              <button onClick={() => { setQueryAndReset(""); setCategoryAndReset("All"); }} className="mt-4 text-sm underline underline-offset-4">Reset filters</button>
             </div>
           ) : (
+          <>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
-              {filtered.map((p, idx) => (
+              {paginated.map((p, idx) => (
                 <ProductTiltCard key={p.id} className="group relative">
                   <article className="relative bg-card rounded-xl border border-foreground/10 overflow-hidden h-full flex flex-col shadow-[0_1px_0_rgba(0,0,0,0.04)] hover:shadow-[0_24px_48px_-24px_rgba(0,0,0,0.35)] transition-shadow">
                     <button
@@ -486,6 +489,42 @@ function ProductsPage() {
                 </ProductTiltCard>
               ))}
             </div>
+            {totalPages > 1 && (
+              <div className="mt-10 flex items-center justify-center gap-2 flex-wrap">
+                <button
+                  onClick={() => goToPage(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-foreground/15 px-4 py-2 text-[11px] font-bold uppercase tracking-widest hover:border-foreground/40 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  ← Prev
+                </button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
+                  const active = p === currentPage;
+                  return (
+                    <button
+                      key={p}
+                      onClick={() => goToPage(p)}
+                      aria-current={active ? "page" : undefined}
+                      className={`size-10 grid place-items-center rounded-full text-sm font-semibold tabular-nums transition-all ${
+                        active
+                          ? "bg-ink text-cream scale-110 shadow-[0_8px_20px_-8px_rgba(0,0,0,0.4)]"
+                          : "bg-foreground/[0.04] text-foreground/70 hover:bg-foreground/[0.08] hover:text-foreground"
+                      }`}
+                    >
+                      {p}
+                    </button>
+                  );
+                })}
+                <button
+                  onClick={() => goToPage(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-ink text-cream px-4 py-2 text-[11px] font-bold uppercase tracking-widest hover:scale-[1.04] transition-transform disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:scale-100"
+                >
+                  Next →
+                </button>
+              </div>
+            )}
+          </>
           )}
         </div>
       </section>
