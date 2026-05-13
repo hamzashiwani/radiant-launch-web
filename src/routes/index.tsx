@@ -721,100 +721,175 @@ function InteractiveBlogCards({
   hoverId: string | null;
   onHover: (id: string | null) => void;
 }) {
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
+  const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
+
+  useEffect(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+
+    const update = () => {
+      const sRect = scroller.getBoundingClientRect();
+      const center = sRect.left + sRect.width / 2;
+      itemRefs.current.forEach((el) => {
+        if (!el) return;
+        const r = el.getBoundingClientRect();
+        const itemCenter = r.left + r.width / 2;
+        // Distance from viewport-center of scroller, normalised to half-width
+        const dist = (itemCenter - center) / (sRect.width / 2);
+        const clamped = Math.max(-1.2, Math.min(1.2, dist));
+        const rotateY = clamped * -28;
+        const scale = 1 - Math.min(0.18, Math.abs(clamped) * 0.18);
+        const translateZ = -Math.abs(clamped) * 80;
+        const opacity = 1 - Math.min(0.45, Math.abs(clamped) * 0.45);
+        el.style.transform = `translateZ(${translateZ}px) rotateY(${rotateY}deg) scale(${scale})`;
+        el.style.opacity = String(opacity);
+        el.style.zIndex = String(100 - Math.round(Math.abs(clamped) * 100));
+      });
+    };
+
+    update();
+    scroller.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      scroller.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, [cards.length]);
+
+  const scrollBy = (dir: 1 | -1) => {
+    const s = scrollerRef.current;
+    if (!s) return;
+    s.scrollBy({ left: dir * (s.clientWidth * 0.7), behavior: "smooth" });
+  };
+
   return (
-    <div className="mb-14">
-      <div className="flex items-end justify-between mb-6">
+    <div className="mb-12 sm:mb-14">
+      <div className="flex items-end justify-between mb-5 sm:mb-6 gap-4">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground flex items-center gap-2">
             <span className="size-1.5 rounded-full bg-pop" />
-            More from the journal · Interactive
+            Journal carousel · Drag, swipe, scroll
           </p>
-          <h3 className="mt-2 text-2xl md:text-3xl font-semibold tracking-tight">
-            Hover, flip, and save what catches your eye.
+          <h3 className="mt-2 text-xl sm:text-2xl md:text-3xl font-semibold tracking-tight">
+            A 3D reel of recent stories.
           </h3>
         </div>
-        <a href="#" data-cursor="Browse" className="hidden md:inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-foreground/70 hover:text-ink transition-colors">
-          All entries <span aria-hidden>→</span>
-        </a>
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            aria-label="Scroll left"
+            onClick={() => scrollBy(-1)}
+            className="size-9 sm:size-10 grid place-items-center rounded-full bg-foreground/5 hover:bg-foreground/10 text-foreground transition-colors"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="size-4"><path d="M15 18l-6-6 6-6" /></svg>
+          </button>
+          <button
+            type="button"
+            aria-label="Scroll right"
+            onClick={() => scrollBy(1)}
+            className="size-9 sm:size-10 grid place-items-center rounded-full bg-ink text-cream hover:bg-brand transition-colors"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="size-4"><path d="M9 6l6 6-6 6" /></svg>
+          </button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        {cards.map((c, i) => {
-          const a = accentClasses[c.accent];
-          const isHover = hoverId === c.id;
-          const isSaved = saved.includes(c.id);
-          return (
-            <Tilt3DCard
-              key={c.id}
-              index={i}
-              className={`group relative overflow-hidden rounded-3xl ring-1 ${a.ring} ring-inset ${a.bg} aspect-[3/4] flex flex-col justify-between p-5`}
-              onEnter={() => onHover(c.id)}
-              onLeave={() => onHover(null)}
-            >
-              {/* Background image revealed on hover */}
+      {/* Horizontal 3D scroller */}
+      <div className="relative -mx-4 sm:-mx-6 lg:-mx-8">
+        {/* Edge fades */}
+        <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-10 sm:w-16 z-10 bg-gradient-to-r from-background to-transparent" />
+        <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-10 sm:w-16 z-10 bg-gradient-to-l from-background to-transparent" />
+
+        <div
+          ref={scrollerRef}
+          className="flex gap-4 sm:gap-5 overflow-x-auto snap-x snap-mandatory scroll-smooth px-4 sm:px-6 lg:px-8 py-6 sm:py-8 scrollbar-none"
+          style={{ perspective: "1400px", perspectiveOrigin: "center", scrollbarWidth: "none" }}
+        >
+          {cards.map((c, i) => {
+            const a = accentClasses[c.accent];
+            const isHover = hoverId === c.id;
+            const isSaved = saved.includes(c.id);
+            return (
               <div
-                aria-hidden
-                className="absolute inset-0 transition-opacity duration-500"
-                style={{ opacity: isHover ? 0.55 : 0 }}
+                key={c.id}
+                ref={(el) => { itemRefs.current[i] = el; }}
+                className="snap-center shrink-0 w-[78%] xs:w-[68%] sm:w-[56%] md:w-[44%] lg:w-[34%] xl:w-[28%]"
+                style={{
+                  transformStyle: "preserve-3d",
+                  transition: "transform 380ms cubic-bezier(0.19,1,0.22,1), opacity 380ms ease",
+                  willChange: "transform, opacity",
+                }}
               >
-                <img src={c.image} alt="" className="w-full h-full object-cover" loading="lazy" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-              </div>
-              {/* Halo blob */}
-              <div
-                aria-hidden
-                className={`absolute -bottom-16 -right-16 size-48 rounded-full blur-3xl ${a.halo} transition-transform duration-700`}
-                style={{ transform: isHover ? "scale(1.4)" : "scale(1)" }}
-              />
-
-              <div className="relative flex items-start justify-between" style={{ transform: "translateZ(40px)" }}>
-                <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest ${a.chip}`}>
-                  {c.tag}
-                </span>
-                <button
-                  type="button"
-                  onClick={(e) => { e.preventDefault(); onToggleSave(c.id); }}
-                  aria-label={isSaved ? "Unsave" : "Save"}
-                  className={`size-8 grid place-items-center rounded-full transition-all ${
-                    isSaved ? "bg-cream text-ink scale-110" : "bg-black/15 text-current hover:bg-black/25"
-                  }`}
+                <a
+                  href="#"
+                  data-cursor="Read"
+                  onMouseEnter={() => onHover(c.id)}
+                  onMouseLeave={() => onHover(null)}
+                  className={`group relative block overflow-hidden rounded-3xl ring-1 ${a.ring} ring-inset ${a.bg} aspect-[3/4] p-5 sm:p-6`}
+                  style={{ boxShadow: "0 30px 60px -30px rgba(0,0,0,0.45)" }}
                 >
-                  <svg viewBox="0 0 24 24" fill={isSaved ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" className="size-3.5">
-                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-                  </svg>
-                </button>
-              </div>
-
-              <div className="relative" style={{ transform: "translateZ(60px)" }}>
-                <h4 className="text-xl md:text-2xl font-semibold tracking-tight leading-[1.1] text-balance mb-3">
-                  {c.title}
-                </h4>
-                <p
-                  className="text-sm text-pretty leading-snug opacity-80 transition-all duration-500 overflow-hidden"
-                  style={{ maxHeight: isHover ? "120px" : "0px", opacity: isHover ? 0.9 : 0 }}
-                >
-                  {c.excerpt}
-                </p>
-                <div className="mt-3 flex items-center justify-between text-[10px] font-mono uppercase tracking-[0.2em] opacity-70">
-                  <span>{c.meta}</span>
-                  <span
+                  {/* Background image revealed on hover */}
+                  <div
                     aria-hidden
-                    className="inline-flex items-center gap-1 transition-transform duration-500"
-                    style={{ transform: isHover ? "translateX(4px)" : "translateX(0)" }}
+                    className="absolute inset-0 transition-opacity duration-500"
+                    style={{ opacity: isHover ? 0.55 : 0 }}
                   >
-                    Read →
-                  </span>
-                </div>
+                    <img src={c.image} alt="" className="w-full h-full object-cover" loading="lazy" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                  </div>
+                  {/* Halo blob */}
+                  <div
+                    aria-hidden
+                    className={`absolute -bottom-16 -right-16 size-48 rounded-full blur-3xl ${a.halo} transition-transform duration-700`}
+                    style={{ transform: isHover ? "scale(1.4)" : "scale(1)" }}
+                  />
+
+                  <div className="relative h-full flex flex-col justify-between">
+                    <div className="flex items-start justify-between">
+                      <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest ${a.chip}`}>
+                        {c.tag}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={(e) => { e.preventDefault(); onToggleSave(c.id); }}
+                        aria-label={isSaved ? "Unsave" : "Save"}
+                        className={`size-8 grid place-items-center rounded-full transition-all ${
+                          isSaved ? "bg-cream text-ink scale-110" : "bg-black/15 text-current hover:bg-black/25"
+                        }`}
+                      >
+                        <svg viewBox="0 0 24 24" fill={isSaved ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" className="size-3.5">
+                          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                        </svg>
+                      </button>
+                    </div>
+
+                    <div>
+                      <span className="block font-mono text-[10px] uppercase tracking-[0.25em] opacity-60 mb-2">
+                        Issue · 0{i + 1}
+                      </span>
+                      <h4 className="text-xl sm:text-2xl md:text-3xl font-semibold tracking-tight leading-[1.05] text-balance mb-3">
+                        {c.title}
+                      </h4>
+                      <p className="text-sm text-pretty leading-snug opacity-85 mb-4 line-clamp-3">
+                        {c.excerpt}
+                      </p>
+                      <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-[0.2em] opacity-75">
+                        <span>{c.meta}</span>
+                        <span aria-hidden className="inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform duration-500">
+                          Read →
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </a>
               </div>
-              {/* Glossy highlight */}
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                style={{ background: "radial-gradient(600px circle at var(--mx,50%) var(--my,0%), rgba(255,255,255,0.18), transparent 40%)" }}
-              />
-            </Tilt3DCard>
-          );
-        })}
+            );
+          })}
+
+          {/* Trailing spacer so last card can center */}
+          <div aria-hidden className="shrink-0 w-2" />
+        </div>
       </div>
     </div>
   );
