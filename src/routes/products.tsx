@@ -155,23 +155,106 @@ function ProductsPage() {
       </nav>
 
       {/* Hero */}
-      <section className="px-4 sm:px-8 lg:px-12 py-10 sm:py-16 border-b border-foreground/10">
-        <div className="max-w-[1400px] mx-auto">
-          <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.25em] text-muted-foreground">
-            <span className="size-2 rounded-full bg-pop animate-pulse" />
-            <span>The Catalogue · {products.length} objects</span>
-          </div>
-          <div className="mt-6 grid lg:grid-cols-[1fr_auto] gap-6 lg:items-end">
-            <h1 className="font-serif text-[2.25rem] sm:text-6xl lg:text-7xl leading-[0.95] tracking-tight">
-              Every object<br />
-              <span className="italic text-brand">we’ve made.</span>
-            </h1>
-            <p className="max-w-md text-sm sm:text-base text-muted-foreground">
-              Filter, sort, and search the full Studio Kinetic catalogue — from milled aluminum tools to cold-pressed botanicals.
-            </p>
+      <section className="relative overflow-hidden border-b border-foreground/10">
+        <div className="absolute inset-0 -z-10 opacity-60" style={{
+          background: "radial-gradient(900px 400px at 80% 20%, color-mix(in oklab, var(--brand) 22%, transparent), transparent), radial-gradient(700px 350px at 10% 90%, color-mix(in oklab, var(--pop) 18%, transparent), transparent)",
+        }} />
+        <div className="px-4 sm:px-8 lg:px-12 pt-10 sm:pt-16 pb-12 sm:pb-20">
+          <div className="max-w-[1400px] mx-auto">
+            <div className="flex flex-wrap items-center gap-3 text-[11px] uppercase tracking-[0.25em] text-muted-foreground">
+              <span className="size-2 rounded-full bg-pop animate-pulse" />
+              <span>The Catalogue · {products.length} objects</span>
+              <span className="text-foreground/30">/</span>
+              <span>Updated weekly</span>
+              <span className="text-foreground/30">/</span>
+              <span>Worldwide shipping</span>
+            </div>
+            <div className="mt-6 grid lg:grid-cols-[1.1fr_0.9fr] gap-8 lg:gap-16 lg:items-end">
+              <h1 className="font-serif text-[2.5rem] sm:text-6xl lg:text-[5.5rem] leading-[0.92] tracking-tight">
+                Every object<br />
+                <span className="italic text-brand">we’ve made,</span><br />
+                <span className="text-foreground/40">in one place.</span>
+              </h1>
+              <div className="flex flex-col gap-5">
+                <p className="text-sm sm:text-base text-foreground/70 leading-relaxed">
+                  Filter, sort, and search the full Studio Kinetic catalogue — from milled aluminum tools to cold-pressed botanicals. Built in small batches, finished by hand, photographed in our Brooklyn loft.
+                </p>
+                <div className="grid grid-cols-3 gap-3">
+                  {[
+                    { k: products.length, l: "Objects" },
+                    { k: 5, l: "Categories" },
+                    { k: "24h", l: "Avg. ship" },
+                  ].map((s) => (
+                    <div key={s.l} className="rounded-2xl bg-background/60 backdrop-blur border border-foreground/10 px-3 py-3">
+                      <div className="font-serif text-2xl sm:text-3xl tabular-nums">{s.k}</div>
+                      <div className="text-[10px] uppercase tracking-widest text-muted-foreground mt-0.5">{s.l}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Primary category feature chips */}
+            <div className="mt-10 sm:mt-14 grid grid-cols-3 gap-2 sm:gap-4">
+              {primaryCategories.map((c) => {
+                const count = c === "All" ? products.length : products.filter((p) => p.category === c).length;
+                const active = c === category;
+                return (
+                  <button
+                    key={c}
+                    onClick={() => setCategory(c)}
+                    className={`group relative overflow-hidden rounded-2xl border text-left p-4 sm:p-5 transition-all ${
+                      active
+                        ? "bg-ink text-cream border-ink shadow-[0_20px_40px_-20px_rgba(0,0,0,0.5)]"
+                        : "bg-card border-foreground/10 hover:border-foreground/40 hover:-translate-y-0.5"
+                    }`}
+                  >
+                    <div className="flex items-start justify-between">
+                      <span className={`text-2xl sm:text-3xl leading-none ${active ? "text-pop" : "text-foreground/60"}`}>{categoryIcons[c]}</span>
+                      <span className={`text-[10px] tabular-nums uppercase tracking-widest ${active ? "text-cream/60" : "text-muted-foreground"}`}>{String(count).padStart(2, "0")}</span>
+                    </div>
+                    <div className="mt-6 sm:mt-10 font-serif text-lg sm:text-2xl tracking-tight">{c}</div>
+                    <div className={`text-[10px] uppercase tracking-widest mt-1 ${active ? "text-cream/60" : "text-muted-foreground"}`}>
+                      {active ? "Now showing" : "Tap to filter"}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
       </section>
+
+      {/* Secondary categories bar */}
+      <div className="border-b border-foreground/10 bg-foreground/[0.02]">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-8 lg:px-12 py-3 flex items-center gap-3 overflow-x-auto">
+          <span className="text-[10px] uppercase tracking-widest text-muted-foreground shrink-0">Also</span>
+          {secondaryCategories.map((c) => {
+            const count = products.filter((p) => p.category === c).length;
+            const active = c === category;
+            return (
+              <button
+                key={c}
+                onClick={() => setCategory(c)}
+                className={`shrink-0 inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-medium transition-all ${
+                  active
+                    ? "bg-ink text-cream border-ink"
+                    : "bg-background text-foreground/70 border-foreground/15 hover:border-foreground/40 hover:text-foreground"
+                }`}
+              >
+                <span className="text-xs">{categoryIcons[c]}</span>
+                {c}
+                <span className={`text-[10px] tabular-nums ${active ? "text-cream/60" : "text-muted-foreground"}`}>{count}</span>
+              </button>
+            );
+          })}
+          {(category !== "All" || query) && (
+            <button onClick={() => { setCategory("All"); setQuery(""); }} className="ml-auto shrink-0 text-[10px] uppercase tracking-widest text-foreground/60 hover:text-foreground underline underline-offset-4">
+              Reset
+            </button>
+          )}
+        </div>
+      </div>
 
       {/* Toolbar */}
       <section className="px-4 sm:px-8 lg:px-12 py-6 border-b border-foreground/10 sticky top-[57px] sm:top-[65px] z-30 bg-background/85 backdrop-blur-md">
