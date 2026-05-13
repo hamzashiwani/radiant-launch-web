@@ -230,18 +230,6 @@ function ProductsPage() {
                 <p className="text-sm sm:text-base text-foreground/70 leading-relaxed">
                   Filter, sort, and search the full Studio Kinetic catalogue — from milled aluminum tools to cold-pressed botanicals. Built in small batches, finished by hand, photographed in our Brooklyn loft.
                 </p>
-                <div className="grid grid-cols-3 gap-3">
-                  {[
-                    { k: products.length, l: "Objects" },
-                    { k: 5, l: "Categories" },
-                    { k: "24h", l: "Avg. ship" },
-                  ].map((s) => (
-                    <div key={s.l} className="rounded-2xl bg-background/60 backdrop-blur border border-foreground/10 px-3 py-3">
-                      <div className="font-serif text-2xl sm:text-3xl tabular-nums">{s.k}</div>
-                      <div className="text-[10px] uppercase tracking-widest text-muted-foreground mt-0.5">{s.l}</div>
-                    </div>
-                  ))}
-                </div>
               </div>
             </div>
 
@@ -444,24 +432,6 @@ function ProductsPage() {
               ))}
             </div>
           )}
-        </div>
-      </section>
-
-      {/* The promise band */}
-      <section className="px-4 sm:px-8 lg:px-12 py-12 sm:py-16 border-b border-foreground/10">
-        <div className="max-w-[1400px] mx-auto grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {[
-            { i: "✺", t: "Lifetime repair", d: "We fix anything we make. Send it back, we’ll bring it home." },
-            { i: "◐", t: "Made in small batches", d: "No mass-production. Every drop is hand-numbered and limited." },
-            { i: "▲", t: "Carbon-neutral ship", d: "Offset on every order. Recycled mailers, soy-based inks." },
-            { i: "✦", t: "30-day try at home", d: "Live with it for a month. Not for you? We pay return shipping." },
-          ].map((b) => (
-            <div key={b.t} className="rounded-2xl border border-foreground/10 p-5 hover:border-foreground/30 hover:-translate-y-0.5 transition-all bg-card">
-              <div className="text-3xl text-brand">{b.i}</div>
-              <div className="font-serif text-lg mt-3">{b.t}</div>
-              <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">{b.d}</p>
-            </div>
-          ))}
         </div>
       </section>
 
