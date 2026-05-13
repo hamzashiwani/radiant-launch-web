@@ -377,7 +377,12 @@ function ProductsPage() {
               {filtered.map((p, idx) => (
                 <ProductTiltCard key={p.id} className="group relative">
                   <article className="relative bg-card rounded-xl border border-foreground/10 overflow-hidden h-full flex flex-col shadow-[0_1px_0_rgba(0,0,0,0.04)] hover:shadow-[0_24px_48px_-24px_rgba(0,0,0,0.35)] transition-shadow">
-                    <div className={`relative aspect-square overflow-hidden ${p.swatch}`}>
+                    <button
+                      type="button"
+                      onClick={() => setQuickView(p)}
+                      className={`relative aspect-square overflow-hidden block w-full text-left ${p.swatch}`}
+                      aria-label={`Quick view ${p.name}`}
+                    >
                       <img
                         src={p.image}
                         alt={p.name}
@@ -397,10 +402,22 @@ function ProductsPage() {
                           {p.badge}
                         </span>
                       )}
-                      <button aria-label="Save" className="absolute bottom-2 right-2 size-7 grid place-items-center rounded-full bg-background/90 backdrop-blur text-xs opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110">
-                        ♡
-                      </button>
-                    </div>
+                      <span
+                        role="button"
+                        aria-label="Save"
+                        onClick={(e) => { e.stopPropagation(); toggleSaved(p.id); }}
+                        className={`absolute bottom-2 right-2 size-7 grid place-items-center rounded-full bg-background/90 backdrop-blur text-xs transition-all hover:scale-110 ${
+                          saved.has(p.id) ? "opacity-100 text-pop" : "opacity-0 group-hover:opacity-100"
+                        }`}
+                      >
+                        {saved.has(p.id) ? "♥" : "♡"}
+                      </span>
+                      <span className="absolute inset-x-2 bottom-2 sm:inset-x-3 sm:bottom-3 hidden sm:block translate-y-3 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                        <span className="block w-full text-center text-[10px] font-bold uppercase tracking-widest bg-background/95 backdrop-blur text-foreground py-1.5 rounded-full">
+                          Quick view →
+                        </span>
+                      </span>
+                    </button>
                     <div className="p-3 flex flex-col gap-1.5 flex-1">
                       <div className="flex items-start justify-between gap-2">
                         <h3 className="font-serif text-sm sm:text-base leading-tight line-clamp-1">{p.name}</h3>
@@ -414,8 +431,12 @@ function ProductsPage() {
                           <span>·{p.reviews}</span>
                         </span>
                       </div>
-                      <button data-cursor="Bag it" className="mt-2 inline-flex items-center justify-center gap-1.5 bg-ink text-cream rounded-full py-1.5 text-[10px] font-bold uppercase tracking-widest hover:scale-[1.02] transition-transform">
-                        Bag · {p.status}
+                      <button
+                        onClick={() => addToBag(p.id)}
+                        data-cursor="Bag it"
+                        className="mt-2 inline-flex items-center justify-center gap-1.5 bg-ink text-cream rounded-full py-1.5 text-[10px] font-bold uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-transform"
+                      >
+                        + Bag · {p.price}
                       </button>
                     </div>
                   </article>
@@ -423,34 +444,6 @@ function ProductsPage() {
               ))}
             </div>
           )}
-        </div>
-      </section>
-
-      {/* Editor's spotlight strip */}
-      <section className="px-4 sm:px-8 lg:px-12 py-12 sm:py-16 bg-cream/40 border-y border-foreground/10">
-        <div className="max-w-[1400px] mx-auto grid lg:grid-cols-[1fr_2fr] gap-8 lg:gap-12 items-start">
-          <div>
-            <div className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground">Editor’s pick · No. 04</div>
-            <h2 className="font-serif text-3xl sm:text-5xl mt-2 leading-[0.95]">The pieces<br /><span className="italic text-brand">we keep on our own desks.</span></h2>
-            <p className="mt-4 text-sm text-foreground/70 max-w-md leading-relaxed">A short list of catalogue heroes — chosen by the team, not the algorithm. Each ships in a hand-numbered box with a foil-stamped tag.</p>
-          </div>
-          <div className="grid grid-cols-3 gap-3 sm:gap-4">
-            {[...products].sort((a, b) => b.rating * b.reviews - a.rating * a.reviews).slice(0, 3).map((p, i) => (
-              <article key={p.id} className="group relative bg-card rounded-xl border border-foreground/10 overflow-hidden">
-                <span className="absolute top-2 left-2 z-10 size-7 rounded-full bg-ink text-cream grid place-items-center font-serif text-sm">{i + 1}</span>
-                <div className={`relative aspect-[4/5] ${p.swatch}`}>
-                  <img src={p.image} alt={p.name} loading="lazy" className="absolute inset-0 w-full h-full object-cover mix-blend-multiply group-hover:scale-105 transition-transform duration-700" />
-                </div>
-                <div className="p-2.5">
-                  <div className="font-serif text-sm leading-tight line-clamp-1">{p.name}</div>
-                  <div className="flex items-center justify-between mt-1 text-[10px] text-muted-foreground">
-                    <span>{p.category}</span>
-                    <span className="font-mono text-foreground tabular-nums">{p.price}</span>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
         </div>
       </section>
 
