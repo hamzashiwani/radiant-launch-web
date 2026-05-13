@@ -604,6 +604,48 @@ function BlogSection() {
   return <BlogSectionInner />;
 }
 
+function ProductTiltCard({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  const ref = useRef<HTMLElement | null>(null);
+
+  const handleMove = (e: ReactMouseEvent<HTMLElement>) => {
+    const el = ref.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width;
+    const y = (e.clientY - r.top) / r.height;
+    const rx = (0.5 - y) * 10;
+    const ry = (x - 0.5) * 12;
+    el.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) translateY(-6px) scale(1.02)`;
+  };
+
+  const handleLeave = () => {
+    const el = ref.current;
+    if (el) el.style.transform = "rotateX(0) rotateY(0) translateY(0) scale(1)";
+  };
+
+  return (
+    <article
+      ref={ref as React.RefObject<HTMLElement>}
+      onMouseMove={handleMove}
+      onMouseLeave={handleLeave}
+      className={className}
+      style={{
+        transformStyle: "preserve-3d",
+        transition: "transform 450ms cubic-bezier(0.19,1,0.22,1)",
+        willChange: "transform",
+      }}
+    >
+      {children}
+    </article>
+  );
+}
+
 function Tilt3DCard({
   children,
   className,
