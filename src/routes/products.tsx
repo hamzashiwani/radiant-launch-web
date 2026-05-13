@@ -306,70 +306,143 @@ function ProductsPage() {
       </div>
 
       {/* Grid */}
-      <section className="px-4 sm:px-8 lg:px-12 py-10 sm:py-16">
+      <section className="px-4 sm:px-8 lg:px-12 py-8 sm:py-12">
         <div className="max-w-[1400px] mx-auto">
+          <div className="flex items-end justify-between mb-6 sm:mb-8 flex-wrap gap-3">
+            <div>
+              <div className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground">{category} · {sort.replace("-", " ")}</div>
+              <h2 className="font-serif text-2xl sm:text-4xl mt-1 tracking-tight">
+                {filtered.length} {filtered.length === 1 ? "object" : "objects"}
+                <span className="text-foreground/30"> / showing</span>
+              </h2>
+            </div>
+            <div className="hidden sm:flex items-center gap-2 text-[11px] text-muted-foreground">
+              <span className="size-1.5 rounded-full bg-mint" /> In stock
+              <span className="size-1.5 rounded-full bg-pop ml-3" /> Limited
+              <span className="size-1.5 rounded-full bg-brand ml-3" /> Pre-order
+            </div>
+          </div>
           {filtered.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-3xl font-serif italic text-muted-foreground">Nothing matches.</p>
               <button onClick={() => { setQuery(""); setCategory("All"); }} className="mt-4 text-sm underline underline-offset-4">Reset filters</button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-7">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
               {filtered.map((p, idx) => (
                 <ProductTiltCard key={p.id} className="group relative">
-                  <article className="relative bg-card rounded-2xl border border-foreground/10 overflow-hidden h-full flex flex-col shadow-[0_1px_0_rgba(0,0,0,0.04)] hover:shadow-[0_30px_60px_-30px_rgba(0,0,0,0.35)] transition-shadow">
-                    <div className={`relative aspect-[4/5] overflow-hidden ${p.swatch}`}>
+                  <article className="relative bg-card rounded-xl border border-foreground/10 overflow-hidden h-full flex flex-col shadow-[0_1px_0_rgba(0,0,0,0.04)] hover:shadow-[0_24px_48px_-24px_rgba(0,0,0,0.35)] transition-shadow">
+                    <div className={`relative aspect-square overflow-hidden ${p.swatch}`}>
                       <img
                         src={p.image}
                         alt={p.name}
-                        loading={idx < 4 ? "eager" : "lazy"}
+                        loading={idx < 5 ? "eager" : "lazy"}
                         className="absolute inset-0 w-full h-full object-cover mix-blend-multiply group-hover:scale-105 transition-transform duration-700"
                       />
-                      <div className="absolute top-3 left-3 flex flex-col gap-1.5">
-                        <span className="text-[10px] font-bold tracking-widest uppercase bg-background/90 backdrop-blur px-2 py-1 rounded-full">
-                          {p.index} · {p.category}
+                      <span className="absolute top-2 left-2 text-[9px] font-bold tracking-widest uppercase bg-background/90 backdrop-blur px-1.5 py-0.5 rounded-full">
+                        {p.index}
+                      </span>
+                      {p.badge && (
+                        <span className={`absolute top-2 right-2 text-[9px] font-bold tracking-widest uppercase px-1.5 py-0.5 rounded-full ${
+                          p.badge === "Hot" ? "bg-pop text-pop-foreground" :
+                          p.badge === "New" ? "bg-mint text-ink" :
+                          p.badge === "Bestseller" ? "bg-ink text-cream" :
+                          "bg-brand text-brand-foreground"
+                        }`}>
+                          {p.badge}
                         </span>
-                        {p.badge && (
-                          <span className={`text-[10px] font-bold tracking-widest uppercase px-2 py-1 rounded-full w-max ${
-                            p.badge === "Hot" ? "bg-pop text-pop-foreground" :
-                            p.badge === "New" ? "bg-mint text-ink" :
-                            p.badge === "Bestseller" ? "bg-ink text-cream" :
-                            "bg-brand text-brand-foreground"
-                          }`}>
-                            {p.badge}
-                          </span>
-                        )}
-                      </div>
-                      <div className="absolute top-3 right-3 text-[10px] font-medium bg-background/90 backdrop-blur px-2 py-1 rounded-full">
-                        {p.status}
-                      </div>
+                      )}
+                      <button aria-label="Save" className="absolute bottom-2 right-2 size-7 grid place-items-center rounded-full bg-background/90 backdrop-blur text-xs opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110">
+                        ♡
+                      </button>
                     </div>
-                    <div className="p-4 sm:p-5 flex flex-col gap-3 flex-1">
-                      <div className="flex items-start justify-between gap-3">
-                        <h3 className="font-serif text-lg sm:text-xl leading-tight">{p.name}</h3>
-                        <span className="font-mono text-sm font-semibold tabular-nums">{p.price}</span>
+                    <div className="p-3 flex flex-col gap-1.5 flex-1">
+                      <div className="flex items-start justify-between gap-2">
+                        <h3 className="font-serif text-sm sm:text-base leading-tight line-clamp-1">{p.name}</h3>
+                        <span className="font-mono text-xs font-semibold tabular-nums shrink-0">{p.price}</span>
                       </div>
-                      <p className="text-xs sm:text-[13px] text-muted-foreground leading-relaxed line-clamp-2">{p.desc}</p>
-                      <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
-                        <span className="text-pop">★</span>
-                        <span className="font-medium text-foreground tabular-nums">{p.rating.toFixed(1)}</span>
-                        <span>({p.reviews})</span>
-                        <span className="ml-auto text-[10px] uppercase tracking-widest">{p.year}</span>
+                      <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+                        <span className="uppercase tracking-widest">{p.category}</span>
+                        <span className="flex items-center gap-1">
+                          <span className="text-pop">★</span>
+                          <span className="font-medium text-foreground tabular-nums">{p.rating.toFixed(1)}</span>
+                          <span>·{p.reviews}</span>
+                        </span>
                       </div>
-                      <div className="mt-auto pt-3 border-t border-foreground/10 flex items-center gap-2">
-                        <button data-cursor="Bag it" className="flex-1 inline-flex items-center justify-center gap-2 bg-ink text-cream rounded-full py-2 text-[11px] font-bold uppercase tracking-widest hover:scale-[1.02] transition-transform">
-                          Bag · {p.price}
-                        </button>
-                        <button aria-label="Save" className="size-9 grid place-items-center rounded-full border border-foreground/15 hover:border-foreground/40 transition-colors">
-                          ♡
-                        </button>
-                      </div>
+                      <button data-cursor="Bag it" className="mt-2 inline-flex items-center justify-center gap-1.5 bg-ink text-cream rounded-full py-1.5 text-[10px] font-bold uppercase tracking-widest hover:scale-[1.02] transition-transform">
+                        Bag · {p.status}
+                      </button>
                     </div>
                   </article>
                 </ProductTiltCard>
               ))}
             </div>
           )}
+        </div>
+      </section>
+
+      {/* Editor's spotlight strip */}
+      <section className="px-4 sm:px-8 lg:px-12 py-12 sm:py-16 bg-cream/40 border-y border-foreground/10">
+        <div className="max-w-[1400px] mx-auto grid lg:grid-cols-[1fr_2fr] gap-8 lg:gap-12 items-start">
+          <div>
+            <div className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground">Editor’s pick · No. 04</div>
+            <h2 className="font-serif text-3xl sm:text-5xl mt-2 leading-[0.95]">The pieces<br /><span className="italic text-brand">we keep on our own desks.</span></h2>
+            <p className="mt-4 text-sm text-foreground/70 max-w-md leading-relaxed">A short list of catalogue heroes — chosen by the team, not the algorithm. Each ships in a hand-numbered box with a foil-stamped tag.</p>
+          </div>
+          <div className="grid grid-cols-3 gap-3 sm:gap-4">
+            {[...products].sort((a, b) => b.rating * b.reviews - a.rating * a.reviews).slice(0, 3).map((p, i) => (
+              <article key={p.id} className="group relative bg-card rounded-xl border border-foreground/10 overflow-hidden">
+                <span className="absolute top-2 left-2 z-10 size-7 rounded-full bg-ink text-cream grid place-items-center font-serif text-sm">{i + 1}</span>
+                <div className={`relative aspect-[4/5] ${p.swatch}`}>
+                  <img src={p.image} alt={p.name} loading="lazy" className="absolute inset-0 w-full h-full object-cover mix-blend-multiply group-hover:scale-105 transition-transform duration-700" />
+                </div>
+                <div className="p-2.5">
+                  <div className="font-serif text-sm leading-tight line-clamp-1">{p.name}</div>
+                  <div className="flex items-center justify-between mt-1 text-[10px] text-muted-foreground">
+                    <span>{p.category}</span>
+                    <span className="font-mono text-foreground tabular-nums">{p.price}</span>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* The promise band */}
+      <section className="px-4 sm:px-8 lg:px-12 py-12 sm:py-16 border-b border-foreground/10">
+        <div className="max-w-[1400px] mx-auto grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          {[
+            { i: "✺", t: "Lifetime repair", d: "We fix anything we make. Send it back, we’ll bring it home." },
+            { i: "◐", t: "Made in small batches", d: "No mass-production. Every drop is hand-numbered and limited." },
+            { i: "▲", t: "Carbon-neutral ship", d: "Offset on every order. Recycled mailers, soy-based inks." },
+            { i: "✦", t: "30-day try at home", d: "Live with it for a month. Not for you? We pay return shipping." },
+          ].map((b) => (
+            <div key={b.t} className="rounded-2xl border border-foreground/10 p-5 hover:border-foreground/30 hover:-translate-y-0.5 transition-all bg-card">
+              <div className="text-3xl text-brand">{b.i}</div>
+              <div className="font-serif text-lg mt-3">{b.t}</div>
+              <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">{b.d}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Newsletter / drop alert */}
+      <section className="px-4 sm:px-8 lg:px-12 py-14 sm:py-20 bg-ink text-cream relative overflow-hidden">
+        <div className="absolute -right-20 -top-20 size-80 rounded-full bg-pop/20 blur-3xl" />
+        <div className="absolute -left-24 -bottom-24 size-80 rounded-full bg-brand/30 blur-3xl" />
+        <div className="max-w-[1400px] mx-auto relative grid lg:grid-cols-[1.2fr_1fr] gap-8 items-end">
+          <h2 className="font-serif text-4xl sm:text-6xl lg:text-7xl leading-[0.95]">
+            Get the next drop<br /><span className="italic text-pop">before the rest.</span>
+          </h2>
+          <form onSubmit={(e) => e.preventDefault()} className="flex flex-col gap-3">
+            <p className="text-sm text-cream/70 max-w-md">A monthly note from the studio: new objects, behind-the-scenes process, and early access for subscribers only.</p>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <input type="email" required placeholder="you@studio.com" className="flex-1 px-4 py-3 rounded-full bg-cream/10 border border-cream/20 text-cream placeholder:text-cream/40 text-sm focus:outline-none focus:border-cream/60" />
+              <button className="bg-pop text-pop-foreground px-5 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:scale-[1.03] transition-transform">Notify me →</button>
+            </div>
+            <p className="text-[10px] uppercase tracking-widest text-cream/40">No spam. Unsubscribe in one click.</p>
+          </form>
         </div>
       </section>
 
