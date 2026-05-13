@@ -1169,7 +1169,7 @@ function Index() {
       <nav className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-foreground/5 py-3 sm:py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center gap-3">
         <span className="font-semibold tracking-tight text-sm sm:text-base">STUDIO_KINETIC</span>
          <div className="hidden md:flex gap-8">
-           <a href="#intel" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">Blogs</a>
+           <Link to="/blog" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">Blogs</Link>
            <Link to="/products" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">Shop</Link>
            <a href="#studio" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">Studio</a>
          </div>
