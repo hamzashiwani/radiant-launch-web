@@ -1040,6 +1040,23 @@ function BlogSectionInner() {
           <p className="text-sm text-muted-foreground py-12 text-center">No entries under “{tag}” yet.</p>
         )}
 
+        {/* Explore more CTA */}
+        <div className="mt-12 sm:mt-14 flex justify-center">
+          <Link
+            to="/blog"
+            data-cursor="Explore"
+            className="group inline-flex items-center gap-3 bg-ink text-cream rounded-full pl-2 pr-5 sm:pr-6 py-2 text-[11px] sm:text-xs font-bold uppercase tracking-widest hover:scale-[1.04] transition-transform"
+          >
+            <span className="size-9 sm:size-10 grid place-items-center rounded-full bg-pop text-pop-foreground transition-transform group-hover:rotate-45">
+              <svg viewBox="0 0 16 16" fill="currentColor" className="size-4">
+                <path d="M8.5 3.5a.5.5 0 0 1 .854-.354l4.5 4.5a.5.5 0 0 1 0 .708l-4.5 4.5A.5.5 0 0 1 8.5 12.5v-9Z" />
+                <path d="M3 8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 8Z" />
+              </svg>
+            </span>
+            Explore more stories
+          </Link>
+        </div>
+
         {/* Saved counter */}
         {saved.length > 0 && (
           <div className="mt-10 inline-flex items-center gap-3 bg-ink text-cream rounded-full pl-2 pr-5 py-2 text-xs font-bold uppercase tracking-widest animate-fade-up">
