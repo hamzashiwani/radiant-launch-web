@@ -148,6 +148,55 @@ const articles: Article[] = [
   },
 ];
 
+type InteractiveCard = {
+  id: string;
+  tag: string;
+  title: string;
+  excerpt: string;
+  meta: string;
+  image: string;
+  accent: "brand" | "pop" | "mint" | "ink";
+};
+
+const interactiveCards: InteractiveCard[] = [
+  {
+    id: "ic1",
+    tag: "Field Notes",
+    title: "A week inside a Tokyo type foundry",
+    excerpt: "Inkstones, glyph proofs, and the slow architecture of a 14,000-character family.",
+    meta: "Photo essay · 12 frames",
+    image: blog2,
+    accent: "brand",
+  },
+  {
+    id: "ic2",
+    tag: "Interview",
+    title: "Anya Mehta on designing for stillness",
+    excerpt: "The London-based art director on whitespace, refusal, and the politics of not shouting.",
+    meta: "Long read · 14 min",
+    image: blog4,
+    accent: "pop",
+  },
+  {
+    id: "ic3",
+    tag: "Toolkit",
+    title: "Ten micro-interactions worth stealing",
+    excerpt: "A live, copy-paste reel of the small motion details that make interfaces feel alive.",
+    meta: "Interactive · 10 demos",
+    image: blog3,
+    accent: "mint",
+  },
+  {
+    id: "ic4",
+    tag: "Essay",
+    title: "The quiet return of the print object",
+    excerpt: "Risograph zines, hand-bound annuals, and why studios are pressing things again.",
+    meta: "Essay · 7 min",
+    image: blog1,
+    accent: "ink",
+  },
+];
+
 const marqueeTopics = [
   "Spatial Design",
   "Editorial Systems",
