@@ -153,6 +153,8 @@ function ProductsPage() {
   const [quickView, setQuickView] = useState<Product | null>(null);
   const [bagPing, setBagPing] = useState(false);
   const [tagsExpanded, setTagsExpanded] = useState(false);
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 8;
 
   const filtered = useMemo(() => {
     let list = category === "All" ? [...products] : products.filter((p) => p.category === category);
@@ -170,6 +172,22 @@ function ProductsPage() {
     }
     return list;
   }, [category, sort, query, tag]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+  const paginated = useMemo(
+    () => filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
+    [filtered, currentPage],
+  );
+  const goToPage = (p: number) => {
+    const next = Math.max(1, Math.min(totalPages, p));
+    setPage(next);
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  const setCategoryAndReset = (c: FilterCategory) => { setCategory(c); setPage(1); };
+  const setTagAndReset = (k: QuickTagKey) => { setTag(k); setPage(1); };
+  const setSortAndReset = (s: SortKey) => { setSort(s); setPage(1); };
+  const setQueryAndReset = (q: string) => { setQuery(q); setPage(1); };
 
   const addToBag = (id: string) => {
     setBag((b) => [...b, id]);
