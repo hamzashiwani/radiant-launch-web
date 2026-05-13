@@ -50,6 +50,16 @@ const products: Product[] = [
   { id: "p6", index: "06", name: "Monolith Speaker", category: "Tech", desc: "Modular two-way active monitor. Aluminum enclosure milled from a single block.", price: "$890", priceNum: 890, year: "2025", materials: "Milled aluminum / silk dome", image: product6, status: "Pre-Order", badge: "New", swatch: "bg-mint/40", rating: 5.0, reviews: 18 },
   { id: "p7", index: "07", name: "Amber Glow Serum", category: "Beauty", desc: "Cold-pressed botanical serum in apothecary-grade amber glass with a brass dropper.", price: "$58", priceNum: 58, year: "2024", materials: "Amber glass / brass / 30ml", image: product7, status: "In Stock", badge: "New", swatch: "bg-pop/30", rating: 4.8, reviews: 96 },
   { id: "p8", index: "08", name: "Cast Iron Bell 16kg", category: "Gym", desc: "Single-cast iron kettlebell with hand-stitched leather grip. Powder-coated matte black.", price: "$145", priceNum: 145, year: "2024", materials: "Cast iron / vegetable-tanned leather", image: product8, status: "In Stock", badge: "Bestseller", swatch: "bg-brand-soft", rating: 4.9, reviews: 211 },
+  { id: "p9", index: "09", name: "Linen Field Shirt", category: "Fashion", desc: "Heavyweight Belgian linen, garment-washed for a lived-in drape. Corozo nut buttons.", price: "$180", priceNum: 180, year: "2025", materials: "Belgian linen / corozo", image: product5, status: "In Stock", badge: "New", swatch: "bg-mint/40", rating: 4.7, reviews: 64 },
+  { id: "p10", index: "10", name: "Wool Crew 02", category: "Fashion", desc: "Mid-weight merino crewneck in undyed natural ecru. Knit in a small mill in Porto.", price: "$220", priceNum: 220, year: "2024", materials: "100% merino wool", image: product1, status: "In Stock", badge: "Bestseller", swatch: "bg-cream", rating: 4.8, reviews: 152 },
+  { id: "p11", index: "11", name: "Carbon Earbuds", category: "Tech", desc: "Active noise-cancelling earbuds milled from forged carbon. 38h battery, USB-C.", price: "$340", priceNum: 340, year: "2025", materials: "Forged carbon / silicone", image: product2, status: "Pre-Order", badge: "New", swatch: "bg-pop/30", rating: 4.6, reviews: 22 },
+  { id: "p12", index: "12", name: "E-Ink Tablet", category: "Tech", desc: "10.3" + '"' + " Carta-1300 e-paper, hand-bound in vegetable-tanned leather. Stylus included.", price: "$620", priceNum: 620, year: "2024", materials: "Carta e-paper / leather", image: product6, status: "Limited", badge: "Hot", swatch: "bg-brand-soft", rating: 4.9, reviews: 87 },
+  { id: "p13", index: "13", name: "Rose Clay Mask", category: "Beauty", desc: "Pink kaolin and rosehip mask in a hand-thrown ceramic jar. Refillable.", price: "$42", priceNum: 42, year: "2024", materials: "Kaolin / rosehip / ceramic", image: product7, status: "In Stock", badge: "Bestseller", swatch: "bg-pop/30", rating: 4.7, reviews: 188 },
+  { id: "p14", index: "14", name: "Cedar & Smoke No.7", category: "Beauty", desc: "Hand-poured candle: cedarwood, smoked vetiver, a hint of black tea. 60h burn.", price: "$48", priceNum: 48, year: "2024", materials: "Coconut wax / cotton wick", image: product3, status: "In Stock", badge: "Studio Pick", swatch: "bg-cream", rating: 4.9, reviews: 244 },
+  { id: "p15", index: "15", name: "Studio Resistance Set", category: "Gym", desc: "Three Italian latex bands in a foil-stamped canvas pouch. 15, 25, 40 lb.", price: "$78", priceNum: 78, year: "2024", materials: "Italian latex / waxed canvas", image: product8, status: "In Stock", badge: "New", swatch: "bg-mint/40", rating: 4.6, reviews: 73 },
+  { id: "p16", index: "16", name: "Olympic Jump Rope", category: "Gym", desc: "Aircraft-grade cable with milled aluminum handles and ceramic bearings.", price: "$95", priceNum: 95, year: "2024", materials: "Aluminum / steel / ceramic", image: product4, status: "In Stock", badge: "Bestseller", swatch: "bg-brand-soft", rating: 4.8, reviews: 132 },
+  { id: "p17", index: "17", name: "Walnut Side Table", category: "Home & Living", desc: "Solid black walnut, oil-finished. Hand-turned legs, no hardware, lifetime warranty.", price: "$540", priceNum: 540, year: "2025", materials: "Solid black walnut / linseed oil", image: product1, status: "Pre-Order", badge: "New", swatch: "bg-cream", rating: 4.9, reviews: 31 },
+  { id: "p18", index: "18", name: "Linen Throw 02", category: "Home & Living", desc: "Stonewashed Lithuanian linen throw with hand-knotted fringe. Washes softer.", price: "$160", priceNum: 160, year: "2024", materials: "Lithuanian linen", image: product3, status: "In Stock", badge: "Studio Pick", swatch: "bg-mint/40", rating: 4.8, reviews: 117 },
 ];
 
 const categories = ["All", "Fashion", "Tech", "Beauty", "Gym", "Home & Living"] as const;
@@ -64,9 +74,23 @@ const categoryIcons: Record<FilterCategory, string> = {
   "Home & Living": "⌂",
 };
 
-// Primary categories shown as feature chips at the top (highest count + All).
-const primaryCategories: FilterCategory[] = ["All", "Home & Living", "Tech"];
-const secondaryCategories: FilterCategory[] = ["Fashion", "Beauty", "Gym"];
+// All 6 categories shown as hero feature chips.
+const heroCategories: FilterCategory[] = ["All", "Fashion", "Tech", "Beauty", "Gym", "Home & Living"];
+
+// Quick-filter tags shown in a horizontal scroll bar below the hero.
+type QuickTagKey = "all" | "bestsellers" | "new" | "limited" | "preorder" | "topRated" | "under100" | "under300" | "studioPick" | "hot";
+const quickTags: { key: QuickTagKey; label: string; match: (p: Product) => boolean }[] = [
+  { key: "all",         label: "✦  Everything",     match: () => true },
+  { key: "bestsellers", label: "♛  Bestsellers",    match: (p) => p.badge === "Bestseller" },
+  { key: "new",         label: "✺  New drops",      match: (p) => p.badge === "New" },
+  { key: "hot",         label: "▲  Trending",       match: (p) => p.badge === "Hot" },
+  { key: "studioPick",  label: "◐  Studio picks",   match: (p) => p.badge === "Studio Pick" },
+  { key: "topRated",    label: "★  Top rated 4.8+", match: (p) => p.rating >= 4.8 },
+  { key: "limited",     label: "◆  Limited",        match: (p) => p.status === "Limited" },
+  { key: "preorder",    label: "✧  Pre-order",      match: (p) => p.status === "Pre-Order" },
+  { key: "under100",    label: "$  Under $100",     match: (p) => p.priceNum < 100 },
+  { key: "under300",    label: "$$ Under $300",     match: (p) => p.priceNum < 300 },
+];
 
 const materialsTicker = [
   "Anodized aluminum",
