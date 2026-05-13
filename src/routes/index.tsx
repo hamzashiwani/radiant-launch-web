@@ -913,22 +913,22 @@ function BlogSectionInner() {
   return (
     <section
       id="intel"
-      className="relative py-20 md:py-24 px-8 bg-background"
+      className="relative py-16 sm:py-20 md:py-24 px-4 sm:px-6 lg:px-8 bg-background overflow-hidden"
       onMouseMove={(e) => setCoords({ x: e.clientX, y: e.clientY })}
     >
       <div className="max-w-screen-xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-5 sm:gap-6 mb-8 sm:mb-10">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground mb-4 flex items-center gap-2">
+            <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground mb-3 sm:mb-4 flex items-center gap-2">
               <span className="size-1.5 rounded-full bg-brand animate-pulse" />
               Journal · {list.length + (showFeatured ? 1 : 0)} entries
             </p>
-            <h2 className="text-4xl md:text-6xl font-semibold tracking-tight text-balance leading-[0.95]">
+            <h2 className="text-[2rem] sm:text-4xl md:text-6xl font-semibold tracking-tight text-balance leading-[1] md:leading-[0.95]">
               Stories worth <span className="italic font-light text-muted-foreground">reading slowly.</span>
             </h2>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 -mx-1 px-1 overflow-x-auto scrollbar-none">
             {allTags.map((t) => {
               const selected = t === tag;
               return (
@@ -936,7 +936,7 @@ function BlogSectionInner() {
                   key={t}
                   onClick={() => setTag(t)}
                   data-cursor="Filter"
-                  className={`text-[11px] font-semibold uppercase tracking-widest px-3.5 py-2 rounded-full transition-all ${
+                  className={`text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-full transition-all whitespace-nowrap ${
                     selected
                       ? "bg-ink text-cream scale-[1.04]"
                       : "bg-background border border-foreground/15 text-foreground/70 hover:text-ink hover:border-foreground/40"
@@ -956,7 +956,7 @@ function BlogSectionInner() {
             data-cursor="Read featured"
             onMouseEnter={() => setHoverId(featuredArticle.id)}
             onMouseLeave={() => setHoverId(null)}
-            className="group relative grid grid-cols-1 lg:grid-cols-12 gap-0 mb-14 overflow-hidden rounded-3xl bg-ink text-cream"
+            className="group relative grid grid-cols-1 lg:grid-cols-12 gap-0 mb-12 sm:mb-14 overflow-hidden rounded-3xl bg-ink text-cream"
           >
             <div className="lg:col-span-7 relative aspect-[16/10] lg:aspect-auto overflow-hidden">
               <img
@@ -969,21 +969,21 @@ function BlogSectionInner() {
                 ★ Featured
               </span>
             </div>
-            <div className="lg:col-span-5 p-8 md:p-12 flex flex-col justify-between gap-8">
+            <div className="lg:col-span-5 p-6 sm:p-8 md:p-12 flex flex-col justify-between gap-6 sm:gap-8">
               <div>
-                <div className="flex items-center gap-3 text-[10px] font-mono uppercase tracking-[0.2em] text-cream/60 mb-5">
+                <div className="flex items-center flex-wrap gap-2 sm:gap-3 text-[10px] font-mono uppercase tracking-[0.2em] text-cream/60 mb-4 sm:mb-5">
                   <span className="text-pop">{featuredArticle.tag}</span>
                   <span>·</span>
                   <span>{featuredArticle.readTime}</span>
                   <span>·</span>
                   <span>{featuredArticle.date}</span>
                 </div>
-                <h3 className="text-3xl md:text-4xl font-semibold tracking-tight leading-[1.05] mb-5 text-balance">
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight leading-[1.05] mb-4 sm:mb-5 text-balance">
                   {featuredArticle.title}
                 </h3>
-                <p className="text-cream/70 text-pretty max-w-md">{featuredArticle.excerpt}</p>
+                <p className="text-sm sm:text-base text-cream/70 text-pretty max-w-md">{featuredArticle.excerpt}</p>
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-3">
                 <span className="text-xs text-cream/60">
                   By <span className="text-cream">{featuredArticle.author}</span>
                 </span>
@@ -992,7 +992,7 @@ function BlogSectionInner() {
                     type="button"
                     onClick={(e) => { e.preventDefault(); toggleSave(featuredArticle.id); }}
                     aria-label={saved.includes(featuredArticle.id) ? "Unsave" : "Save"}
-                    className={`size-10 rounded-full grid place-items-center transition-all ${
+                    className={`size-9 sm:size-10 rounded-full grid place-items-center transition-all ${
                       saved.includes(featuredArticle.id) ? "bg-brand text-brand-foreground scale-110" : "bg-cream/10 text-cream hover:bg-cream/20"
                     }`}
                   >
@@ -1000,7 +1000,7 @@ function BlogSectionInner() {
                       <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
                     </svg>
                   </button>
-                  <span className="inline-flex items-center gap-2 bg-cream text-ink rounded-full px-4 py-2.5 text-xs font-bold uppercase tracking-widest group-hover:bg-pop group-hover:text-pop-foreground transition-colors">
+                  <span className="inline-flex items-center gap-2 bg-cream text-ink rounded-full px-3.5 sm:px-4 py-2 sm:py-2.5 text-[11px] sm:text-xs font-bold uppercase tracking-widest group-hover:bg-pop group-hover:text-pop-foreground transition-colors">
                     Read story →
                   </span>
                 </div>
