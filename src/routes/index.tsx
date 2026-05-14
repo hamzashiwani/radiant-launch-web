@@ -838,7 +838,7 @@ function InteractiveBlogCards({
                       </div>
                     </div>
                   </div>
-                </a>
+                </Link>
               </div>
             );
           })}
