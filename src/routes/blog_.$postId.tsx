@@ -101,51 +101,133 @@ function PostPage() {
         <HeroCover post={post} />
 
         {/* Title + short description */}
-        <section className="px-4 sm:px-6 lg:px-8 pt-10 sm:pt-16 pb-8 sm:pb-12">
-          <div className="max-w-4xl mx-auto text-center">
-            <p className="text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.3em] text-muted-foreground mb-5 flex flex-wrap items-center justify-center gap-2">
+      <section className="px-4 sm:px-6 lg:px-8 pt-8 sm:pt-10 pb-6 sm:pb-8">
+        <div className="max-w-3xl mx-auto text-center">
+          <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-muted-foreground mb-4 flex flex-wrap items-center justify-center gap-2">
               <Link to="/" className="hover:text-foreground">Home</Link>
               <span className="opacity-40">/</span>
               <Link to="/blog" className="hover:text-foreground">Journal</Link>
               <span className="opacity-40">/</span>
               <span className="text-brand">{post.tag}</span>
             </p>
-            <span className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest mb-6 ${accentChip[post.accent]}`}>
+          <span className={`inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest mb-4 ${accentChip[post.accent]}`}>
               {post.tag} · Field study
             </span>
-            <h1 className="text-[2.4rem] sm:text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tighter leading-[0.95] text-balance mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tighter leading-[0.98] text-balance mb-4">
               {post.title}
             </h1>
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto text-pretty leading-relaxed">
+          <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto text-pretty leading-relaxed">
               {post.excerpt}
             </p>
 
             {/* meta strip */}
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-[11px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
               <span className="inline-flex items-center gap-2">
-                <span className="size-7 rounded-full bg-gradient-to-br from-brand to-pop grid place-items-center text-cream text-[9px]">
+              <span className="size-6 rounded-full bg-gradient-to-br from-brand to-pop grid place-items-center text-cream text-[9px]">
                   {post.author.split(" ").map((s) => s[0]).join("")}
                 </span>
-                <span className="normal-case tracking-normal font-sans text-foreground text-sm">{post.author}</span>
+              <span className="normal-case tracking-normal font-sans text-foreground text-xs">{post.author}</span>
               </span>
               <span>· {post.date}</span>
               <span>· {post.readTime} read</span>
               <span>· {formatViews(post.views)} views</span>
+            <span>· {post.comments} comments</span>
             </div>
 
             {/* intro paragraph */}
-            <p className="mt-10 text-base sm:text-lg text-foreground/80 leading-relaxed text-left max-w-3xl mx-auto">
+          <p className="mt-8 text-sm sm:text-base text-foreground/80 leading-relaxed text-left">
               {post.intro}
             </p>
+
+          {/* In-this-piece TOC */}
+          <div className="mt-8 rounded-2xl border border-foreground/10 bg-foreground/[0.02] p-5 text-left">
+            <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-brand mb-3">In this piece</p>
+            <ol className="space-y-1.5">
+              {post.products.map((p, i) => (
+                <li key={i} className="flex items-baseline gap-3 text-sm">
+                  <span className="font-mono text-[10px] tabular-nums text-muted-foreground">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="text-foreground/85">{p.name}</span>
+                  <span className="text-muted-foreground text-xs">— {p.tagline}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
           </div>
         </section>
 
         {/* Products in story */}
-        <div className="px-4 sm:px-6 lg:px-8 pb-12 sm:pb-20 space-y-20 sm:space-y-28">
+      <div className="px-4 sm:px-6 lg:px-8 pb-10 sm:pb-14 space-y-14 sm:space-y-20">
           {post.products.map((product, idx) => (
             <ProductBlock key={idx} product={product} index={idx} total={post.products.length} />
           ))}
         </div>
+
+      {/* Pull quote */}
+      <section className="px-4 sm:px-6 lg:px-8 pb-12">
+        <blockquote className="max-w-3xl mx-auto p-7 sm:p-9 rounded-3xl bg-ink text-cream relative overflow-hidden">
+          <span className="absolute top-2 left-5 text-6xl opacity-20 leading-none">"</span>
+          <p className="text-lg sm:text-xl font-medium leading-snug relative">
+            Good objects don't ask for attention. They wait, and reward you the third time you reach for them.
+          </p>
+          <footer className="mt-4 text-[10px] font-mono uppercase tracking-[0.25em] text-pop relative">
+            — {post.author}, in studio
+          </footer>
+        </blockquote>
+      </section>
+
+      {/* Comments preview */}
+      <section className="px-4 sm:px-6 lg:px-8 pb-12">
+        <div className="max-w-3xl mx-auto">
+          <div className="flex items-end justify-between mb-5 gap-4">
+            <h3 className="text-lg sm:text-xl font-semibold tracking-tight">
+              {post.comments} reactions from readers
+            </h3>
+            <button type="button" className="text-[10px] font-bold uppercase tracking-widest bg-foreground/[0.05] hover:bg-foreground/10 rounded-full px-3 py-1.5 transition-colors">
+              Add yours →
+            </button>
+          </div>
+          <ul className="space-y-3">
+            {[
+              { who: "Esha M.", role: "Designer · Berlin", body: "Bought the second one for my partner. The brass takes a fingerprint patina I genuinely look forward to." },
+              { who: "Tomi R.", role: "Studio lead · São Paulo", body: "The packaging alone is worth the price. Quietly the best unboxing of the year." },
+              { who: "Junko A.", role: "Buyer · Tokyo", body: "Stocked it in our shop. Sells out every restock. Customers come back asking for the next colour." },
+            ].map((c) => (
+              <li key={c.who} className="rounded-2xl border border-foreground/10 bg-background p-4 sm:p-5 flex items-start gap-3">
+                <span className="size-9 rounded-full bg-gradient-to-br from-mint to-pop grid place-items-center text-ink text-xs font-mono shrink-0">
+                  {c.who.split(" ").map((s) => s[0]).join("")}
+                </span>
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold">{c.who} <span className="text-muted-foreground font-normal">· {c.role}</span></p>
+                  <p className="mt-1 text-sm text-foreground/85 leading-snug">{c.body}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* Newsletter / dispatch strip */}
+      <section className="px-4 sm:px-6 lg:px-8 pb-12">
+        <div className="max-w-3xl mx-auto rounded-3xl bg-foreground/[0.04] border border-foreground/10 p-6 sm:p-8 grid sm:grid-cols-[1.4fr_1fr] gap-5 items-center">
+          <div>
+            <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-brand mb-2">The dispatch</p>
+            <h3 className="text-lg sm:text-xl font-semibold tracking-tight mb-1.5">One story, one object, every Friday.</h3>
+            <p className="text-xs text-muted-foreground">No tracking, no upsells, no AI. Unsubscribe in one click.</p>
+          </div>
+          <form className="flex items-center gap-2 bg-background rounded-full p-1.5 border border-foreground/15">
+            <input
+              type="email"
+              placeholder="you@studio.com"
+              className="flex-1 bg-transparent px-3 text-sm outline-none placeholder:text-muted-foreground/60"
+            />
+            <button type="button" className="bg-ink text-cream rounded-full px-4 py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-brand transition-colors">
+              Join →
+            </button>
+          </form>
+        </div>
+      </section>
 
         {/* Closing + author card */}
         <section className="px-4 sm:px-6 lg:px-8 py-12 sm:py-16 bg-foreground/[0.02] border-y border-foreground/5">
