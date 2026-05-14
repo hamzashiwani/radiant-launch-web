@@ -230,22 +230,22 @@ function PostPage() {
       </section>
 
         {/* Closing + author card */}
-        <section className="px-4 sm:px-6 lg:px-8 py-12 sm:py-16 bg-foreground/[0.02] border-y border-foreground/5">
+      <section className="px-4 sm:px-6 lg:px-8 py-10 sm:py-12 bg-foreground/[0.02] border-y border-foreground/5">
           <div className="max-w-3xl mx-auto">
-            <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-brand mb-4">— End of file</p>
-            <p className="text-xl sm:text-2xl leading-snug font-medium text-balance mb-10">
+          <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-brand mb-3">— End of file</p>
+          <p className="text-base sm:text-lg leading-snug font-medium text-balance mb-8">
               That's the collection. If one of them quietly bothers you in a good way, that's usually the one.
             </p>
-            <div className="rounded-3xl border border-foreground/10 p-6 sm:p-8 flex items-center gap-5 bg-background">
-              <div className="size-16 rounded-full bg-gradient-to-br from-brand to-pop grid place-items-center text-cream text-lg font-mono shrink-0">
+          <div className="rounded-2xl border border-foreground/10 p-5 sm:p-6 flex items-center gap-4 bg-background">
+            <div className="size-12 rounded-full bg-gradient-to-br from-brand to-pop grid place-items-center text-cream text-sm font-mono shrink-0">
                 {post.author.split(" ").map((s) => s[0]).join("")}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-muted-foreground">Written by</p>
-                <p className="font-semibold text-lg tracking-tight">{post.author}</p>
-                <p className="text-sm text-muted-foreground">{post.authorRole} · Studio Kinetic</p>
+              <p className="text-[9px] font-mono uppercase tracking-[0.25em] text-muted-foreground">Written by</p>
+              <p className="font-semibold text-sm sm:text-base tracking-tight">{post.author}</p>
+              <p className="text-xs text-muted-foreground">{post.authorRole} · Studio Kinetic</p>
               </div>
-              <button className="hidden sm:inline-flex items-center gap-2 bg-foreground/[0.04] hover:bg-foreground/10 rounded-full px-4 py-2 text-[11px] font-bold uppercase tracking-widest transition-colors">
+            <button className="hidden sm:inline-flex items-center gap-2 bg-foreground/[0.04] hover:bg-foreground/10 rounded-full px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-widest transition-colors">
                 Follow
               </button>
             </div>
@@ -330,7 +330,7 @@ function HeroCover({ post }: { post: Post }) {
       ref={ref}
       onMouseMove={onMove}
       onMouseLeave={() => setTilt({ x: 0, y: 0 })}
-      className="relative h-[60vh] sm:h-[72vh] lg:h-[82vh] overflow-hidden bg-ink"
+      className="relative h-[42vh] sm:h-[52vh] lg:h-[58vh] overflow-hidden bg-ink"
       style={{ perspective: "1200px" }}
     >
       <div
