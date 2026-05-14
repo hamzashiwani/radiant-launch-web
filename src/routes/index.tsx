@@ -89,6 +89,7 @@ const categoryIcons: Record<FilterCategory, string> = {
 
 type Article = {
   id: string;
+  postId: string;
   index: string;
   tag: string;
   title: string;
@@ -153,6 +154,7 @@ const articles: Article[] = [
 
 type InteractiveCard = {
   id: string;
+  postId: string;
   tag: string;
   title: string;
   excerpt: string;
