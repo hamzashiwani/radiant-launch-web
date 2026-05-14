@@ -47,9 +47,10 @@ export const Route = createFileRoute("/blog_/")({
 
 function PostPage() {
   const { post } = Route.useLoaderData() as { post: Post };
-  const more = posts.filter((p) => p.id !== post.id).slice(0, 6);
+  const related = posts.filter((p) => p.id !== post.id && p.tag === post.tag).slice(0, 3);
+  const fillers = posts.filter((p) => p.id !== post.id && !related.includes(p)).slice(0, 9 - related.length);
+  const more = [...related, ...fillers];
 
-  // Long-form body paragraphs derived from post intro/excerpt for an editorial read.
   const body = [
     post.intro,
     `${post.excerpt} The piece below is a slow read — written across three weeks, edited down from twice the length, and structured around the small objects that prompted it in the first place.`,
@@ -59,26 +60,22 @@ function PostPage() {
 
   return (
     <main className="min-h-screen bg-background text-foreground">
-      {/* Top nav */}
       <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-8 sm:pt-10">
         <Link to="/blog" className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-[0.25em] text-muted-foreground hover:text-foreground transition-colors">
           ← Back to journal
         </Link>
       </div>
 
-      {/* Hero image */}
       <article className="max-w-3xl mx-auto px-4 sm:px-6 pt-8 sm:pt-10">
         <p className="text-[11px] font-mono uppercase tracking-[0.3em] text-brand mb-4">{post.tag} · {post.readTime}</p>
         <h1 className="text-3xl sm:text-5xl font-semibold tracking-tight leading-[1.05] text-balance mb-5">
           {post.title}
         </h1>
-        <p className="text-base sm:text-lg text-muted-foreground text-pretty mb-8">
+        <p className="text-base sm:text-lg text-muted-foreground text-pretty mb-10">
           {post.excerpt}
         </p>
-        <div className="text-[11px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-10">
-          {post.author} · {post.date}
-        </div>
 
+        {/* Cover image */}
         <figure className="mb-12">
           <img
             src={post.image}
@@ -88,41 +85,24 @@ function PostPage() {
           />
         </figure>
 
-        {/* Long content */}
+        {/* Content */}
         <div className="space-y-6 text-[17px] leading-[1.7] text-foreground/90 mb-16">
-          {body.map((p, i) => (
-            <p key={i}>{p}</p>
-          ))}
+          {body.map((p, i) => <p key={i}>{p}</p>)}
         </div>
 
-        {/* Products: image then description, repeated */}
+        {/* Product descriptions */}
         {post.products.map((prod, i) => (
-          <ProductBlock key={i} product={prod} index={i} />
+          <div key={i} className="mb-14">
+            <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-muted-foreground mb-3">Featured · 0{i + 1}</p>
+            <h3 className="text-2xl sm:text-3xl font-semibold tracking-tight mb-2">{prod.name}</h3>
+            <p className="text-base text-muted-foreground italic mb-4">{prod.tagline}</p>
+            <p className="text-[16px] leading-[1.7] text-foreground/90">{prod.description}</p>
+          </div>
         ))}
       </article>
 
-      {/* More blogs */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 mt-20 sm:mt-24">
-        <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight mb-8">More stories</h2>
-        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {more.map((p) => (
-            <li key={p.id}>
-              <Link to="/blog/$postId" params={{ postId: p.id }} className="group block">
-                <div className="overflow-hidden rounded-xl mb-3">
-                  <img src={p.image} alt={p.title} className="w-full aspect-[4/3] object-cover transition-transform duration-500 group-hover:scale-[1.03]" loading="lazy" />
-                </div>
-                <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-muted-foreground mb-1.5">{p.tag} · {p.readTime}</p>
-                <h3 className="text-base sm:text-lg font-medium leading-snug text-balance group-hover:underline underline-offset-4 decoration-brand">
-                  {p.title}
-                </h3>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </section>
-
       {/* Newsletter */}
-      <section className="max-w-3xl mx-auto px-4 sm:px-6 my-20 sm:my-24">
+      <section className="max-w-3xl mx-auto px-4 sm:px-6 mt-20">
         <div className="bg-ink text-cream rounded-2xl p-8 sm:p-12 text-center">
           <p className="text-[11px] font-mono uppercase tracking-[0.3em] text-pop mb-4">Newsletter</p>
           <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">One letter, every Sunday.</h2>
@@ -132,32 +112,31 @@ function PostPage() {
           <NewsletterForm />
         </div>
       </section>
-    </main>
-  );
-}
 
-function ProductBlock({ product, index }: { product: { name: string; tagline: string; description: string; price: string; image: string }; index: number }) {
-  return (
-    <div className="mb-16">
-      <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-muted-foreground mb-3">Featured · 0{index + 1}</p>
-      <figure className="mb-6">
-        <img
-          src={product.image}
-          alt={product.name}
-          className="w-full aspect-[4/3] object-cover rounded-xl bg-muted"
-          loading="lazy"
-        />
-      </figure>
-      <h3 className="text-2xl sm:text-3xl font-semibold tracking-tight mb-2">{product.name}</h3>
-      <p className="text-base text-muted-foreground italic mb-4">{product.tagline}</p>
-      <p className="text-[16px] leading-[1.7] text-foreground/90 mb-5">{product.description}</p>
-      <div className="flex items-center justify-between border-t border-foreground/10 pt-4">
-        <span className="text-base font-semibold">{product.price}</span>
-        <button className="bg-ink text-cream rounded-full px-5 py-2.5 text-[11px] font-bold uppercase tracking-widest hover:bg-brand hover:text-brand-foreground transition-colors">
-          Get it now
-        </button>
-      </div>
-    </div>
+      {/* More related stories */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 mt-20 mb-24">
+        <div className="flex items-end justify-between mb-8">
+          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight">More related stories</h2>
+          <Link to="/blog" className="text-[11px] font-mono uppercase tracking-[0.25em] text-muted-foreground hover:text-foreground">View all →</Link>
+        </div>
+        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
+          {more.map((p) => (
+            <li key={p.id}>
+              <Link to="/blog/$postId" params={{ postId: p.id }} className="group block">
+                <div className="overflow-hidden rounded-xl mb-3">
+                  <img src={p.image} alt={p.title} className="w-full aspect-[4/3] object-cover transition-transform duration-500 group-hover:scale-[1.03]" loading="lazy" />
+                </div>
+                <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-muted-foreground mb-1.5">{p.tag} · {p.readTime}</p>
+                <h3 className="text-base sm:text-lg font-medium leading-snug text-balance group-hover:underline underline-offset-4 decoration-brand mb-1.5">
+                  {p.title}
+                </h3>
+                <p className="text-sm text-muted-foreground line-clamp-2">{p.excerpt}</p>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </main>
   );
 }
 
