@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { posts, accentChip, formatViews, type Post } from "@/lib/blog-data";
 
-export const Route = createFileRoute("/blog/$postId")({
+export const Route = createFileRoute("/blog_/$postId")({
   component: PostPage,
   loader: ({ params }) => {
     const post = posts.find((p) => p.id === params.postId);
