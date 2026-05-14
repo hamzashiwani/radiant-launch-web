@@ -994,7 +994,12 @@ function BlogSectionInner() {
                   className="group relative py-7 md:py-8 transition-opacity duration-300"
                   style={{ opacity: dim ? 0.35 : 1 }}
                 >
-                  <a href="#" data-cursor="Read" className="block">
+                  <Link
+                    to="/blog/$postId"
+                    params={{ postId: a.postId }}
+                    data-cursor="Read"
+                    className="block"
+                  >
                     <div className="grid grid-cols-12 gap-4 items-baseline">
                       <span className="col-span-2 md:col-span-1 font-mono text-[10px] text-muted-foreground tabular-nums">
                         {a.index}
@@ -1019,7 +1024,7 @@ function BlogSectionInner() {
                       <span>·</span>
                       <span className="tabular-nums">{a.readTime}</span>
                     </div>
-                  </a>
+                  </Link>
                   {/* Hover progress bar */}
                   <span
                     aria-hidden
