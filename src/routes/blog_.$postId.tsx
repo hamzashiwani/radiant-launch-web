@@ -394,20 +394,20 @@ function ProductBlock({ product, index, total }: { product: ProductItem; index: 
   };
 
   return (
-    <section className="max-w-5xl mx-auto">
+    <section className="max-w-3xl mx-auto">
       {/* index marker + product title */}
-      <div className="flex items-baseline gap-4 mb-3">
-        <span className="font-mono text-xs sm:text-sm tabular-nums text-brand">
+      <div className="flex items-baseline gap-3 mb-2">
+        <span className="font-mono text-[11px] tabular-nums text-brand">
           {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
         </span>
-        <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-muted-foreground">
+        <span className="text-[9px] font-mono uppercase tracking-[0.3em] text-muted-foreground">
           Featured object
         </span>
       </div>
-      <h2 className="text-3xl sm:text-5xl md:text-6xl font-semibold tracking-tighter leading-[0.95] text-balance mb-3">
+      <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tighter leading-[0.98] text-balance mb-2">
         {product.name}
       </h2>
-      <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mb-8">
+      <p className="text-sm sm:text-base text-muted-foreground max-w-xl mb-5">
         {product.tagline}
       </p>
 
@@ -415,7 +415,7 @@ function ProductBlock({ product, index, total }: { product: ProductItem; index: 
       <div
         onMouseMove={onZoom}
         onMouseLeave={() => setZoom((z) => ({ ...z, on: false }))}
-        className="relative aspect-[16/10] sm:aspect-[16/9] rounded-3xl overflow-hidden cursor-zoom-in group"
+        className="relative aspect-[4/3] sm:aspect-[16/10] rounded-2xl overflow-hidden cursor-zoom-in group"
         style={{
           background: `radial-gradient(circle at 50% 30%, ${activeColor.hex}33, transparent 65%), ${activeColor.hex}10`,
         }}
@@ -431,30 +431,30 @@ function ProductBlock({ product, index, total }: { product: ProductItem; index: 
         />
 
         {/* edition tag */}
-        <span className="absolute top-4 left-4 inline-flex items-center gap-2 bg-cream/90 text-ink backdrop-blur rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest z-10">
+        <span className="absolute top-3 left-3 inline-flex items-center gap-2 bg-cream/90 text-ink backdrop-blur rounded-full px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest z-10">
           {product.edition}
         </span>
 
         {/* zoom hint */}
-        <span className="absolute top-4 right-4 inline-flex items-center gap-2 bg-ink/70 text-cream backdrop-blur rounded-full px-3 py-1.5 text-[10px] font-mono uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity z-10">
+        <span className="absolute top-3 right-3 inline-flex items-center gap-2 bg-ink/70 text-cream backdrop-blur rounded-full px-2.5 py-1 text-[9px] font-mono uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity z-10">
           ⊕ Hover to zoom
         </span>
 
         {/* color swatches inside image */}
-        <div className="absolute bottom-4 left-4 z-10 flex items-center gap-2 bg-background/80 backdrop-blur rounded-full p-1.5">
+        <div className="absolute bottom-3 left-3 z-10 flex items-center gap-1.5 bg-background/85 backdrop-blur rounded-full p-1">
           {product.palette.map((c, i) => (
             <button
               key={c.name}
               type="button"
               onClick={(e) => { e.stopPropagation(); setColorIdx(i); }}
               aria-label={c.name}
-              className={`size-7 rounded-full border-2 transition-all ${
+              className={`size-5 rounded-full border-2 transition-all ${
                 i === colorIdx ? "border-foreground scale-110" : "border-transparent hover:scale-110"
               }`}
               style={{ backgroundColor: c.hex }}
             />
           ))}
-          <span className="px-2 text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
+          <span className="px-1.5 text-[9px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
             {activeColor.name}
           </span>
         </div>
@@ -463,34 +463,34 @@ function ProductBlock({ product, index, total }: { product: ProductItem; index: 
         <button
           type="button"
           onClick={(e) => { e.stopPropagation(); setImgFlip((v) => !v); }}
-          className="absolute bottom-4 right-4 z-10 inline-flex items-center gap-2 bg-background/80 hover:bg-background backdrop-blur rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest transition-colors"
+          className="absolute bottom-3 right-3 z-10 inline-flex items-center gap-2 bg-background/85 hover:bg-background backdrop-blur rounded-full px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest transition-colors"
         >
           ⇄ View {imgFlip ? "front" : "back"}
         </button>
       </div>
 
       {/* Get now CTA right under the image */}
-      <div className="mt-5 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
-        <div className="flex items-baseline gap-3">
-          <span className="text-3xl sm:text-4xl font-semibold tracking-tight tabular-nums">{product.price}</span>
-          <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-muted-foreground">incl. shipping</span>
+      <div className="mt-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+        <div className="flex items-baseline gap-2">
+          <span className="text-2xl sm:text-3xl font-semibold tracking-tight tabular-nums">{product.price}</span>
+          <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">incl. ship</span>
         </div>
-        <div className="flex-1 flex items-stretch gap-3">
+        <div className="flex-1 flex items-stretch gap-2">
           <button
             type="button"
             onClick={handleAdd}
-            className={`flex-1 sm:flex-none inline-flex items-center justify-center gap-3 rounded-full px-7 py-4 text-xs sm:text-[13px] font-bold uppercase tracking-widest transition-all hover:scale-[1.03] active:scale-100 ${
+            className={`flex-1 sm:flex-none inline-flex items-center justify-center gap-2.5 rounded-full px-5 py-3 text-[11px] font-bold uppercase tracking-widest transition-all hover:scale-[1.03] active:scale-100 ${
               added ? "bg-mint text-ink" : "bg-ink text-cream"
             }`}
           >
             {added ? "✓ Added to cart" : "Get it now"}
-            <span className={`inline-grid place-items-center size-6 rounded-full ${added ? "bg-ink/20" : "bg-cream/15"}`}>→</span>
+            <span className={`inline-grid place-items-center size-5 rounded-full text-[11px] ${added ? "bg-ink/20" : "bg-cream/15"}`}>→</span>
           </button>
           <button
             type="button"
             onClick={() => setLiked((v) => !v)}
             aria-label="Save"
-            className={`size-14 grid place-items-center rounded-full transition-all hover:scale-105 ${
+            className={`size-11 grid place-items-center rounded-full transition-all hover:scale-105 ${
               liked ? "bg-pop text-pop-foreground" : "bg-foreground/[0.05] hover:bg-foreground/10"
             }`}
           >
@@ -500,27 +500,36 @@ function ProductBlock({ product, index, total }: { product: ProductItem; index: 
       </div>
 
       {/* Description */}
-      <div className="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-        <div className="lg:col-span-8">
-          <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-brand mb-3">About this object</p>
-          <p className="text-base sm:text-lg text-foreground/85 leading-relaxed text-pretty">
+      <div className="mt-7 grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
+        <div className="md:col-span-8">
+          <p className="text-[9px] font-mono uppercase tracking-[0.3em] text-brand mb-2">About this object</p>
+          <p className="text-sm sm:text-base text-foreground/85 leading-relaxed text-pretty">
             {product.description}
           </p>
+          <p className="mt-3 text-sm text-foreground/75 leading-relaxed">
+            We tested seven prototypes before settling on this one. The version that shipped is the one that disappeared into the studio rhythm without anyone commenting on it — which is, in our experience, the highest compliment an object can pay you.
+          </p>
         </div>
-        <ul className="lg:col-span-4 space-y-2.5 lg:border-l lg:border-foreground/10 lg:pl-8">
-          <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-muted-foreground mb-3">In the box</p>
+        <ul className="md:col-span-4 space-y-2 md:border-l md:border-foreground/10 md:pl-6">
+          <p className="text-[9px] font-mono uppercase tracking-[0.3em] text-muted-foreground mb-2">In the box</p>
           {product.features.map((f) => (
-            <li key={f} className="flex items-center gap-3 text-sm">
+            <li key={f} className="flex items-center gap-2.5 text-xs">
               <span className="size-1.5 rounded-full bg-brand" />
               <span className="text-foreground/85">{f}</span>
             </li>
           ))}
+          <li className="pt-3 mt-3 border-t border-foreground/10 text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
+            Lead time · 3–4 weeks
+          </li>
+          <li className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
+            Warranty · 10 years
+          </li>
         </ul>
       </div>
 
       {/* divider for next product */}
       {index < total - 1 && (
-        <div className="mt-16 sm:mt-20 flex items-center gap-4 text-[10px] font-mono uppercase tracking-[0.3em] text-muted-foreground">
+        <div className="mt-10 sm:mt-14 flex items-center gap-4 text-[9px] font-mono uppercase tracking-[0.3em] text-muted-foreground">
           <span className="h-px flex-1 bg-foreground/10" />
           <span>↓ Next object</span>
           <span className="h-px flex-1 bg-foreground/10" />
