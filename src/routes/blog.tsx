@@ -182,8 +182,9 @@ function BlogPage() {
       {hero && (
         <section className="px-4 sm:px-6 lg:px-8 pb-10">
           <div className="max-w-screen-xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6">
-            <a
-              href="#"
+            <Link
+              to="/blog/$postId"
+              params={{ postId: hero.id }}
               data-cursor="Read"
               onMouseEnter={() => setHoverId(hero.id)}
               onMouseLeave={() => setHoverId(null)}
@@ -229,13 +230,14 @@ function BlogPage() {
                   </span>
                 </div>
               </div>
-            </a>
+            </Link>
 
             <div className="lg:col-span-4 grid grid-cols-1 gap-4">
               {sideRail.map((p, i) => (
-                <a
+                <Link
                   key={p.id}
-                  href="#"
+                  to="/blog/$postId"
+                  params={{ postId: p.id }}
                   data-cursor="Read"
                   onMouseEnter={() => setHoverId(p.id)}
                   onMouseLeave={() => setHoverId(null)}
@@ -260,7 +262,7 @@ function BlogPage() {
                       ↗ {formatViews(p.views)} · ♥ {formatViews(p.likes)}
                     </p>
                   </div>
-                </a>
+                </Link>
               ))}
             </div>
           </div>
@@ -324,7 +326,7 @@ function BlogPage() {
                       onMouseLeave={() => setHoverId(null)}
                       className="group relative overflow-hidden rounded-2xl border border-foreground/10 bg-background hover:border-foreground/30 hover:-translate-y-1 hover:shadow-[0_24px_50px_-30px_rgba(0,0,0,0.4)] transition-all"
                     >
-                      <a href="#" data-cursor="Read" className="block">
+                      <Link to="/blog/$postId" params={{ postId: p.id }} data-cursor="Read" className="block">
                         <div className="relative aspect-[5/3] overflow-hidden">
                           <img
                             src={p.image}
@@ -361,7 +363,7 @@ function BlogPage() {
                             </span>
                           </div>
                         </div>
-                      </a>
+                      </Link>
                       <button
                         type="button"
                         onClick={() => toggleSave(p.id)}
@@ -391,8 +393,9 @@ function BlogPage() {
               <ol className="space-y-4">
                 {editorsPicks.map((p, i) => (
                   <li key={p.id}>
-                    <a
-                      href="#"
+                    <Link
+                      to="/blog/$postId"
+                      params={{ postId: p.id }}
                       onMouseEnter={() => setHoverId(p.id)}
                       onMouseLeave={() => setHoverId(null)}
                       className="group flex gap-3 items-start"
@@ -402,7 +405,7 @@ function BlogPage() {
                         <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-cream/50 mb-1">{p.tag} · {p.readTime}</p>
                         <p className="text-sm font-medium leading-snug group-hover:text-pop transition-colors line-clamp-2">{p.title}</p>
                       </div>
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ol>
@@ -463,9 +466,10 @@ function BlogPage() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
               {related.map((p) => (
-                <a
+                <Link
                   key={p.id}
-                  href="#"
+                  to="/blog/$postId"
+                  params={{ postId: p.id }}
                   onMouseEnter={() => setHoverId(p.id)}
                   onMouseLeave={() => setHoverId(null)}
                   className="group block rounded-2xl overflow-hidden border border-foreground/10 hover:border-foreground/30 transition-all hover:-translate-y-1"
@@ -478,7 +482,7 @@ function BlogPage() {
                     <h3 className="text-sm font-semibold leading-snug line-clamp-2 mb-2 group-hover:text-brand transition-colors">{p.title}</h3>
                     <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">{p.author} · {p.readTime}</p>
                   </div>
-                </a>
+                </Link>
               ))}
             </div>
           </div>
