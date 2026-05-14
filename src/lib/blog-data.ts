@@ -7,6 +7,18 @@ import product2 from "@/assets/product-2.jpg";
 import product3 from "@/assets/product-3.jpg";
 import product4 from "@/assets/product-4.jpg";
 
+export type ProductItem = {
+  name: string;
+  tagline: string;
+  description: string;
+  price: string;
+  edition: string;
+  image: string;
+  altImage: string;
+  palette: { name: string; hex: string }[];
+  features: string[];
+};
+
 export type Post = {
   id: string;
   title: string;
@@ -25,26 +37,15 @@ export type Post = {
   forYou: number;
   hot: boolean;
   accent: "brand" | "pop" | "mint" | "ink";
-  // Product-blog fields
-  product: {
-    name: string;
-    tagline: string;
-    price: string;
-    edition: string;
-    materials: string[];
-    dimensions: string;
-    palette: { name: string; hex: string }[];
-    gallery: string[];
-    features: { title: string; body: string }[];
-    specs: { label: string; value: string }[];
-  };
+  intro: string;
+  products: ProductItem[];
 };
 
 const images = [blog1, blog2, blog3, blog4];
 const accents: Post["accent"][] = ["brand", "pop", "mint", "ink"];
-const productGallery = [product1, product2, product3, product4];
+const productImgs = [product1, product2, product3, product4];
 
-const seed: Omit<Post, "id" | "image" | "accent" | "ts" | "product">[] = [
+const seed: Omit<Post, "id" | "image" | "accent" | "ts" | "products" | "intro">[] = [
   { title: "The death of the flat logo and the rise of depth", excerpt: "Spatial computing is forcing a fundamental shift in how brand marks are constructed. We trace the new dimensionality.", tag: "Identity", author: "Mira Okafor", authorRole: "Creative Director", date: "April 24, 2026", readTime: "8 min", views: 24800, likes: 1820, comments: 142, trending: 96, forYou: 88, hot: true },
   { title: "Neural interfaces and the user experience", excerpt: "What happens to UX when the input device is your intent? A field guide for designers entering the BCI era.", tag: "Technology", author: "Jules Verma", authorRole: "Principal Researcher", date: "April 12, 2026", readTime: "6 min", views: 18200, likes: 1340, comments: 88, trending: 88, forYou: 62, hot: true },
   { title: "Why maximalism is the new luxury for Gen Alpha", excerpt: "After a decade of restraint, density and texture are quietly winning. We look at the studios driving the shift.", tag: "Culture", author: "Tomás Brand", authorRole: "Editor at Large", date: "March 28, 2026", readTime: "5 min", views: 9420, likes: 612, comments: 47, trending: 64, forYou: 79, hot: false },
@@ -63,43 +64,49 @@ const seed: Omit<Post, "id" | "image" | "accent" | "ts" | "product">[] = [
   { title: "Drawing with constraints: a 30-day type challenge", excerpt: "One letter a day, one rule each. The constraint set that taught us the most.", tag: "Type", author: "Lena Hoffmann", authorRole: "Type Designer", date: "September 14, 2025", readTime: "7 min", views: 6700, likes: 420, comments: 36, trending: 31, forYou: 64, hot: false },
 ];
 
-const productSeeds = [
-  { name: "Monolith Mark No. 01", tagline: "A logo system carved from depth, not drawn flat.", price: "$320", edition: "Edition of 120", materials: ["Anodized aluminum", "Recycled PETG", "Letterpress card"], dimensions: "180 × 180 × 24 mm", palette: [{ name: "Ink", hex: "#0a0a0a" }, { name: "Cream", hex: "#f4ede1" }, { name: "Brand", hex: "#ff5b2e" }, { name: "Pop", hex: "#ffd23f" }] },
-  { name: "Signal Loop Headband", tagline: "An open-source BCI development kit, designed for designers.", price: "$890", edition: "Pre-order, ships Q3", materials: ["Carbon fiber arc", "Medical-grade silicone", "Laser-etched titanium"], dimensions: "Adjustable 52–62 cm", palette: [{ name: "Graphite", hex: "#2b2b2b" }, { name: "Bone", hex: "#ece6d9" }, { name: "Pulse", hex: "#39d4a3" }, { name: "Aux", hex: "#5b8def" }] },
-  { name: "Density Almanac Vol. III", tagline: "A maximalist reference book for the post-restraint era.", price: "$68", edition: "First print, 2,400 copies", materials: ["Coated offset", "Smyth-sewn binding", "Foil-stamp cover"], dimensions: "210 × 280 × 32 mm", palette: [{ name: "Magenta", hex: "#e94e77" }, { name: "Citrus", hex: "#ffb347" }, { name: "Deep", hex: "#1a1a3d" }, { name: "Mint", hex: "#a8e6cf" }] },
-  { name: "Source Studio License", tagline: "One source of truth — for design, code, and brand together.", price: "$12 / seat", edition: "Annual studio plan", materials: ["Cloud workspace", "Local CLI", "Figma plugin"], dimensions: "Up to 24 contributors", palette: [{ name: "Ink", hex: "#0a0a0a" }, { name: "Cream", hex: "#f4ede1" }, { name: "Acid", hex: "#caff33" }, { name: "Sky", hex: "#7ad7f0" }] },
+const palettes = [
+  [{ name: "Ink", hex: "#0a0a0a" }, { name: "Cream", hex: "#f4ede1" }, { name: "Brand", hex: "#ff5b2e" }, { name: "Pop", hex: "#ffd23f" }],
+  [{ name: "Graphite", hex: "#2b2b2b" }, { name: "Bone", hex: "#ece6d9" }, { name: "Pulse", hex: "#39d4a3" }, { name: "Aux", hex: "#5b8def" }],
+  [{ name: "Magenta", hex: "#e94e77" }, { name: "Citrus", hex: "#ffb347" }, { name: "Deep", hex: "#1a1a3d" }, { name: "Mint", hex: "#a8e6cf" }],
+  [{ name: "Acid", hex: "#caff33" }, { name: "Sky", hex: "#7ad7f0" }, { name: "Ink", hex: "#0a0a0a" }, { name: "Cream", hex: "#f4ede1" }],
 ];
 
-const featurePool = [
-  { title: "Hand-finished surfaces", body: "Each piece is sanded, etched, and sealed in our Lisbon workshop — the small variance is the signature." },
-  { title: "Designed to last a decade", body: "Specced for 10+ years of daily use, not next quarter's launch. Replaceable parts, repairable seams, no glue." },
-  { title: "Open documentation", body: "Materials, sources and CAD files are published. You can repair, fork, or extend it without asking permission." },
-  { title: "Considered packaging", body: "No plastic. No filler. Recycled board, soy ink, and a hand-numbered card with the maker's mark." },
+const productPool: Omit<ProductItem, "image" | "altImage" | "palette">[] = [
+  { name: "Monolith Mark No. 01", tagline: "A logo system carved from depth, not drawn flat.", description: "Twelve hours of CNC time and three days of hand-finishing go into every Monolith. Each one ships with a foiled certificate, the maker's mark, and a tiny brush for the patina you'll inevitably want to keep clean.", price: "$320", edition: "Edition of 120", features: ["Anodized aluminum", "Hand-numbered", "Lisbon-made"] },
+  { name: "Signal Loop Headband", tagline: "An open-source BCI development kit for designers.", description: "A featherweight carbon arc with eight dry electrodes and a battery that lasts a full studio day. The SDK is on GitHub, the schematics are in the box, and the first 100 buyers get a video call with the engineering team.", price: "$890", edition: "Pre-order, ships Q3", features: ["Carbon fiber", "Open-source SDK", "8-channel EEG"] },
+  { name: "Density Almanac Vol. III", tagline: "A maximalist reference for the post-restraint era.", description: "Four hundred pages, Smyth-sewn, foil-stamped, and printed on uncoated stock that turns the saturated ink into something closer to fabric. A reference book you'll keep open on the table, not closed on the shelf.", price: "$68", edition: "First print, 2,400 copies", features: ["Smyth-sewn", "Foil-stamped", "Uncoated stock"] },
+  { name: "Source Studio License", tagline: "One source of truth — design, code, brand together.", description: "A workspace that finally treats design tokens, components, and brand assets as the same artifact. Bring your team, point it at your repo, and stop copy-pasting hex codes into Slack at midnight.", price: "$12 / seat", edition: "Annual studio plan", features: ["Figma plugin", "Local CLI", "Live tokens"] },
+  { name: "Quiet Object Lamp", tagline: "A reading light that disappears when you're done with it.", description: "Brushed brass, a stem you can bend with two fingers, and a warm-white LED that dims to candle. Plug it in, find its spot, and forget about it — which is, of course, the whole point.", price: "$240", edition: "Open run", features: ["Brushed brass", "Bendable stem", "Warm dimming"] },
+  { name: "Inkstone Type Specimen", tagline: "A printed ledger of the foundry's variable family.", description: "Every axis, every optical size, every weird in-between you'd never see in a PDF specimen. Printed on a Heidelberg in Tokyo and sewn by hand in a workshop you can visit.", price: "$48", edition: "Run of 600", features: ["Variable axes", "Letterpress cover", "Hand-sewn"] },
 ];
 
-const specPool: { label: string; value: string }[] = [
-  { label: "Origin", value: "Lisbon, Portugal" },
-  { label: "Lead time", value: "3–4 weeks" },
-  { label: "Warranty", value: "10 years, transferable" },
-  { label: "Carbon", value: "Climate-neutral shipping" },
-  { label: "Care", value: "Wipe with dry microfiber" },
-  { label: "Returns", value: "60-day reading window" },
+const intros = [
+  "We didn't set out to build an object. We set out to answer a question. The object came later — quietly, after a year of arguments, three discarded prototypes, and one excellent bottle of wine in a Lisbon basement.",
+  "This is a piece about what happens when you take the brief seriously enough to throw it away. The result is the small collection below, and the slightly longer story behind each one.",
+  "Most things you read about new tools are written before anyone has lived with them. This isn't. We've spent six months with the pieces below — on desks, in studios, in one case in a backpack across three time zones.",
 ];
 
 export const posts: Post[] = seed.map((p, i) => {
-  const ps = productSeeds[i % productSeeds.length];
+  const accent = accents[i % accents.length];
+  const baseImg = images[i % images.length];
+  const productCount = (i % 2 === 0) ? 3 : 2;
+  const products: ProductItem[] = Array.from({ length: productCount }).map((_, j) => {
+    const tpl = productPool[(i + j) % productPool.length];
+    return {
+      ...tpl,
+      image: productImgs[(i + j) % productImgs.length],
+      altImage: productImgs[(i + j + 1) % productImgs.length],
+      palette: palettes[(i + j) % palettes.length],
+    };
+  });
   return {
     ...p,
     id: `b${i + 1}`,
-    image: images[i % images.length],
-    accent: accents[i % accents.length],
+    image: baseImg,
+    accent,
     ts: seed.length - i,
-    product: {
-      ...ps,
-      gallery: [images[i % images.length], ...productGallery].slice(0, 4),
-      features: featurePool,
-      specs: specPool,
-    },
+    intro: intros[i % intros.length],
+    products,
   };
 });
 
