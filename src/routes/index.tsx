@@ -101,6 +101,7 @@ type Article = {
 
 const featuredArticle: Article = {
   id: "a0",
+  postId: "b1",
   index: "00",
   tag: "Identity",
   title: "The death of the flat logo and the rise of depth",
@@ -114,6 +115,7 @@ const featuredArticle: Article = {
 const articles: Article[] = [
   {
     id: "a1",
+    postId: "b2",
     index: "01",
     tag: "Technology",
     title: "Neural interfaces and the user experience",
@@ -125,6 +127,7 @@ const articles: Article[] = [
   },
   {
     id: "a2",
+    postId: "b3",
     index: "02",
     tag: "Culture",
     title: "Why maximalism is the new luxury for Gen Alpha",
@@ -136,6 +139,7 @@ const articles: Article[] = [
   },
   {
     id: "a3",
+    postId: "b4",
     index: "03",
     tag: "Process",
     title: "Coded design: Building tools, not just pages",
@@ -160,6 +164,7 @@ type InteractiveCard = {
 const interactiveCards: InteractiveCard[] = [
   {
     id: "ic1",
+    postId: "b5",
     tag: "Field Notes",
     title: "A week inside a Tokyo type foundry",
     excerpt: "Inkstones, glyph proofs, and the slow architecture of a 14,000-character family.",
@@ -169,6 +174,7 @@ const interactiveCards: InteractiveCard[] = [
   },
   {
     id: "ic2",
+    postId: "b6",
     tag: "Interview",
     title: "Anya Mehta on designing for stillness",
     excerpt: "The London-based art director on whitespace, refusal, and the politics of not shouting.",
@@ -178,6 +184,7 @@ const interactiveCards: InteractiveCard[] = [
   },
   {
     id: "ic3",
+    postId: "b7",
     tag: "Toolkit",
     title: "Ten micro-interactions worth stealing",
     excerpt: "A live, copy-paste reel of the small motion details that make interfaces feel alive.",
@@ -187,6 +194,7 @@ const interactiveCards: InteractiveCard[] = [
   },
   {
     id: "ic4",
+    postId: "b8",
     tag: "Essay",
     title: "The quiet return of the print object",
     excerpt: "Risograph zines, hand-bound annuals, and why studios are pressing things again.",
