@@ -906,8 +906,9 @@ function BlogSectionInner() {
 
         {/* Featured article card */}
         {showFeatured && (
-          <a
-            href="#"
+          <Link
+            to="/blog/$postId"
+            params={{ postId: featuredArticle.postId }}
             data-cursor="Read featured"
             onMouseEnter={() => setHoverId(featuredArticle.id)}
             onMouseLeave={() => setHoverId(null)}
@@ -961,7 +962,7 @@ function BlogSectionInner() {
                 </div>
               </div>
             </div>
-          </a>
+          </Link>
         )}
 
         {/* Interactive cards — sit between the featured story and the index list */}
