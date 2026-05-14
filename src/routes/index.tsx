@@ -777,7 +777,9 @@ function InteractiveBlogCards({
                 }}
               >
                 <a
-                  href="#"
+                <Link
+                  to="/blog/$postId"
+                  params={{ postId: c.postId }}
                   data-cursor="Read"
                   onMouseEnter={() => onHover(c.id)}
                   onMouseLeave={() => onHover(null)}
