@@ -1,8 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { posts, accentChip, formatViews, type Post } from "@/lib/blog-data";
+import { posts, accentChip, formatViews, type Post, type ProductItem } from "@/lib/blog-data";
 
-export const Route = createFileRoute("/blog_/$postId")({
+export const Route = createFileRoute("/blog/$postId")({
   component: PostPage,
   loader: ({ params }) => {
     const post = posts.find((p) => p.id === params.postId);
@@ -47,22 +47,12 @@ export const Route = createFileRoute("/blog_/$postId")({
 
 function PostPage() {
   const { post } = Route.useLoaderData() as { post: Post };
-  const [activeImg, setActiveImg] = useState(0);
-  const [zoom, setZoom] = useState({ x: 50, y: 50, on: false });
-  const [colorIdx, setColorIdx] = useState(0);
-  const [qty, setQty] = useState(1);
-  const [liked, setLiked] = useState(false);
-  const [saved, setSaved] = useState(false);
   const [progress, setProgress] = useState(0);
   const articleRef = useRef<HTMLDivElement>(null);
 
   const related = useMemo(
     () => posts.filter((p) => p.id !== post.id && p.tag === post.tag).slice(0, 3),
     [post.id, post.tag],
-  );
-  const morePicks = useMemo(
-    () => posts.filter((p) => p.id !== post.id).sort((a, b) => b.likes - a.likes).slice(0, 4),
-    [post.id],
   );
 
   useEffect(() => {
@@ -77,28 +67,11 @@ function PostPage() {
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  // Reset on post change
-  useEffect(() => {
-    setActiveImg(0);
-    setColorIdx(0);
-    setQty(1);
-    setLiked(false);
-    setSaved(false);
-    window.scrollTo({ top: 0 });
   }, [post.id]);
 
-  const onZoom = (e: React.MouseEvent<HTMLDivElement>) => {
-    const r = e.currentTarget.getBoundingClientRect();
-    setZoom({
-      x: ((e.clientX - r.left) / r.width) * 100,
-      y: ((e.clientY - r.top) / r.height) * 100,
-      on: true,
-    });
-  };
-
-  const activeColor = post.product.palette[colorIdx];
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [post.id]);
 
   return (
     <main className="min-h-screen bg-background">
@@ -123,254 +96,69 @@ function PostPage() {
         </Link>
       </nav>
 
-      {/* Breadcrumb + meta */}
-      <section className="px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12">
-        <div className="max-w-screen-xl mx-auto">
-          <p className="text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.25em] text-muted-foreground mb-6 flex flex-wrap items-center gap-2">
-            <Link to="/" className="hover:text-foreground">Home</Link>
-            <span>/</span>
-            <Link to="/blog" className="hover:text-foreground">Journal</Link>
-            <span>/</span>
-            <span className="text-brand">{post.tag}</span>
-          </p>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
-            <div className="lg:col-span-8">
-              <span className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest mb-5 ${accentChip[post.accent]}`}>
-                {post.tag} · Field study
-              </span>
-              <h1 className="text-[2.2rem] sm:text-5xl md:text-6xl font-semibold tracking-tighter leading-[0.98] text-balance mb-6">
-                {post.title}
-              </h1>
-              <p className="text-base sm:text-lg text-muted-foreground max-w-2xl text-pretty">
-                {post.excerpt}
-              </p>
-            </div>
-            <div className="lg:col-span-4 grid grid-cols-2 gap-4 text-[11px] font-mono uppercase tracking-[0.2em]">
-              <div className="rounded-xl bg-foreground/[0.04] p-4">
-                <p className="text-muted-foreground mb-1">Author</p>
-                <p className="text-foreground normal-case tracking-normal font-sans font-semibold text-sm">{post.author}</p>
-                <p className="text-muted-foreground normal-case tracking-normal font-sans text-xs mt-0.5">{post.authorRole}</p>
-              </div>
-              <div className="rounded-xl bg-foreground/[0.04] p-4">
-                <p className="text-muted-foreground mb-1">Read</p>
-                <p className="text-foreground normal-case tracking-normal font-sans font-semibold text-sm">{post.readTime}</p>
-                <p className="text-muted-foreground normal-case tracking-normal font-sans text-xs mt-0.5">{post.date}</p>
-              </div>
-              <div className="rounded-xl bg-foreground/[0.04] p-4">
-                <p className="text-muted-foreground mb-1">Views</p>
-                <p className="text-foreground normal-case tracking-normal font-sans font-semibold text-sm">{formatViews(post.views)}</p>
-              </div>
-              <div className="rounded-xl bg-foreground/[0.04] p-4">
-                <p className="text-muted-foreground mb-1">Likes</p>
-                <p className="text-foreground normal-case tracking-normal font-sans font-semibold text-sm">{formatViews(post.likes)}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Article body + product showcase */}
       <div ref={articleRef}>
-        {/* Product showcase */}
-        <section className="px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-          <div className="max-w-screen-xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-            {/* Gallery */}
-            <div className="lg:col-span-7">
-              <div
-                onMouseMove={onZoom}
-                onMouseLeave={() => setZoom((z) => ({ ...z, on: false }))}
-                className="relative aspect-[4/3] sm:aspect-[5/4] rounded-3xl overflow-hidden bg-foreground/[0.04] cursor-zoom-in"
-                style={{ background: `radial-gradient(circle at 50% 30%, ${activeColor.hex}22, transparent 60%)` }}
-              >
-                <img
-                  src={post.product.gallery[activeImg]}
-                  alt={post.product.name}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 ease-out"
-                  style={{
-                    transform: zoom.on ? `scale(1.6)` : "scale(1)",
-                    transformOrigin: `${zoom.x}% ${zoom.y}%`,
-                  }}
-                />
-                <span className="absolute top-4 left-4 inline-flex items-center gap-2 bg-cream/90 text-ink backdrop-blur rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest">
-                  {post.product.edition}
+        {/* HERO — interactive cover image */}
+        <HeroCover post={post} />
+
+        {/* Title + short description */}
+        <section className="px-4 sm:px-6 lg:px-8 pt-10 sm:pt-16 pb-8 sm:pb-12">
+          <div className="max-w-4xl mx-auto text-center">
+            <p className="text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.3em] text-muted-foreground mb-5 flex flex-wrap items-center justify-center gap-2">
+              <Link to="/" className="hover:text-foreground">Home</Link>
+              <span className="opacity-40">/</span>
+              <Link to="/blog" className="hover:text-foreground">Journal</Link>
+              <span className="opacity-40">/</span>
+              <span className="text-brand">{post.tag}</span>
+            </p>
+            <span className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest mb-6 ${accentChip[post.accent]}`}>
+              {post.tag} · Field study
+            </span>
+            <h1 className="text-[2.4rem] sm:text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tighter leading-[0.95] text-balance mb-6">
+              {post.title}
+            </h1>
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto text-pretty leading-relaxed">
+              {post.excerpt}
+            </p>
+
+            {/* meta strip */}
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-[11px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
+              <span className="inline-flex items-center gap-2">
+                <span className="size-7 rounded-full bg-gradient-to-br from-brand to-pop grid place-items-center text-cream text-[9px]">
+                  {post.author.split(" ").map((s) => s[0]).join("")}
                 </span>
-                <span className="absolute bottom-4 right-4 inline-flex items-center gap-2 bg-ink/80 text-cream backdrop-blur rounded-full px-3 py-1 text-[10px] font-mono uppercase tracking-[0.2em]">
-                  ⊕ Hover to zoom · {String(activeImg + 1).padStart(2, "0")}/{post.product.gallery.length}
-                </span>
-              </div>
-              <div className="mt-4 grid grid-cols-4 gap-3">
-                {post.product.gallery.map((src, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={() => setActiveImg(i)}
-                    aria-label={`View image ${i + 1}`}
-                    className={`relative aspect-square overflow-hidden rounded-xl border-2 transition-all ${
-                      i === activeImg ? "border-brand scale-[1.02]" : "border-transparent hover:border-foreground/30"
-                    }`}
-                  >
-                    <img src={src} alt="" className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
-                  </button>
-                ))}
-              </div>
+                <span className="normal-case tracking-normal font-sans text-foreground text-sm">{post.author}</span>
+              </span>
+              <span>· {post.date}</span>
+              <span>· {post.readTime} read</span>
+              <span>· {formatViews(post.views)} views</span>
             </div>
 
-            {/* Product card */}
-            <aside className="lg:col-span-5 lg:sticky lg:top-24 self-start">
-              <div className="rounded-3xl border border-foreground/10 bg-background p-6 sm:p-8 shadow-[0_30px_60px_-40px_rgba(0,0,0,0.3)]">
-                <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-brand mb-2">Featured object</p>
-                <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight mb-2">{post.product.name}</h2>
-                <p className="text-sm text-muted-foreground mb-6">{post.product.tagline}</p>
-
-                <div className="flex items-baseline gap-3 mb-6">
-                  <span className="text-3xl sm:text-4xl font-semibold tracking-tight tabular-nums">{post.product.price}</span>
-                  <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-muted-foreground">incl. shipping</span>
-                </div>
-
-                {/* Color swatches */}
-                <div className="mb-6">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-muted-foreground mb-3">
-                    Finish · <span className="text-foreground">{activeColor.name}</span>
-                  </p>
-                  <div className="flex gap-2.5">
-                    {post.product.palette.map((c, i) => (
-                      <button
-                        key={c.name}
-                        type="button"
-                        onClick={() => setColorIdx(i)}
-                        aria-label={c.name}
-                        className={`size-10 rounded-full border-2 transition-all ${
-                          i === colorIdx ? "border-foreground scale-110" : "border-foreground/15 hover:border-foreground/40"
-                        }`}
-                        style={{ backgroundColor: c.hex }}
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                {/* Quantity + CTA */}
-                <div className="flex items-stretch gap-3 mb-5">
-                  <div className="flex items-center rounded-full border border-foreground/15 overflow-hidden">
-                    <button
-                      type="button"
-                      onClick={() => setQty((q) => Math.max(1, q - 1))}
-                      className="size-11 grid place-items-center hover:bg-foreground/5 text-lg"
-                      aria-label="Decrease quantity"
-                    >−</button>
-                    <span className="w-8 text-center font-mono tabular-nums">{qty}</span>
-                    <button
-                      type="button"
-                      onClick={() => setQty((q) => Math.min(9, q + 1))}
-                      className="size-11 grid place-items-center hover:bg-foreground/5 text-lg"
-                      aria-label="Increase quantity"
-                    >+</button>
-                  </div>
-                  <button
-                    type="button"
-                    className="flex-1 inline-flex items-center justify-center gap-2 bg-ink text-cream rounded-full px-5 text-[11px] font-bold uppercase tracking-widest hover:scale-[1.02] active:scale-100 transition-transform"
-                  >
-                    Add to cart →
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3 mb-6">
-                  <button
-                    type="button"
-                    onClick={() => setLiked((v) => !v)}
-                    className={`inline-flex items-center justify-center gap-2 rounded-full px-4 py-2.5 text-[11px] font-bold uppercase tracking-widest transition-all ${
-                      liked ? "bg-pop text-pop-foreground" : "bg-foreground/[0.04] hover:bg-foreground/10"
-                    }`}
-                  >
-                    {liked ? "♥ Loved" : "♡ Love"}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setSaved((v) => !v)}
-                    className={`inline-flex items-center justify-center gap-2 rounded-full px-4 py-2.5 text-[11px] font-bold uppercase tracking-widest transition-all ${
-                      saved ? "bg-brand text-brand-foreground" : "bg-foreground/[0.04] hover:bg-foreground/10"
-                    }`}
-                  >
-                    {saved ? "✓ Saved" : "+ Save"}
-                  </button>
-                </div>
-
-                <dl className="grid grid-cols-2 gap-x-4 gap-y-3 pt-5 border-t border-foreground/10 text-xs">
-                  <div>
-                    <dt className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">Dimensions</dt>
-                    <dd className="text-foreground mt-0.5">{post.product.dimensions}</dd>
-                  </div>
-                  <div>
-                    <dt className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">Edition</dt>
-                    <dd className="text-foreground mt-0.5">{post.product.edition}</dd>
-                  </div>
-                  <div className="col-span-2">
-                    <dt className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-1.5">Materials</dt>
-                    <dd className="flex flex-wrap gap-1.5">
-                      {post.product.materials.map((m) => (
-                        <span key={m} className="rounded-full bg-foreground/[0.06] px-2.5 py-1 text-[11px]">{m}</span>
-                      ))}
-                    </dd>
-                  </div>
-                </dl>
-              </div>
-            </aside>
+            {/* intro paragraph */}
+            <p className="mt-10 text-base sm:text-lg text-foreground/80 leading-relaxed text-left max-w-3xl mx-auto">
+              {post.intro}
+            </p>
           </div>
         </section>
 
-        {/* Article copy */}
-        <section className="px-4 sm:px-6 lg:px-8 py-10 sm:py-14 bg-foreground/[0.02] border-y border-foreground/5">
+        {/* Products in story */}
+        <div className="px-4 sm:px-6 lg:px-8 pb-12 sm:pb-20 space-y-20 sm:space-y-28">
+          {post.products.map((product, idx) => (
+            <ProductBlock key={idx} product={product} index={idx} total={post.products.length} />
+          ))}
+        </div>
+
+        {/* Closing + author card */}
+        <section className="px-4 sm:px-6 lg:px-8 py-12 sm:py-16 bg-foreground/[0.02] border-y border-foreground/5">
           <div className="max-w-3xl mx-auto">
-            <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-brand mb-4">The story</p>
-            <p className="text-xl sm:text-2xl leading-snug font-medium text-balance mb-8">
-              We started with a question: what would this object look like if we threw away the brief and worked backwards from the way it should feel in your hand?
+            <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-brand mb-4">— End of file</p>
+            <p className="text-xl sm:text-2xl leading-snug font-medium text-balance mb-10">
+              That's the collection. If one of them quietly bothers you in a good way, that's usually the one.
             </p>
-            <div className="space-y-5 text-base text-foreground/80 leading-relaxed">
-              <p>
-                Every {post.product.name.toLowerCase()} begins as a sketch and ends as a small ritual on someone's desk. Between those two points sits a year of testing, a graveyard of prototypes, and a small Lisbon workshop that smells, depending on the season, of brass shavings or coffee.
-              </p>
-              <p>
-                {post.excerpt} The rest of this piece is a tour through the choices behind it — the materials we tried and rejected, the moment we almost shipped the wrong colour, and what we learned from the people quietly using version 0.4 every day.
-              </p>
-            </div>
-
-            {/* Pull quote */}
-            <blockquote className="my-12 p-8 sm:p-10 rounded-3xl bg-ink text-cream relative overflow-hidden">
-              <span className="absolute top-4 left-6 text-7xl opacity-20 leading-none">"</span>
-              <p className="text-lg sm:text-2xl font-medium leading-snug relative">
-                Good objects don't ask for attention. They wait, and reward you the third time you reach for them.
-              </p>
-              <footer className="mt-5 text-[11px] font-mono uppercase tracking-[0.25em] text-pop relative">
-                — {post.author}, in studio
-              </footer>
-            </blockquote>
-
-            <h3 className="text-2xl font-semibold tracking-tight mb-5">What makes it different</h3>
-            <div className="grid sm:grid-cols-2 gap-4 mb-10">
-              {post.product.features.map((f, i) => (
-                <div
-                  key={f.title}
-                  className="group rounded-2xl border border-foreground/10 p-5 hover:border-foreground/30 hover:-translate-y-0.5 transition-all bg-background"
-                >
-                  <span className="inline-grid place-items-center size-8 rounded-full bg-brand text-brand-foreground text-xs font-mono mb-3">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <h4 className="font-semibold tracking-tight mb-1.5 group-hover:text-brand transition-colors">{f.title}</h4>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{f.body}</p>
-                </div>
-              ))}
-            </div>
-
-            <p className="text-base text-foreground/80 leading-relaxed mb-5">
-              We could go on. We won't. The only way to really understand a piece like this is to live with it for a week, watch your hand reach for it without looking, and let it become invisible in the best possible sense.
-            </p>
-
-            {/* Author card */}
-            <div className="mt-12 rounded-3xl border border-foreground/10 p-6 sm:p-8 flex items-center gap-5 bg-background">
-              <div className="size-16 rounded-full bg-gradient-to-br from-brand to-pop grid place-items-center text-cream text-lg font-mono">
+            <div className="rounded-3xl border border-foreground/10 p-6 sm:p-8 flex items-center gap-5 bg-background">
+              <div className="size-16 rounded-full bg-gradient-to-br from-brand to-pop grid place-items-center text-cream text-lg font-mono shrink-0">
                 {post.author.split(" ").map((s) => s[0]).join("")}
               </div>
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-muted-foreground">Written by</p>
                 <p className="font-semibold text-lg tracking-tight">{post.author}</p>
                 <p className="text-sm text-muted-foreground">{post.authorRole} · Studio Kinetic</p>
@@ -382,24 +170,9 @@ function PostPage() {
           </div>
         </section>
 
-        {/* Specs marquee */}
-        <section className="px-4 sm:px-6 lg:px-8 py-12">
-          <div className="max-w-screen-xl mx-auto">
-            <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.25em] text-brand mb-6">The fine print</p>
-            <dl className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-              {post.product.specs.map((s) => (
-                <div key={s.label} className="rounded-2xl border border-foreground/10 p-4 hover:bg-foreground/[0.03] transition-colors">
-                  <dt className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-1.5">{s.label}</dt>
-                  <dd className="text-sm font-semibold tracking-tight">{s.value}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-        </section>
-
         {/* Related */}
         {related.length > 0 && (
-          <section className="px-4 sm:px-6 lg:px-8 py-14 sm:py-20 border-t border-foreground/10">
+          <section className="px-4 sm:px-6 lg:px-8 py-14 sm:py-20">
             <div className="max-w-screen-xl mx-auto">
               <div className="flex items-end justify-between mb-8 gap-4">
                 <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight">More from <span className="italic font-light">{post.tag}</span></h2>
@@ -426,31 +199,6 @@ function PostPage() {
                   </Link>
                 ))}
               </div>
-
-              {/* Editor's picks rail */}
-              <div className="mt-14 rounded-3xl bg-ink text-cream p-6 sm:p-10">
-                <div className="flex items-end justify-between mb-6 gap-4">
-                  <div>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-pop mb-2">You might also love</p>
-                    <h3 className="text-xl sm:text-2xl font-semibold tracking-tight">Hand-picked from the index</h3>
-                  </div>
-                </div>
-                <ol className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {morePicks.map((p, i) => (
-                    <li key={p.id}>
-                      <Link to="/blog/$postId" params={{ postId: p.id }} className="group block">
-                        <div className="flex items-start gap-3">
-                          <span className="font-mono text-pop text-xs tabular-nums pt-1">{String(i + 1).padStart(2, "0")}</span>
-                          <div>
-                            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-cream/50 mb-1">{p.tag} · {p.readTime}</p>
-                            <p className="text-sm font-medium leading-snug group-hover:text-pop transition-colors">{p.title}</p>
-                          </div>
-                        </div>
-                      </Link>
-                    </li>
-                  ))}
-                </ol>
-              </div>
             </div>
           </section>
         )}
@@ -467,5 +215,235 @@ function PostPage() {
         </div>
       </footer>
     </main>
+  );
+}
+
+/* ---------- HERO COVER (parallax tilt + scroll parallax) ---------- */
+function HeroCover({ post }: { post: Post }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const el = ref.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      setScrollY(Math.max(0, -r.top));
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - r.left) / r.width - 0.5) * 12;
+    const y = ((e.clientY - r.top) / r.height - 0.5) * -12;
+    setTilt({ x, y });
+  };
+
+  return (
+    <section
+      ref={ref}
+      onMouseMove={onMove}
+      onMouseLeave={() => setTilt({ x: 0, y: 0 })}
+      className="relative h-[60vh] sm:h-[72vh] lg:h-[82vh] overflow-hidden bg-ink"
+      style={{ perspective: "1200px" }}
+    >
+      <div
+        className="absolute inset-0 transition-transform duration-200 ease-out will-change-transform"
+        style={{
+          transform: `translateY(${scrollY * 0.25}px) rotateX(${tilt.y}deg) rotateY(${tilt.x}deg) scale(1.08)`,
+          transformStyle: "preserve-3d",
+        }}
+      >
+        <img src={post.image} alt={post.title} className="absolute inset-0 w-full h-full object-cover" />
+        {/* color wash */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-ink/10 to-ink/70" />
+        <div className="absolute inset-0 mix-blend-overlay opacity-60 bg-[radial-gradient(circle_at_70%_30%,#ff5b2e55,transparent_55%),radial-gradient(circle_at_20%_80%,#39d4a355,transparent_55%)]" />
+      </div>
+
+      {/* floating chips */}
+      <div className="absolute top-6 left-6 sm:top-8 sm:left-8 flex flex-wrap gap-2 z-10">
+        <span className="inline-flex items-center gap-2 bg-cream/90 text-ink backdrop-blur rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest">
+          ★ Featured story
+        </span>
+        <span className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest ${accentChip[post.accent]}`}>
+          {post.tag}
+        </span>
+      </div>
+      <div className="absolute bottom-6 right-6 sm:bottom-8 sm:right-8 z-10">
+        <span className="inline-flex items-center gap-2 bg-ink/70 text-cream backdrop-blur rounded-full px-3 py-1.5 text-[10px] font-mono uppercase tracking-[0.25em]">
+          ⊕ Move cursor · {post.readTime}
+        </span>
+      </div>
+
+      {/* scroll indicator */}
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 text-cream/80">
+        <span className="text-[9px] font-mono uppercase tracking-[0.3em]">Scroll</span>
+        <span className="block h-8 w-px bg-cream/40 animate-pulse" />
+      </div>
+    </section>
+  );
+}
+
+/* ---------- PRODUCT BLOCK (interactive image + Get now CTA + description) ---------- */
+function ProductBlock({ product, index, total }: { product: ProductItem; index: number; total: number }) {
+  const [zoom, setZoom] = useState({ x: 50, y: 50, on: false });
+  const [colorIdx, setColorIdx] = useState(0);
+  const [imgFlip, setImgFlip] = useState(false);
+  const [liked, setLiked] = useState(false);
+  const [added, setAdded] = useState(false);
+
+  const onZoom = (e: React.MouseEvent<HTMLDivElement>) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    setZoom({
+      x: ((e.clientX - r.left) / r.width) * 100,
+      y: ((e.clientY - r.top) / r.height) * 100,
+      on: true,
+    });
+  };
+
+  const activeColor = product.palette[colorIdx];
+  const handleAdd = () => {
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1800);
+  };
+
+  return (
+    <section className="max-w-5xl mx-auto">
+      {/* index marker + product title */}
+      <div className="flex items-baseline gap-4 mb-3">
+        <span className="font-mono text-xs sm:text-sm tabular-nums text-brand">
+          {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+        </span>
+        <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-muted-foreground">
+          Featured object
+        </span>
+      </div>
+      <h2 className="text-3xl sm:text-5xl md:text-6xl font-semibold tracking-tighter leading-[0.95] text-balance mb-3">
+        {product.name}
+      </h2>
+      <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mb-8">
+        {product.tagline}
+      </p>
+
+      {/* Interactive image */}
+      <div
+        onMouseMove={onZoom}
+        onMouseLeave={() => setZoom((z) => ({ ...z, on: false }))}
+        className="relative aspect-[16/10] sm:aspect-[16/9] rounded-3xl overflow-hidden cursor-zoom-in group"
+        style={{
+          background: `radial-gradient(circle at 50% 30%, ${activeColor.hex}33, transparent 65%), ${activeColor.hex}10`,
+        }}
+      >
+        <img
+          src={imgFlip ? product.altImage : product.image}
+          alt={product.name}
+          className="absolute inset-0 w-full h-full object-cover transition-all duration-500 ease-out"
+          style={{
+            transform: zoom.on ? "scale(1.55)" : "scale(1)",
+            transformOrigin: `${zoom.x}% ${zoom.y}%`,
+          }}
+        />
+
+        {/* edition tag */}
+        <span className="absolute top-4 left-4 inline-flex items-center gap-2 bg-cream/90 text-ink backdrop-blur rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest z-10">
+          {product.edition}
+        </span>
+
+        {/* zoom hint */}
+        <span className="absolute top-4 right-4 inline-flex items-center gap-2 bg-ink/70 text-cream backdrop-blur rounded-full px-3 py-1.5 text-[10px] font-mono uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity z-10">
+          ⊕ Hover to zoom
+        </span>
+
+        {/* color swatches inside image */}
+        <div className="absolute bottom-4 left-4 z-10 flex items-center gap-2 bg-background/80 backdrop-blur rounded-full p-1.5">
+          {product.palette.map((c, i) => (
+            <button
+              key={c.name}
+              type="button"
+              onClick={(e) => { e.stopPropagation(); setColorIdx(i); }}
+              aria-label={c.name}
+              className={`size-7 rounded-full border-2 transition-all ${
+                i === colorIdx ? "border-foreground scale-110" : "border-transparent hover:scale-110"
+              }`}
+              style={{ backgroundColor: c.hex }}
+            />
+          ))}
+          <span className="px-2 text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
+            {activeColor.name}
+          </span>
+        </div>
+
+        {/* flip thumbnails */}
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); setImgFlip((v) => !v); }}
+          className="absolute bottom-4 right-4 z-10 inline-flex items-center gap-2 bg-background/80 hover:bg-background backdrop-blur rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest transition-colors"
+        >
+          ⇄ View {imgFlip ? "front" : "back"}
+        </button>
+      </div>
+
+      {/* Get now CTA right under the image */}
+      <div className="mt-5 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+        <div className="flex items-baseline gap-3">
+          <span className="text-3xl sm:text-4xl font-semibold tracking-tight tabular-nums">{product.price}</span>
+          <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-muted-foreground">incl. shipping</span>
+        </div>
+        <div className="flex-1 flex items-stretch gap-3">
+          <button
+            type="button"
+            onClick={handleAdd}
+            className={`flex-1 sm:flex-none inline-flex items-center justify-center gap-3 rounded-full px-7 py-4 text-xs sm:text-[13px] font-bold uppercase tracking-widest transition-all hover:scale-[1.03] active:scale-100 ${
+              added ? "bg-mint text-ink" : "bg-ink text-cream"
+            }`}
+          >
+            {added ? "✓ Added to cart" : "Get it now"}
+            <span className={`inline-grid place-items-center size-6 rounded-full ${added ? "bg-ink/20" : "bg-cream/15"}`}>→</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setLiked((v) => !v)}
+            aria-label="Save"
+            className={`size-14 grid place-items-center rounded-full transition-all hover:scale-105 ${
+              liked ? "bg-pop text-pop-foreground" : "bg-foreground/[0.05] hover:bg-foreground/10"
+            }`}
+          >
+            {liked ? "♥" : "♡"}
+          </button>
+        </div>
+      </div>
+
+      {/* Description */}
+      <div className="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+        <div className="lg:col-span-8">
+          <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-brand mb-3">About this object</p>
+          <p className="text-base sm:text-lg text-foreground/85 leading-relaxed text-pretty">
+            {product.description}
+          </p>
+        </div>
+        <ul className="lg:col-span-4 space-y-2.5 lg:border-l lg:border-foreground/10 lg:pl-8">
+          <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-muted-foreground mb-3">In the box</p>
+          {product.features.map((f) => (
+            <li key={f} className="flex items-center gap-3 text-sm">
+              <span className="size-1.5 rounded-full bg-brand" />
+              <span className="text-foreground/85">{f}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* divider for next product */}
+      {index < total - 1 && (
+        <div className="mt-16 sm:mt-20 flex items-center gap-4 text-[10px] font-mono uppercase tracking-[0.3em] text-muted-foreground">
+          <span className="h-px flex-1 bg-foreground/10" />
+          <span>↓ Next object</span>
+          <span className="h-px flex-1 bg-foreground/10" />
+        </div>
+      )}
+    </section>
   );
 }
