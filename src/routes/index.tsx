@@ -776,7 +776,6 @@ function InteractiveBlogCards({
                   willChange: "transform, opacity",
                 }}
               >
-                <a
                 <Link
                   to="/blog/$postId"
                   params={{ postId: c.postId }}
