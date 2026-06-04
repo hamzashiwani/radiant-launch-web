@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { posts, accentChip, formatViews, type Post, type ProductItem } from "@/lib/blog-data";
+import { MobileMenu } from "@/components/MobileMenu";
 
 export const Route = createFileRoute("/blog_/$postId")({
   component: PostPage,
@@ -94,6 +95,7 @@ function PostPage() {
         <Link to="/blog" className="inline-flex items-center gap-2 bg-ink text-cream rounded-full px-3.5 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-bold uppercase tracking-widest hover:scale-[1.04] transition-transform">
           ← Journal
         </Link>
+        <MobileMenu />
       </nav>
 
       <div ref={articleRef}>

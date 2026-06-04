@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useRef, useState, type MouseEvent as ReactMouseEvent, type ReactNode } from "react";
+import { MobileMenu } from "@/components/MobileMenu";
 import product1 from "@/assets/product-1.jpg";
 import product2 from "@/assets/product-2.jpg";
 import product3 from "@/assets/product-3.jpg";
@@ -221,6 +222,7 @@ function ProductsPage() {
           <Link to="/" className="hidden sm:inline-flex items-center gap-2 border border-foreground/15 rounded-full px-3 py-1.5 text-[10px] sm:text-xs font-bold uppercase tracking-widest hover:border-foreground/40 transition-colors">
             ← Home
           </Link>
+          <MobileMenu />
         </div>
       </nav>
 
