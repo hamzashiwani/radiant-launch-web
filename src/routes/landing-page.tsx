@@ -267,26 +267,23 @@ function CouponCard({
         </div>
       </div>
 
-      <div className="sm:w-40 flex sm:flex-col items-stretch justify-center">
-        <div className="reveal-wrap relative w-full h-10 rounded-lg overflow-hidden isolate ring-1 ring-foreground/10">
-          {/* Blurred code teaser sitting behind the button */}
-          <div
+      <div className="sm:w-36 flex sm:flex-col items-center justify-center">
+        <button
+          onClick={handleClick}
+          aria-label="Get code"
+          className="ticket-btn group/tk relative inline-flex items-center gap-2 rounded-full bg-ink text-cream pl-3 pr-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] shadow-[0_8px_20px_-10px_oklch(0.16_0.02_60/.6)] transition-all duration-300 hover:-translate-y-0.5 active:scale-95"
+        >
+          <span className="ticket-dot" aria-hidden />
+          <span className="relative z-10">Get Code</span>
+          <span aria-hidden className="relative z-10 inline-block transition-transform duration-300 group-hover/tk:translate-x-0.5">→</span>
+          {/* Blurred code chip that slides out on hover */}
+          <span
             aria-hidden
-            className="absolute inset-0 flex items-center justify-end pr-3 bg-[var(--gradient-shop)]"
+            className="ticket-chip pointer-events-none absolute left-1/2 top-full mt-1.5 -translate-x-1/2 translate-y-1 opacity-0 rotate-[-4deg] rounded-md bg-[var(--gradient-shop)] text-ink font-mono text-[10px] font-extrabold tracking-[0.3em] px-2.5 py-1 shadow-md transition-all duration-300 ease-out group-hover/tk:opacity-100 group-hover/tk:translate-y-0 group-hover/tk:rotate-[-2deg] uppercase"
           >
-            <span className="font-mono text-[13px] font-extrabold tracking-[0.25em] text-ink blur-[3px] select-none uppercase">
-              {coupon.code ?? "DEAL2024"}
-            </span>
-          </div>
-          <button
-            onClick={handleClick}
-            aria-label="Get code"
-            className="reveal-btn group/btn absolute inset-0 w-3/5 h-full bg-ink text-cream font-bold text-xs flex items-center justify-center gap-1.5 uppercase tracking-[0.15em] transition-transform duration-500 ease-[cubic-bezier(0.65,0,0.35,1)] active:scale-[0.97] rounded-r-[14px]"
-          >
-            <span className="inline-block transition-transform duration-300 group-hover/btn:-rotate-12">✂</span>
-            <span>Get Code</span>
-          </button>
-        </div>
+            <span className="blur-[2.5px] select-none">{coupon.code ?? "DEAL2024"}</span>
+          </span>
+        </button>
       </div>
     </article>
   );
