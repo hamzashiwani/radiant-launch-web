@@ -7,6 +7,7 @@ import {
 } from "@tanstack/react-router";
 
 import { InteractiveCursor } from "@/components/InteractiveCursor";
+import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
   return (
@@ -78,6 +79,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <InteractiveCursor />
       <Outlet />
+      <Toaster position="bottom-center" richColors />
     </QueryClientProvider>
   );
 }
