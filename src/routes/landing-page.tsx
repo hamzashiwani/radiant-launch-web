@@ -207,7 +207,6 @@ function CouponCard({
   onCopy: (code: string) => void;
 }) {
   const [revealed, setRevealed] = useState(false);
-  const [hover, setHover] = useState(false);
   const isExpiringSoon = coupon.expiresAt - now < 2 * DAY;
 
   const handleClick = () => {
@@ -220,8 +219,8 @@ function CouponCard({
   };
 
   return (
-    <article className="group relative flex flex-col sm:flex-row gap-4 sm:gap-6 items-stretch rounded-2xl border border-foreground/10 bg-background p-4 sm:p-5 shadow-sm hover:shadow-[var(--shadow-pop)] hover:-translate-y-0.5 transition-all duration-300">
-      <div className="sm:w-32 shrink-0 flex sm:flex-col items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-brand/15 to-pop/15 ring-1 ring-brand/25 p-4 text-center">
+    <article className="coupon-card group relative flex flex-col sm:flex-row gap-4 sm:gap-6 items-stretch rounded-2xl border border-foreground/10 bg-background p-4 sm:p-5 shadow-sm overflow-hidden">
+      <div className="coupon-notch sm:w-32 shrink-0 flex sm:flex-col items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-brand/15 to-pop/15 ring-1 ring-brand/25 p-4 text-center transition-transform duration-500 group-hover:scale-[1.04] group-hover:rotate-[-2deg]">
         <span className="text-2xl sm:text-3xl font-extrabold tracking-tight text-brand">
           {coupon.discount}
         </span>
@@ -271,37 +270,27 @@ function CouponCard({
       <div className="sm:w-44 flex sm:flex-col items-stretch justify-center">
         <button
           onClick={handleClick}
-          onMouseEnter={() => setHover(true)}
-          onMouseLeave={() => setHover(false)}
-          aria-label={coupon.type === "deal" ? "Get deal" : revealed ? "Code copied" : "Reveal and copy code"}
-          className="relative w-full overflow-hidden rounded-xl bg-ink text-cream font-bold text-sm py-3 px-4 shadow-[var(--shadow-pop)] transition-all active:scale-[0.97] isolate"
+          aria-label={revealed && coupon.code ? `Code ${coupon.code} copied` : "Get code"}
+          className="relative w-full overflow-hidden rounded-xl bg-ink text-cream font-bold text-sm py-3.5 px-4 shadow-[var(--shadow-pop)] transition-all duration-300 hover:-translate-y-0.5 hover:rotate-[-0.5deg] active:scale-[0.96] active:rotate-0 isolate animate-ring-pulse"
         >
-          {/* liquid blob */}
+          {/* animated gradient sweep */}
           <span
             aria-hidden
-            className={`pointer-events-none absolute left-1/2 top-1/2 -z-10 size-8 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--gradient-shop)] transition-all duration-700 ease-out animate-blob ${
-              hover ? "scale-[14] opacity-100" : "scale-100 opacity-80"
-            }`}
+            className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(120deg,var(--ink)_0%,var(--ink)_40%,color-mix(in_oklab,var(--brand)_70%,var(--ink))_50%,var(--ink)_60%,var(--ink)_100%)] bg-[length:250%_100%] bg-[position:100%_0] transition-[background-position] duration-700 ease-out group-hover:bg-[position:0%_0]"
           />
+          {/* shimmer streak on hover */}
           <span
             aria-hidden
-            className="pointer-events-none absolute inset-0 -z-10 opacity-0 group-hover:opacity-100 bg-[radial-gradient(circle_at_var(--mx,50%)_50%,oklch(0.99_0.01_80/.25),transparent_60%)]"
+            className="pointer-events-none absolute inset-y-0 -left-1/2 w-1/2 bg-gradient-to-r from-transparent via-cream/40 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-shimmer"
           />
-          <span className="relative z-10 inline-flex items-center justify-center gap-2">
-            {coupon.type === "deal" ? (
-              <>Get Deal <span aria-hidden>→</span></>
-            ) : revealed && coupon.code ? (
-              <span className="font-mono tracking-widest">{coupon.code}</span>
-            ) : (
-              <>
-                <span className="font-mono tracking-widest opacity-60">
-                  {coupon.code ? coupon.code.slice(0, 2) + "•".repeat(Math.max(0, coupon.code.length - 2)) : "•••"}
-                </span>
-                <span className="ml-1">Get Code</span>
-              </>
-            )}
+          {/* scissors notch */}
+          <span aria-hidden className="pointer-events-none absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 size-3 rounded-full bg-background ring-1 ring-foreground/10" />
+          <span aria-hidden className="pointer-events-none absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2 size-3 rounded-full bg-background ring-1 ring-foreground/10" />
+          <span className="relative z-10 inline-flex items-center justify-center gap-2 uppercase tracking-[0.18em]">
+            <span className="inline-block transition-transform duration-300 group-hover:-rotate-12">✂</span>
+            <span>Get Code</span>
+            <span aria-hidden className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
           </span>
-          <span className="pointer-events-none absolute inset-y-0 right-0 w-1.5 bg-pop/70" />
         </button>
         {coupon.type === "code" && revealed && (
           <p className="text-center text-[10px] mt-1.5 text-brand font-semibold">✓ Copied — opening store…</p>
@@ -420,10 +409,15 @@ function LandingPage() {
                     }
                     window.open(bestDeal.url, "_blank", "noopener,noreferrer");
                   }}
-                  className="group relative mt-5 w-full overflow-hidden bg-cream text-ink hover:text-cream font-bold rounded-xl py-3.5 text-sm uppercase tracking-widest shadow-lg transition-all active:scale-[0.98]"
+                  className="group relative mt-5 w-full overflow-hidden bg-cream text-ink hover:text-cream font-bold rounded-xl py-3.5 text-sm uppercase tracking-[0.18em] shadow-lg transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.98] animate-ring-pulse"
                 >
                   <span aria-hidden className="absolute inset-0 -z-0 scale-0 group-hover:scale-150 origin-center transition-transform duration-700 ease-out bg-[var(--gradient-shop)] rounded-full" />
-                  <span className="relative z-10">Get Code → <span className="font-mono">{bestDeal.code}</span></span>
+                  <span aria-hidden className="pointer-events-none absolute inset-y-0 -left-1/2 w-1/2 bg-gradient-to-r from-transparent via-white/60 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-shimmer" />
+                  <span className="relative z-10 inline-flex items-center justify-center gap-2">
+                    <span className="inline-block transition-transform duration-300 group-hover:-rotate-12">✂</span>
+                    Get Code
+                    <span aria-hidden className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
+                  </span>
                 </button>
               </div>
             </div>
