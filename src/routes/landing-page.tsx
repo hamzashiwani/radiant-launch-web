@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import { MobileMenu } from "@/components/MobileMenu";
 
 export const Route = createFileRoute("/landing-page")({
@@ -201,19 +202,18 @@ function tagStyle(tag: Tag) {
 
 function CouponCard({
   coupon,
-  onCopy,
 }: {
   coupon: Coupon;
-  onCopy: (code: string) => void;
 }) {
   const [revealed, setRevealed] = useState(false);
   const isExpiringSoon = coupon.expiresAt - now < 2 * DAY;
 
   const handleClick = () => {
-    if (coupon.code) {
-      navigator.clipboard?.writeText(coupon.code).catch(() => {});
-      onCopy(coupon.code);
-    }
+    const codeToCopy = coupon.code ?? "DEAL2024";
+    navigator.clipboard?.writeText(codeToCopy).catch(() => {});
+    toast.success("Code copied to clipboard", {
+      description: codeToCopy,
+    });
     setRevealed(true);
     window.open(coupon.url, "_blank", "noopener,noreferrer");
   };
@@ -267,32 +267,26 @@ function CouponCard({
         </div>
       </div>
 
-      <div className="sm:w-44 flex sm:flex-col items-stretch justify-center">
-        <div className="reveal-wrap relative w-full h-12 rounded-xl overflow-hidden shadow-[var(--shadow-pop)] isolate">
+      <div className="sm:w-40 flex sm:flex-col items-stretch justify-center">
+        <div className="reveal-wrap relative w-full h-10 rounded-lg overflow-hidden isolate ring-1 ring-foreground/10">
           {/* Blurred code teaser sitting behind the button */}
           <div
             aria-hidden
-            className="absolute inset-0 grid place-items-center bg-[var(--gradient-shop)] text-ink"
+            className="absolute inset-0 flex items-center justify-end pr-3 bg-[var(--gradient-shop)]"
           >
-            <span className="font-mono text-base font-extrabold tracking-[0.35em] blur-[5px] select-none uppercase">
-              {coupon.code ?? "DEAL"}
+            <span className="font-mono text-[13px] font-extrabold tracking-[0.25em] text-ink blur-[3px] select-none uppercase">
+              {coupon.code ?? "DEAL2024"}
             </span>
           </div>
           <button
             onClick={handleClick}
-            aria-label={revealed && coupon.code ? `Code ${coupon.code} copied` : "Get code"}
-            className="reveal-btn group/btn absolute inset-0 w-full h-full bg-ink text-cream font-bold text-sm flex items-center justify-center gap-2 uppercase tracking-[0.18em] transition-transform duration-500 ease-[cubic-bezier(0.65,0,0.35,1)] active:scale-[0.97]"
+            aria-label="Get code"
+            className="reveal-btn group/btn absolute inset-0 w-3/5 h-full bg-ink text-cream font-bold text-xs flex items-center justify-center gap-1.5 uppercase tracking-[0.15em] transition-transform duration-500 ease-[cubic-bezier(0.65,0,0.35,1)] active:scale-[0.97] rounded-r-[14px]"
           >
-            <span aria-hidden className="absolute left-2 top-1/2 -translate-y-1/2 size-2.5 rounded-full bg-background/90" />
-            <span aria-hidden className="absolute right-2 top-1/2 -translate-y-1/2 size-2.5 rounded-full bg-background/90" />
             <span className="inline-block transition-transform duration-300 group-hover/btn:-rotate-12">✂</span>
             <span>Get Code</span>
-            <span aria-hidden className="inline-block transition-transform duration-300 group-hover/btn:translate-x-1">→</span>
           </button>
         </div>
-        {coupon.type === "code" && revealed && (
-          <p className="text-center text-[10px] mt-1.5 text-brand font-semibold">✓ Copied — opening store…</p>
-        )}
       </div>
     </article>
   );
