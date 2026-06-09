@@ -200,3 +200,71 @@
 }
 .animate-wiggle { animation: wiggle 3s ease-in-out infinite; }
 
+/* ===== Coupon button: shimmer + magnet ===== */
+@keyframes shimmer {
+  0%   { transform: translateX(-120%) skewX(-20deg); }
+  100% { transform: translateX(220%)  skewX(-20deg); }
+}
+.animate-shimmer { animation: shimmer 2.2s ease-in-out infinite; }
+
+@keyframes ring-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--pop) 55%, transparent); }
+  50%      { box-shadow: 0 0 0 10px color-mix(in oklab, var(--pop) 0%,  transparent); }
+}
+.animate-ring-pulse { animation: ring-pulse 2.4s ease-out infinite; }
+
+/* ===== Coupon card creative hover ===== */
+.coupon-card {
+  transition: transform 500ms cubic-bezier(0.19,1,0.22,1), box-shadow 500ms ease, border-color 300ms ease;
+}
+.coupon-card::before {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: linear-gradient(135deg, var(--brand), var(--pop), var(--mint));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  opacity: 0; transition: opacity 400ms ease;
+  pointer-events: none;
+}
+.coupon-card::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 60%; height: 100%;
+  background: linear-gradient(120deg, transparent 0%, color-mix(in oklab, var(--pop) 22%, transparent) 50%, transparent 100%);
+  transform: translateX(-120%) skewX(-18deg);
+  transition: transform 900ms cubic-bezier(0.19,1,0.22,1);
+  pointer-events: none;
+  border-radius: inherit;
+}
+.coupon-card:hover {
+  transform: translateY(-6px) rotate(-0.25deg);
+  box-shadow: var(--shadow-pop);
+}
+.coupon-card:hover::before { opacity: 1; }
+.coupon-card:hover::after  { transform: translateX(220%) skewX(-18deg); }
+
+/* Perforated coupon edge */
+.coupon-notch {
+  position: relative;
+}
+.coupon-notch::before,
+.coupon-notch::after {
+  content: "";
+  position: absolute;
+  width: 18px; height: 18px;
+  background: var(--background);
+  border-radius: 50%;
+  left: -9px;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--foreground) 10%, transparent);
+}
+.coupon-notch::before { top: -9px; }
+.coupon-notch::after  { bottom: -9px; }
+@media (max-width: 640px) {
+  .coupon-notch::before, .coupon-notch::after { display: none; }
+}
+
