@@ -6,6 +6,7 @@ const links = [
   { to: "/", label: "Home" },
   { to: "/blog", label: "Journal" },
   { to: "/products", label: "Shop" },
+  { to: "/landing-page", label: "Landing Page" },
 ] as const;
 
 export function MobileMenu() {
