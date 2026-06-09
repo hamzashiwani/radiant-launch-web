@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { useRef } from "react";
 import { toast } from "sonner";
 import { MobileMenu } from "@/components/MobileMenu";
 
@@ -267,28 +268,107 @@ function CouponCard({
         </div>
       </div>
 
-      <div className="sm:w-40 flex sm:flex-col items-stretch justify-center">
-        <div className="reveal-wrap relative w-full h-10 rounded-lg overflow-hidden isolate ring-1 ring-foreground/10">
-          {/* Blurred code teaser sitting behind the button */}
-          <div
+      <div className="sm:w-36 flex sm:flex-col items-center justify-center">
+        <button
+          onClick={handleClick}
+          aria-label="Get code"
+          className="ticket-btn group/tk relative inline-flex items-center gap-2 rounded-full bg-ink text-cream pl-3 pr-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] shadow-[0_8px_20px_-10px_oklch(0.16_0.02_60/.6)] transition-all duration-300 hover:-translate-y-0.5 active:scale-95"
+        >
+          <span className="ticket-dot" aria-hidden />
+          <span className="relative z-10">Get Code</span>
+          <span aria-hidden className="relative z-10 inline-block transition-transform duration-300 group-hover/tk:translate-x-0.5">→</span>
+          {/* Blurred code chip that slides out on hover */}
+          <span
             aria-hidden
-            className="absolute inset-0 flex items-center justify-end pr-3 bg-[var(--gradient-shop)]"
+            className="ticket-chip pointer-events-none absolute left-1/2 top-full mt-1.5 -translate-x-1/2 translate-y-1 opacity-0 rotate-[-4deg] rounded-md bg-[var(--gradient-shop)] text-ink font-mono text-[10px] font-extrabold tracking-[0.3em] px-2.5 py-1 shadow-md transition-all duration-300 ease-out group-hover/tk:opacity-100 group-hover/tk:translate-y-0 group-hover/tk:rotate-[-2deg] uppercase"
           >
-            <span className="font-mono text-[13px] font-extrabold tracking-[0.25em] text-ink blur-[3px] select-none uppercase">
-              {coupon.code ?? "DEAL2024"}
-            </span>
-          </div>
-          <button
-            onClick={handleClick}
-            aria-label="Get code"
-            className="reveal-btn group/btn absolute inset-0 w-3/5 h-full bg-ink text-cream font-bold text-xs flex items-center justify-center gap-1.5 uppercase tracking-[0.15em] transition-transform duration-500 ease-[cubic-bezier(0.65,0,0.35,1)] active:scale-[0.97] rounded-r-[14px]"
-          >
-            <span className="inline-block transition-transform duration-300 group-hover/btn:-rotate-12">✂</span>
-            <span>Get Code</span>
-          </button>
-        </div>
+            <span className="blur-[2.5px] select-none">{coupon.code ?? "DEAL2024"}</span>
+          </span>
+        </button>
       </div>
     </article>
+  );
+}
+
+function BestDealCard({
+  title,
+  description,
+  code,
+  expiresAt,
+  onGrab,
+}: {
+  title: string;
+  description: string;
+  code: string;
+  expiresAt: number;
+  onGrab: () => void;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = ref.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const x = e.clientX - r.left;
+    const y = e.clientY - r.top;
+    const rx = ((y / r.height) - 0.5) * -10;
+    const ry = ((x / r.width) - 0.5) * 12;
+    el.style.setProperty("--rx", `${rx}deg`);
+    el.style.setProperty("--ry", `${ry}deg`);
+    el.style.setProperty("--mx", `${(x / r.width) * 100}%`);
+    el.style.setProperty("--my", `${(y / r.height) * 100}%`);
+  };
+  const onLeave = () => {
+    const el = ref.current;
+    if (!el) return;
+    el.style.setProperty("--rx", `0deg`);
+    el.style.setProperty("--ry", `0deg`);
+  };
+
+  return (
+    <div
+      ref={ref}
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
+      className="tilt-card group relative rounded-3xl bg-ink text-cream p-6 sm:p-8 shadow-[var(--shadow-pop)] overflow-hidden will-change-transform"
+    >
+      <div className="absolute -top-10 -right-10 size-40 bg-brand/40 rounded-full blur-2xl animate-blob" aria-hidden />
+      <div className="absolute -bottom-16 -left-10 size-48 bg-pop/30 rounded-full blur-3xl animate-blob" aria-hidden />
+      <span className="tilt-glow" aria-hidden />
+
+      <div className="relative" style={{ transform: "translateZ(40px)" }}>
+        <span className="inline-flex items-center gap-2 bg-pop text-pop-foreground rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest">
+          <span className="size-1.5 rounded-full bg-ink animate-pulse" />
+          Best Deal Today
+        </span>
+        <div className="mt-5 flex items-end gap-3">
+          <span className="relative text-6xl sm:text-7xl font-extrabold leading-none bg-gradient-to-br from-cream via-pop to-brand bg-clip-text text-transparent drop-shadow-[0_2px_8px_rgba(0,0,0,0.3)]">
+            40%
+          </span>
+          <span className="pb-2 text-xl font-bold uppercase tracking-wider opacity-90">Off</span>
+        </div>
+        <p className="mt-3 text-lg font-semibold">{title}</p>
+        <p className="text-sm opacity-90 mt-1">{description}</p>
+        <div className="mt-4 inline-flex items-center gap-2 text-xs font-semibold bg-white/15 backdrop-blur rounded-full px-3 py-1.5 ring-1 ring-white/20">
+          ⏳ Ends in <Countdown target={expiresAt} compact />
+        </div>
+
+        <button
+          onClick={onGrab}
+          className="ticket-btn group/tk mt-6 inline-flex items-center gap-2 rounded-full bg-cream text-ink px-4 py-2.5 text-xs font-bold uppercase tracking-[0.18em] shadow-lg transition-all duration-300 hover:-translate-y-0.5 active:scale-95"
+        >
+          <span className="ticket-dot" aria-hidden />
+          <span className="relative z-10">Get Code</span>
+          <span aria-hidden className="relative z-10 inline-block transition-transform duration-300 group-hover/tk:translate-x-0.5">→</span>
+          <span
+            aria-hidden
+            className="ticket-chip pointer-events-none absolute left-1/2 top-full mt-1.5 -translate-x-1/2 translate-y-1 opacity-0 rotate-[-4deg] rounded-md bg-[var(--gradient-shop)] text-ink font-mono text-[10px] font-extrabold tracking-[0.3em] px-2.5 py-1 shadow-md transition-all duration-300 ease-out group-hover/tk:opacity-100 group-hover/tk:translate-y-0 group-hover/tk:rotate-[-2deg] uppercase"
+          >
+            <span className="blur-[2.5px] select-none">{code}</span>
+          </span>
+        </button>
+      </div>
+    </div>
   );
 }
 
@@ -299,6 +379,13 @@ function LandingPage() {
   );
 
   const bestDeal = COUPONS[0];
+
+  const grabBestDeal = () => {
+    const code = bestDeal.code ?? "DEAL2024";
+    navigator.clipboard?.writeText(code).catch(() => {});
+    toast.success("Code copied to clipboard", { description: code });
+    window.open(bestDeal.url, "_blank", "noopener,noreferrer");
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -372,39 +459,13 @@ function LandingPage() {
 
             {/* Best deal card */}
             <div className="lg:col-span-5 lg:sticky lg:top-24">
-              <div className="relative rounded-3xl bg-ink text-cream p-6 sm:p-8 shadow-[var(--shadow-pop)] overflow-hidden">
-                <div className="absolute -top-10 -right-10 size-40 bg-brand/40 rounded-full blur-2xl animate-blob" aria-hidden />
-                <div className="absolute -bottom-16 -left-10 size-48 bg-pop/30 rounded-full blur-3xl animate-blob" aria-hidden />
-                <span className="inline-flex items-center gap-2 bg-pop text-pop-foreground rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest">
-                  ★ Best Deal Today
-                </span>
-                <div className="mt-5 flex items-end gap-3">
-                  <span className="text-6xl sm:text-7xl font-extrabold leading-none">40%</span>
-                  <span className="pb-2 text-xl font-bold uppercase tracking-wider opacity-90">Off</span>
-                </div>
-                <p className="mt-3 text-lg font-semibold">{bestDeal.title}</p>
-                <p className="text-sm opacity-90 mt-1">{bestDeal.description}</p>
-                <div className="mt-4 inline-flex items-center gap-2 text-xs font-semibold bg-white/15 rounded-full px-3 py-1.5">
-                  ⏳ Ends in <Countdown target={bestDeal.expiresAt} compact />
-                </div>
-                <button
-                  onClick={() => {
-                    const code = bestDeal.code ?? "DEAL2024";
-                    navigator.clipboard?.writeText(code).catch(() => {});
-                    toast.success("Code copied to clipboard", { description: code });
-                    window.open(bestDeal.url, "_blank", "noopener,noreferrer");
-                  }}
-                  className="group relative mt-5 w-full overflow-hidden bg-cream text-ink hover:text-cream font-bold rounded-xl py-3.5 text-sm uppercase tracking-[0.18em] shadow-lg transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.98] animate-ring-pulse"
-                >
-                  <span aria-hidden className="absolute inset-0 -z-0 scale-0 group-hover:scale-150 origin-center transition-transform duration-700 ease-out bg-[var(--gradient-shop)] rounded-full" />
-                  <span aria-hidden className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-cream/0 group-hover:ring-cream/50 transition-all duration-300" />
-                  <span className="relative z-10 inline-flex items-center justify-center gap-2">
-                    <span className="inline-block transition-transform duration-300 group-hover:-rotate-12">✂</span>
-                    Get Code
-                    <span aria-hidden className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
-                  </span>
-                </button>
-              </div>
+              <BestDealCard
+                title={bestDeal.title}
+                description={bestDeal.description}
+                code={bestDeal.code ?? "DEAL2024"}
+                expiresAt={bestDeal.expiresAt}
+                onGrab={grabBestDeal}
+              />
             </div>
           </div>
         </div>
