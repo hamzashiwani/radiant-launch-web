@@ -37,10 +37,12 @@ type Coupon = {
   expiresAt: number; // ms timestamp
   addedAt: number;
   discountValue: number; // numeric for sorting (percent or $)
+  url: string;
 };
 
 const DAY = 24 * 60 * 60 * 1000;
 const now = Date.now();
+const MERCHANT_URL = "https://collarsandco.com";
 
 const COUPONS: Coupon[] = [
   {
@@ -56,6 +58,7 @@ const COUPONS: Coupon[] = [
     tags: ["Popular", "Sitewide"],
     expiresAt: now + 2 * DAY + 5 * 60 * 60 * 1000,
     addedAt: now - 4 * DAY,
+    url: MERCHANT_URL,
   },
   {
     id: "c2",
@@ -70,6 +73,7 @@ const COUPONS: Coupon[] = [
     tags: ["Popular"],
     expiresAt: now + 12 * 60 * 60 * 1000,
     addedAt: now - 1 * DAY,
+    url: MERCHANT_URL,
   },
   {
     id: "c3",
@@ -83,6 +87,7 @@ const COUPONS: Coupon[] = [
     tags: ["Free Shipping", "Sitewide"],
     expiresAt: now + 30 * DAY,
     addedAt: now - 10 * DAY,
+    url: MERCHANT_URL,
   },
   {
     id: "c4",
@@ -97,6 +102,7 @@ const COUPONS: Coupon[] = [
     tags: ["New"],
     expiresAt: now + 6 * DAY,
     addedAt: now - 12 * 60 * 60 * 1000,
+    url: MERCHANT_URL,
   },
   {
     id: "c5",
@@ -110,6 +116,7 @@ const COUPONS: Coupon[] = [
     tags: ["Popular"],
     expiresAt: now + 8 * DAY,
     addedAt: now - 3 * DAY,
+    url: MERCHANT_URL,
   },
   {
     id: "c6",
@@ -124,6 +131,7 @@ const COUPONS: Coupon[] = [
     tags: ["Sitewide"],
     expiresAt: now + 20 * DAY,
     addedAt: now - 6 * DAY,
+    url: MERCHANT_URL,
   },
   {
     id: "c7",
@@ -138,14 +146,9 @@ const COUPONS: Coupon[] = [
     tags: ["Expiring Soon"],
     expiresAt: now + 18 * 60 * 60 * 1000,
     addedAt: now - 2 * DAY,
+    url: MERCHANT_URL,
   },
 ];
-
-type Filter = "All" | "Verified" | "Deals" | "Expiring Soon";
-type Sort = "Popularity" | "Newest" | "Highest Discount";
-
-const filters: Filter[] = ["All", "Verified", "Deals", "Expiring Soon"];
-const sorts: Sort[] = ["Popularity", "Newest", "Highest Discount"];
 
 function useCountdown(target: number) {
   const [diff, setDiff] = useState(() => Math.max(0, target - Date.now()));
