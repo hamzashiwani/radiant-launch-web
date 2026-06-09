@@ -291,6 +291,8 @@ function CouponCard({
 }
 
 function LandingPage() {
+  // placeholder — actual definition below
+}
   const sorted = useMemo(
     () => [...COUPONS].sort((a, b) => b.uses - a.uses),
     [],
