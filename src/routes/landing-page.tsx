@@ -492,7 +492,7 @@ function LandingPage() {
               key={s.t}
               className="relative rounded-2xl bg-background border border-foreground/10 p-6 shadow-sm hover:shadow-md transition-shadow"
             >
-              <div className="absolute -top-3 -left-3 size-8 rounded-full bg-emerald-600 text-white grid place-items-center text-xs font-bold">
+              <div className="absolute -top-3 -left-3 size-8 rounded-full bg-brand text-brand-foreground grid place-items-center text-xs font-bold animate-wiggle">
                 {i + 1}
               </div>
               <div className="text-3xl mb-3">{s.icon}</div>
@@ -504,42 +504,6 @@ function LandingPage() {
       </section>
 
       {/* FAQ */}
-      <section className="bg-foreground/[0.03] border-t border-foreground/5">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20">
-          <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-center mb-8">
-            Frequently asked questions
-          </h2>
-          <div className="space-y-3">
-            {FAQS.map((f, i) => {
-              const open = openFaq === i;
-              return (
-                <div key={f.q} className="rounded-xl bg-background border border-foreground/10 overflow-hidden">
-                  <button
-                    onClick={() => setOpenFaq(open ? null : i)}
-                    aria-expanded={open}
-                    className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-semibold hover:bg-foreground/[0.02] transition-colors"
-                  >
-                    <span>{f.q}</span>
-                    <span
-                      className={`shrink-0 size-7 rounded-full bg-emerald-500/15 text-emerald-600 grid place-items-center transition-transform ${
-                        open ? "rotate-45" : ""
-                      }`}
-                    >
-                      +
-                    </span>
-                  </button>
-                  {open && (
-                    <div className="px-5 pb-5 text-sm text-muted-foreground leading-relaxed animate-in fade-in">
-                      {f.a}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
       {/* Footer */}
       <footer className="border-t border-foreground/5">
         <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid gap-10 md:grid-cols-3">
