@@ -207,14 +207,55 @@
 }
 .animate-ring-pulse { animation: ring-pulse 2.4s ease-out infinite; }
 
-/* Reveal interaction: button slides left to expose blurred code on the right */
-.reveal-wrap .reveal-btn {
-  transform: translateX(0);
+/* Ticket-style Get Code button */
+.ticket-btn {
+  position: relative;
+  overflow: visible;
 }
-.reveal-wrap:hover .reveal-btn,
-.reveal-wrap:focus-within .reveal-btn {
-  transform: translateX(-55%);
+.ticket-btn::before,
+.ticket-btn::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--background);
+  transform: translateY(-50%);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--foreground) 15%, transparent);
 }
+.ticket-btn::before { left: -3px; }
+.ticket-btn::after  { right: -3px; }
+.ticket-btn .ticket-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--pop);
+  box-shadow: 0 0 0 0 color-mix(in oklab, var(--pop) 70%, transparent);
+  animation: ticket-blink 1.8s ease-out infinite;
+}
+@keyframes ticket-blink {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--pop) 70%, transparent); }
+  50%      { box-shadow: 0 0 0 6px color-mix(in oklab, var(--pop) 0%,  transparent); }
+}
+.ticket-btn:hover {
+  background: linear-gradient(120deg, var(--ink) 0%, color-mix(in oklab, var(--brand) 60%, var(--ink)) 100%);
+}
+
+/* Interactive 3D tilt card (driven by --rx, --ry, --mx, --my CSS vars) */
+.tilt-card {
+  transform-style: preserve-3d;
+  transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 200ms ease-out;
+}
+.tilt-glow {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in oklab, var(--pop) 30%, transparent) 0%,
+    transparent 60%);
+  opacity: 0; transition: opacity 300ms ease;
+}
+.tilt-card:hover .tilt-glow { opacity: 1; }
 
 /* ===== Coupon card creative hover ===== */
 .coupon-card {
