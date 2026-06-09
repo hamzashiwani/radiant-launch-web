@@ -200,18 +200,24 @@
 }
 .animate-wiggle { animation: wiggle 3s ease-in-out infinite; }
 
-/* ===== Coupon button: shimmer + magnet ===== */
-@keyframes shimmer {
-  0%   { transform: translateX(-120%) skewX(-20deg); }
-  100% { transform: translateX(220%)  skewX(-20deg); }
-}
-.animate-shimmer { animation: shimmer 2.2s ease-in-out infinite; }
-
+/* ===== Coupon button ===== */
 @keyframes ring-pulse {
   0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--pop) 55%, transparent); }
   50%      { box-shadow: 0 0 0 10px color-mix(in oklab, var(--pop) 0%,  transparent); }
 }
 .animate-ring-pulse { animation: ring-pulse 2.4s ease-out infinite; }
+
+/* Reveal interaction: button slides to expose blurred code beneath */
+.reveal-wrap .reveal-btn {
+  clip-path: inset(0 0 0 0 round 12px);
+}
+.reveal-wrap:hover .reveal-btn {
+  transform: translateX(28%);
+  clip-path: inset(0 0 0 0 round 12px);
+}
+@media (max-width: 640px) {
+  .reveal-wrap:hover .reveal-btn { transform: translateX(22%); }
+}
 
 /* ===== Coupon card creative hover ===== */
 .coupon-card {
