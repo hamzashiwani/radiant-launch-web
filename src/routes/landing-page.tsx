@@ -268,30 +268,28 @@ function CouponCard({
       </div>
 
       <div className="sm:w-44 flex sm:flex-col items-stretch justify-center">
-        <button
-          onClick={handleClick}
-          aria-label={revealed && coupon.code ? `Code ${coupon.code} copied` : "Get code"}
-          className="relative w-full overflow-hidden rounded-xl bg-ink text-cream font-bold text-sm py-3.5 px-4 shadow-[var(--shadow-pop)] transition-all duration-300 hover:-translate-y-0.5 hover:rotate-[-0.5deg] active:scale-[0.96] active:rotate-0 isolate animate-ring-pulse"
-        >
-          {/* animated gradient sweep */}
-          <span
+        <div className="reveal-wrap relative w-full h-12 rounded-xl overflow-hidden shadow-[var(--shadow-pop)] isolate">
+          {/* Blurred code teaser sitting behind the button */}
+          <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(120deg,var(--ink)_0%,var(--ink)_40%,color-mix(in_oklab,var(--brand)_70%,var(--ink))_50%,var(--ink)_60%,var(--ink)_100%)] bg-[length:250%_100%] bg-[position:100%_0] transition-[background-position] duration-700 ease-out group-hover:bg-[position:0%_0]"
-          />
-          {/* shimmer streak on hover */}
-          <span
-            aria-hidden
-            className="pointer-events-none absolute inset-y-0 -left-1/2 w-1/2 bg-gradient-to-r from-transparent via-cream/40 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-shimmer"
-          />
-          {/* scissors notch */}
-          <span aria-hidden className="pointer-events-none absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 size-3 rounded-full bg-background ring-1 ring-foreground/10" />
-          <span aria-hidden className="pointer-events-none absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2 size-3 rounded-full bg-background ring-1 ring-foreground/10" />
-          <span className="relative z-10 inline-flex items-center justify-center gap-2 uppercase tracking-[0.18em]">
-            <span className="inline-block transition-transform duration-300 group-hover:-rotate-12">✂</span>
+            className="absolute inset-0 grid place-items-center bg-[var(--gradient-shop)] text-ink"
+          >
+            <span className="font-mono text-base font-extrabold tracking-[0.35em] blur-[5px] select-none uppercase">
+              {coupon.code ?? "DEAL"}
+            </span>
+          </div>
+          <button
+            onClick={handleClick}
+            aria-label={revealed && coupon.code ? `Code ${coupon.code} copied` : "Get code"}
+            className="reveal-btn group/btn absolute inset-0 w-full h-full bg-ink text-cream font-bold text-sm flex items-center justify-center gap-2 uppercase tracking-[0.18em] transition-transform duration-500 ease-[cubic-bezier(0.65,0,0.35,1)] active:scale-[0.97]"
+          >
+            <span aria-hidden className="absolute left-2 top-1/2 -translate-y-1/2 size-2.5 rounded-full bg-background/90" />
+            <span aria-hidden className="absolute right-2 top-1/2 -translate-y-1/2 size-2.5 rounded-full bg-background/90" />
+            <span className="inline-block transition-transform duration-300 group-hover/btn:-rotate-12">✂</span>
             <span>Get Code</span>
-            <span aria-hidden className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
-          </span>
-        </button>
+            <span aria-hidden className="inline-block transition-transform duration-300 group-hover/btn:translate-x-1">→</span>
+          </button>
+        </div>
         {coupon.type === "code" && revealed && (
           <p className="text-center text-[10px] mt-1.5 text-brand font-semibold">✓ Copied — opening store…</p>
         )}
