@@ -207,16 +207,13 @@
 }
 .animate-ring-pulse { animation: ring-pulse 2.4s ease-out infinite; }
 
-/* Reveal interaction: button slides to expose blurred code beneath */
+/* Reveal interaction: button slides left to expose blurred code on the right */
 .reveal-wrap .reveal-btn {
-  clip-path: inset(0 0 0 0 round 12px);
+  transform: translateX(0);
 }
-.reveal-wrap:hover .reveal-btn {
-  transform: translateX(28%);
-  clip-path: inset(0 0 0 0 round 12px);
-}
-@media (max-width: 640px) {
-  .reveal-wrap:hover .reveal-btn { transform: translateX(22%); }
+.reveal-wrap:hover .reveal-btn,
+.reveal-wrap:focus-within .reveal-btn {
+  transform: translateX(-55%);
 }
 
 /* ===== Coupon card creative hover ===== */
