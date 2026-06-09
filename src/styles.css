@@ -236,9 +236,6 @@
   0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--pop) 70%, transparent); }
   50%      { box-shadow: 0 0 0 6px color-mix(in oklab, var(--pop) 0%,  transparent); }
 }
-.ticket-btn:hover {
-  background: linear-gradient(120deg, var(--ink) 0%, color-mix(in oklab, var(--brand) 60%, var(--ink)) 100%);
-}
 
 /* Interactive 3D tilt card (driven by --rx, --ry, --mx, --my CSS vars) */
 .tilt-card {

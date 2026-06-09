@@ -332,8 +332,8 @@ function BestDealCard({
       onMouseLeave={onLeave}
       className="tilt-card group relative rounded-3xl bg-ink text-cream p-6 sm:p-8 shadow-[var(--shadow-pop)] overflow-hidden will-change-transform"
     >
-      <div className="absolute -top-10 -right-10 size-40 bg-brand/40 rounded-full blur-2xl animate-blob" aria-hidden />
-      <div className="absolute -bottom-16 -left-10 size-48 bg-pop/30 rounded-full blur-3xl animate-blob" aria-hidden />
+      <div className="absolute -top-10 -right-10 size-40 bg-brand/40 rounded-full blur-2xl animate-blob transition-transform duration-700 ease-out group-hover:scale-150 group-hover:-translate-x-8 group-hover:translate-y-6" aria-hidden />
+      <div className="absolute -bottom-16 -left-10 size-48 bg-pop/30 rounded-full blur-3xl animate-blob transition-transform duration-700 ease-out group-hover:scale-150 group-hover:translate-x-10 group-hover:-translate-y-8" aria-hidden />
       <span className="tilt-glow" aria-hidden />
 
       <div className="relative" style={{ transform: "translateZ(40px)" }}>
@@ -355,7 +355,7 @@ function BestDealCard({
 
         <button
           onClick={onGrab}
-          className="ticket-btn group/tk mt-6 inline-flex items-center gap-2 rounded-full bg-cream text-ink px-4 py-2.5 text-xs font-bold uppercase tracking-[0.18em] shadow-lg transition-all duration-300 hover:-translate-y-0.5 active:scale-95"
+          className="ticket-btn group/tk mt-8 sm:mt-10 inline-flex items-center gap-2 rounded-full bg-cream text-ink px-4 py-2.5 text-xs font-bold uppercase tracking-[0.18em] shadow-lg transition-all duration-300 hover:-translate-y-0.5 active:scale-95"
         >
           <span className="ticket-dot" aria-hidden />
           <span className="relative z-10">Get Code</span>
