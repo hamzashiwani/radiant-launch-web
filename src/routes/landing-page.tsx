@@ -354,25 +354,25 @@ function LandingPage() {
 
       {/* Hero */}
       <header className="relative overflow-hidden border-b border-foreground/5">
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-background to-orange-500/10" aria-hidden />
+        <div className="absolute inset-0 bg-[var(--gradient-cream)] opacity-80" aria-hidden />
         <div
-          className="absolute -top-32 -right-40 size-[420px] bg-emerald-500/20 blur-3xl rounded-full"
+          className="absolute -top-32 -right-40 size-[420px] bg-brand/25 blur-3xl rounded-full animate-blob"
           aria-hidden
         />
         <div
-          className="absolute -bottom-32 -left-40 size-[420px] bg-orange-500/20 blur-3xl rounded-full"
+          className="absolute -bottom-32 -left-40 size-[420px] bg-pop/25 blur-3xl rounded-full animate-blob"
           aria-hidden
         />
         <div className="relative max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20">
           <div className="grid lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-7">
-              <span className="inline-flex items-center gap-2 rounded-full bg-emerald-500/15 text-emerald-700 px-3 py-1 text-[11px] font-bold uppercase tracking-widest">
-                <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="inline-flex items-center gap-2 rounded-full bg-mint/25 text-ink px-3 py-1 text-[11px] font-bold uppercase tracking-widest">
+                <span className="size-1.5 rounded-full bg-brand animate-pulse" />
                 Hand-tested codes daily
               </span>
               <h1 className="mt-4 text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.05] text-balance">
                 Collars & Co Coupons & Promo Codes —{" "}
-                <span className="bg-gradient-to-r from-emerald-500 to-orange-500 bg-clip-text text-transparent">
+                <span className="bg-[var(--gradient-shop)] bg-clip-text text-transparent">
                   Up to 40% Off
                 </span>
               </h1>
@@ -382,7 +382,7 @@ function LandingPage() {
               <div className="mt-6 flex flex-wrap gap-3">
                 <a
                   href="#coupons"
-                  className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-5 sm:px-6 py-3 text-sm font-bold uppercase tracking-widest shadow-lg shadow-emerald-500/30 transition-all hover:scale-[1.03]"
+                  className="inline-flex items-center gap-2 bg-ink text-cream rounded-full px-5 sm:px-6 py-3 text-sm font-bold uppercase tracking-widest shadow-[var(--shadow-pop)] transition-all hover:scale-[1.04]"
                 >
                   See all coupons →
                 </a>
@@ -393,28 +393,14 @@ function LandingPage() {
                   How it works
                 </a>
               </div>
-
-              <dl className="mt-8 grid grid-cols-3 max-w-md gap-4">
-                <div>
-                  <dt className="text-[10px] uppercase tracking-widest text-muted-foreground">Active</dt>
-                  <dd className="text-2xl font-bold text-foreground">{stats.active}</dd>
-                </div>
-                <div>
-                  <dt className="text-[10px] uppercase tracking-widest text-muted-foreground">Avg. savings</dt>
-                  <dd className="text-2xl font-bold text-emerald-600">{stats.avgSaving}</dd>
-                </div>
-                <div>
-                  <dt className="text-[10px] uppercase tracking-widest text-muted-foreground">Last verified</dt>
-                  <dd className="text-sm font-semibold text-foreground pt-1">{stats.lastVerified}</dd>
-                </div>
-              </dl>
             </div>
 
             {/* Best deal card */}
             <div className="lg:col-span-5 lg:sticky lg:top-24">
-              <div className="relative rounded-3xl bg-gradient-to-br from-emerald-600 to-emerald-700 text-white p-6 sm:p-8 shadow-2xl shadow-emerald-500/30 overflow-hidden">
-                <div className="absolute -top-10 -right-10 size-40 bg-orange-400/30 rounded-full blur-2xl" aria-hidden />
-                <span className="inline-flex items-center gap-2 bg-orange-500 text-white rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest">
+              <div className="relative rounded-3xl bg-ink text-cream p-6 sm:p-8 shadow-[var(--shadow-pop)] overflow-hidden">
+                <div className="absolute -top-10 -right-10 size-40 bg-brand/40 rounded-full blur-2xl animate-blob" aria-hidden />
+                <div className="absolute -bottom-16 -left-10 size-48 bg-pop/30 rounded-full blur-3xl animate-blob" aria-hidden />
+                <span className="inline-flex items-center gap-2 bg-pop text-pop-foreground rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest">
                   ★ Best Deal Today
                 </span>
                 <div className="mt-5 flex items-end gap-3">
@@ -432,10 +418,12 @@ function LandingPage() {
                       navigator.clipboard?.writeText(bestDeal.code).catch(() => {});
                       handleCopy(bestDeal.code);
                     }
+                    window.open(bestDeal.url, "_blank", "noopener,noreferrer");
                   }}
-                  className="mt-5 w-full bg-white text-emerald-700 hover:bg-emerald-50 font-bold rounded-xl py-3.5 text-sm uppercase tracking-widest shadow-lg transition-all active:scale-[0.98]"
+                  className="group relative mt-5 w-full overflow-hidden bg-cream text-ink hover:text-cream font-bold rounded-xl py-3.5 text-sm uppercase tracking-widest shadow-lg transition-all active:scale-[0.98]"
                 >
-                  Get Code → {bestDeal.code}
+                  <span aria-hidden className="absolute inset-0 -z-0 scale-0 group-hover:scale-150 origin-center transition-transform duration-700 ease-out bg-[var(--gradient-shop)] rounded-full" />
+                  <span className="relative z-10">Get Code → <span className="font-mono">{bestDeal.code}</span></span>
                 </button>
               </div>
             </div>
@@ -443,55 +431,19 @@ function LandingPage() {
         </div>
       </header>
 
-      {/* Filters + coupons */}
+      {/* Coupons */}
       <section id="coupons" className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8">
-          <div>
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">All coupons & deals</h2>
-            <p className="text-sm text-muted-foreground mt-1">
-              {filtered.length} active {filtered.length === 1 ? "offer" : "offers"} ready to use
-            </p>
-          </div>
-          <label className="text-sm flex items-center gap-2">
-            <span className="text-muted-foreground">Sort:</span>
-            <select
-              value={sort}
-              onChange={(e) => setSort(e.target.value as Sort)}
-              className="bg-background border border-foreground/15 rounded-lg px-3 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            >
-              {sorts.map((s) => (
-                <option key={s}>{s}</option>
-              ))}
-            </select>
-          </label>
-        </div>
-
-        <div className="flex gap-2 overflow-x-auto scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0 pb-2 mb-6">
-          {filters.map((f) => {
-            const active = filter === f;
-            return (
-              <button
-                key={f}
-                onClick={() => setFilter(f)}
-                className={`shrink-0 inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-bold uppercase tracking-widest transition-all ${
-                  active
-                    ? "bg-foreground text-background shadow-md"
-                    : "bg-background border border-foreground/15 text-foreground/70 hover:border-foreground/40"
-                }`}
-              >
-                {f}
-              </button>
-            );
-          })}
+        <div className="mb-6 sm:mb-8">
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">All coupons & deals</h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            {sorted.length} active offers ready to use
+          </p>
         </div>
 
         <div className="grid grid-cols-1 gap-4">
-          {filtered.map((c) => (
+          {sorted.map((c) => (
             <CouponCard key={c.id} coupon={c} onCopy={handleCopy} />
           ))}
-          {filtered.length === 0 && (
-            <p className="text-center text-muted-foreground py-12">No coupons match this filter.</p>
-          )}
         </div>
       </section>
 
