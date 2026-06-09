@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProductsRouteImport } from './routes/products'
+import { Route as LandingPageRouteImport } from './routes/landing-page'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BlogPostIdRouteImport } from './routes/blog_.$postId'
@@ -17,6 +18,11 @@ import { Route as BlogPostIdRouteImport } from './routes/blog_.$postId'
 const ProductsRoute = ProductsRouteImport.update({
   id: '/products',
   path: '/products',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LandingPageRoute = LandingPageRouteImport.update({
+  id: '/landing-page',
+  path: '/landing-page',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BlogRoute = BlogRouteImport.update({
@@ -38,12 +44,14 @@ const BlogPostIdRoute = BlogPostIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/blog': typeof BlogRoute
+  '/landing-page': typeof LandingPageRoute
   '/products': typeof ProductsRoute
   '/blog/$postId': typeof BlogPostIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/blog': typeof BlogRoute
+  '/landing-page': typeof LandingPageRoute
   '/products': typeof ProductsRoute
   '/blog/$postId': typeof BlogPostIdRoute
 }
@@ -51,20 +59,28 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/blog': typeof BlogRoute
+  '/landing-page': typeof LandingPageRoute
   '/products': typeof ProductsRoute
   '/blog_/$postId': typeof BlogPostIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/blog' | '/products' | '/blog/$postId'
+  fullPaths: '/' | '/blog' | '/landing-page' | '/products' | '/blog/$postId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/blog' | '/products' | '/blog/$postId'
-  id: '__root__' | '/' | '/blog' | '/products' | '/blog_/$postId'
+  to: '/' | '/blog' | '/landing-page' | '/products' | '/blog/$postId'
+  id:
+    | '__root__'
+    | '/'
+    | '/blog'
+    | '/landing-page'
+    | '/products'
+    | '/blog_/$postId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BlogRoute: typeof BlogRoute
+  LandingPageRoute: typeof LandingPageRoute
   ProductsRoute: typeof ProductsRoute
   BlogPostIdRoute: typeof BlogPostIdRoute
 }
@@ -76,6 +92,13 @@ declare module '@tanstack/react-router' {
       path: '/products'
       fullPath: '/products'
       preLoaderRoute: typeof ProductsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/landing-page': {
+      id: '/landing-page'
+      path: '/landing-page'
+      fullPath: '/landing-page'
+      preLoaderRoute: typeof LandingPageRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/blog': {
@@ -105,6 +128,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BlogRoute: BlogRoute,
+  LandingPageRoute: LandingPageRoute,
   ProductsRoute: ProductsRoute,
   BlogPostIdRoute: BlogPostIdRoute,
 }

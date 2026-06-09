@@ -1208,9 +1208,20 @@ function Index() {
            <Link to="/products" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">Shop</Link>
            <a href="#studio" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">Studio</a>
          </div>
-        <Link to="/products" className="inline-flex items-center gap-2 bg-ink text-cream rounded-full px-3.5 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-bold uppercase tracking-widest hover:scale-[1.04] transition-transform">
-          Shop drop →
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            to="/landing-page"
+            className="hidden sm:inline-flex items-center gap-2 rounded-full border border-emerald-500/40 text-emerald-700 hover:bg-emerald-500/10 px-3.5 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-colors"
+          >
+            Landing Page
+          </Link>
+          <Link
+            to="/products"
+            className="inline-flex items-center gap-2 bg-ink text-cream rounded-full px-3.5 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-bold uppercase tracking-widest hover:scale-[1.04] transition-transform"
+          >
+            Shop drop →
+          </Link>
+        </div>
         <MobileMenu />
       </nav>
 
