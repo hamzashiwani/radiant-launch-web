@@ -293,16 +293,10 @@ function CouponCard({
 }
 
 function LandingPage() {
-  const [toast, setToast] = useState<string | null>(null);
   const sorted = useMemo(
     () => [...COUPONS].sort((a, b) => b.uses - a.uses),
     [],
   );
-
-  const handleCopy = (code: string) => {
-    setToast(code);
-    window.setTimeout(() => setToast(null), 2200);
-  };
 
   const bestDeal = COUPONS[0];
 
@@ -395,10 +389,9 @@ function LandingPage() {
                 </div>
                 <button
                   onClick={() => {
-                    if (bestDeal.code) {
-                      navigator.clipboard?.writeText(bestDeal.code).catch(() => {});
-                      handleCopy(bestDeal.code);
-                    }
+                    const code = bestDeal.code ?? "DEAL2024";
+                    navigator.clipboard?.writeText(code).catch(() => {});
+                    toast.success("Code copied to clipboard", { description: code });
                     window.open(bestDeal.url, "_blank", "noopener,noreferrer");
                   }}
                   className="group relative mt-5 w-full overflow-hidden bg-cream text-ink hover:text-cream font-bold rounded-xl py-3.5 text-sm uppercase tracking-[0.18em] shadow-lg transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.98] animate-ring-pulse"
@@ -428,7 +421,7 @@ function LandingPage() {
 
         <div className="grid grid-cols-1 gap-4">
           {sorted.map((c) => (
-            <CouponCard key={c.id} coupon={c} onCopy={handleCopy} />
+            <CouponCard key={c.id} coupon={c} />
           ))}
         </div>
       </section>
@@ -510,8 +503,7 @@ function LandingPage() {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              setToast("Subscribed!");
-              setTimeout(() => setToast(null), 2000);
+              toast.success("Subscribed!");
             }}
             className="flex flex-col gap-2"
           >
@@ -543,16 +535,6 @@ function LandingPage() {
       >
         🎟️ Grab a coupon
       </a>
-
-      {/* Copied toast */}
-      {toast && (
-        <div
-          role="status"
-          className="fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 z-50 bg-foreground text-background px-5 py-3 rounded-full text-sm font-semibold shadow-2xl animate-in fade-in slide-in-from-bottom-2"
-        >
-          ✓ Code copied: <span className="font-mono">{toast}</span>
-        </div>
-      )}
     </div>
   );
 }
