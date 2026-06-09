@@ -187,13 +187,13 @@ function Countdown({ target, compact = false }: { target: number; compact?: bool
 function tagStyle(tag: Tag) {
   switch (tag) {
     case "Popular":
-      return "bg-orange-500/15 text-orange-600 ring-1 ring-orange-500/30";
+      return "bg-pop/20 text-ink ring-1 ring-pop/40";
     case "Expiring Soon":
-      return "bg-red-500/15 text-red-600 ring-1 ring-red-500/30";
+      return "bg-brand/15 text-brand ring-1 ring-brand/30";
     case "New":
-      return "bg-blue-500/15 text-blue-600 ring-1 ring-blue-500/30";
+      return "bg-mint/25 text-ink ring-1 ring-mint/40";
     case "Free Shipping":
-      return "bg-emerald-500/15 text-emerald-600 ring-1 ring-emerald-500/30";
+      return "bg-mint/20 text-ink ring-1 ring-mint/40";
     case "Sitewide":
       return "bg-foreground/10 text-foreground ring-1 ring-foreground/15";
   }
@@ -207,27 +207,25 @@ function CouponCard({
   onCopy: (code: string) => void;
 }) {
   const [revealed, setRevealed] = useState(false);
+  const [hover, setHover] = useState(false);
   const isExpiringSoon = coupon.expiresAt - now < 2 * DAY;
 
   const handleClick = () => {
-    if (coupon.type === "deal") {
-      window.open("#", "_blank");
-      return;
-    }
-    if (!revealed) setRevealed(true);
     if (coupon.code) {
       navigator.clipboard?.writeText(coupon.code).catch(() => {});
       onCopy(coupon.code);
     }
+    setRevealed(true);
+    window.open(coupon.url, "_blank", "noopener,noreferrer");
   };
 
   return (
-    <article className="group relative flex flex-col sm:flex-row gap-4 sm:gap-6 items-stretch rounded-2xl border border-foreground/10 bg-background p-4 sm:p-5 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
-      <div className="sm:w-32 shrink-0 flex sm:flex-col items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 ring-1 ring-emerald-500/20 p-4 text-center">
-        <span className="text-2xl sm:text-3xl font-extrabold tracking-tight text-emerald-600">
+    <article className="group relative flex flex-col sm:flex-row gap-4 sm:gap-6 items-stretch rounded-2xl border border-foreground/10 bg-background p-4 sm:p-5 shadow-sm hover:shadow-[var(--shadow-pop)] hover:-translate-y-0.5 transition-all duration-300">
+      <div className="sm:w-32 shrink-0 flex sm:flex-col items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-brand/15 to-pop/15 ring-1 ring-brand/25 p-4 text-center">
+        <span className="text-2xl sm:text-3xl font-extrabold tracking-tight text-brand">
           {coupon.discount}
         </span>
-        <span className="text-[10px] font-semibold uppercase tracking-widest text-emerald-700/80">
+        <span className="text-[10px] font-semibold uppercase tracking-widest text-ink/70">
           {coupon.type === "code" ? "Promo Code" : "Deal"}
         </span>
       </div>
@@ -235,7 +233,7 @@ function CouponCard({
       <div className="flex-1 min-w-0 flex flex-col gap-2">
         <div className="flex flex-wrap items-center gap-1.5">
           {coupon.verified && (
-            <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-emerald-600">
+            <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-brand">
               <svg viewBox="0 0 20 20" fill="currentColor" className="size-3.5">
                 <path
                   fillRule="evenodd"
@@ -259,11 +257,11 @@ function CouponCard({
         <p className="text-sm text-muted-foreground line-clamp-2">{coupon.description}</p>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-muted-foreground mt-1">
           <span className="inline-flex items-center gap-1">
-            <span className="size-1.5 rounded-full bg-emerald-500" />
+            <span className="size-1.5 rounded-full bg-mint" />
             {coupon.uses.toLocaleString()} used
           </span>
           {isExpiringSoon && (
-            <span className="inline-flex items-center gap-1 text-red-600 font-semibold">
+            <span className="inline-flex items-center gap-1 text-brand font-semibold">
               Ends in <Countdown target={coupon.expiresAt} compact />
             </span>
           )}
@@ -273,60 +271,52 @@ function CouponCard({
       <div className="sm:w-44 flex sm:flex-col items-stretch justify-center">
         <button
           onClick={handleClick}
-          className="relative w-full overflow-hidden rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold text-sm py-3 px-4 shadow-md hover:shadow-lg transition-all active:scale-[0.98]"
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
+          aria-label={coupon.type === "deal" ? "Get deal" : revealed ? "Code copied" : "Reveal and copy code"}
+          className="relative w-full overflow-hidden rounded-xl bg-ink text-cream font-bold text-sm py-3 px-4 shadow-[var(--shadow-pop)] transition-all active:scale-[0.97] isolate"
         >
-          {coupon.type === "deal" ? (
-            <span>Get Deal →</span>
-          ) : revealed && coupon.code ? (
-            <span className="font-mono tracking-widest">{coupon.code}</span>
-          ) : (
-            <span>Get Code</span>
-          )}
-          <span className="absolute inset-y-0 right-0 w-1.5 bg-white/20" />
+          {/* liquid blob */}
+          <span
+            aria-hidden
+            className={`pointer-events-none absolute left-1/2 top-1/2 -z-10 size-8 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--gradient-shop)] transition-all duration-700 ease-out animate-blob ${
+              hover ? "scale-[14] opacity-100" : "scale-100 opacity-80"
+            }`}
+          />
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-0 -z-10 opacity-0 group-hover:opacity-100 bg-[radial-gradient(circle_at_var(--mx,50%)_50%,oklch(0.99_0.01_80/.25),transparent_60%)]"
+          />
+          <span className="relative z-10 inline-flex items-center justify-center gap-2">
+            {coupon.type === "deal" ? (
+              <>Get Deal <span aria-hidden>→</span></>
+            ) : revealed && coupon.code ? (
+              <span className="font-mono tracking-widest">{coupon.code}</span>
+            ) : (
+              <>
+                <span className="font-mono tracking-widest opacity-60">
+                  {coupon.code ? coupon.code.slice(0, 2) + "•".repeat(Math.max(0, coupon.code.length - 2)) : "•••"}
+                </span>
+                <span className="ml-1">Get Code</span>
+              </>
+            )}
+          </span>
+          <span className="pointer-events-none absolute inset-y-0 right-0 w-1.5 bg-pop/70" />
         </button>
         {coupon.type === "code" && revealed && (
-          <p className="text-center text-[10px] mt-1.5 text-emerald-600 font-semibold">Tap again to copy</p>
+          <p className="text-center text-[10px] mt-1.5 text-brand font-semibold">✓ Copied — opening store…</p>
         )}
       </div>
     </article>
   );
 }
 
-const FAQS = [
-  {
-    q: "How do I use a Collars & Co coupon code?",
-    a: "Click Get Code on any coupon to reveal and copy it. Then paste it at checkout on collarsandco.com in the promo code field.",
-  },
-  {
-    q: "Are these coupon codes verified?",
-    a: "Yes — our team hand-tests every code daily. Codes marked Verified were confirmed working within the last 24 hours.",
-  },
-  {
-    q: "Can I stack multiple coupon codes?",
-    a: "Typically only one promo code can be applied per order, but you can usually combine a code with free-shipping and sitewide deals.",
-  },
-  {
-    q: "What if a code doesn't work?",
-    a: "Try another code from this page — we list multiple working options. You can also report a broken code and our team will retest it.",
-  },
-];
-
 function LandingPage() {
-  const [filter, setFilter] = useState<Filter>("All");
-  const [sort, setSort] = useState<Sort>("Popularity");
   const [toast, setToast] = useState<string | null>(null);
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
-
-  const filtered = useMemo(() => {
-    let list = [...COUPONS];
-    if (filter === "Verified") list = list.filter((c) => c.verified);
-    if (filter === "Deals") list = list.filter((c) => c.type === "deal");
-    if (filter === "Expiring Soon") list = list.filter((c) => c.expiresAt - now < 2 * DAY);
-    if (sort === "Popularity") list.sort((a, b) => b.uses - a.uses);
-    if (sort === "Newest") list.sort((a, b) => b.addedAt - a.addedAt);
-    if (sort === "Highest Discount") list.sort((a, b) => b.discountValue - a.discountValue);
-    return list;
-  }, [filter, sort]);
+  const sorted = useMemo(
+    () => [...COUPONS].sort((a, b) => b.uses - a.uses),
+    [],
+  );
 
   const handleCopy = (code: string) => {
     setToast(code);
@@ -334,12 +324,6 @@ function LandingPage() {
   };
 
   const bestDeal = COUPONS[0];
-
-  const stats = {
-    active: COUPONS.length,
-    avgSaving: "28%",
-    lastVerified: "2 hours ago",
-  };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
