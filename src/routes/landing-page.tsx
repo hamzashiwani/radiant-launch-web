@@ -290,9 +290,89 @@ function CouponCard({
   );
 }
 
-function LandingPage() {
-  // placeholder — actual definition below
+function BestDealCard({
+  title,
+  description,
+  code,
+  expiresAt,
+  onGrab,
+}: {
+  title: string;
+  description: string;
+  code: string;
+  expiresAt: number;
+  onGrab: () => void;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = ref.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const x = e.clientX - r.left;
+    const y = e.clientY - r.top;
+    const rx = ((y / r.height) - 0.5) * -10;
+    const ry = ((x / r.width) - 0.5) * 12;
+    el.style.setProperty("--rx", `${rx}deg`);
+    el.style.setProperty("--ry", `${ry}deg`);
+    el.style.setProperty("--mx", `${(x / r.width) * 100}%`);
+    el.style.setProperty("--my", `${(y / r.height) * 100}%`);
+  };
+  const onLeave = () => {
+    const el = ref.current;
+    if (!el) return;
+    el.style.setProperty("--rx", `0deg`);
+    el.style.setProperty("--ry", `0deg`);
+  };
+
+  return (
+    <div
+      ref={ref}
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
+      className="tilt-card group relative rounded-3xl bg-ink text-cream p-6 sm:p-8 shadow-[var(--shadow-pop)] overflow-hidden will-change-transform"
+    >
+      <div className="absolute -top-10 -right-10 size-40 bg-brand/40 rounded-full blur-2xl animate-blob" aria-hidden />
+      <div className="absolute -bottom-16 -left-10 size-48 bg-pop/30 rounded-full blur-3xl animate-blob" aria-hidden />
+      <span className="tilt-glow" aria-hidden />
+
+      <div className="relative" style={{ transform: "translateZ(40px)" }}>
+        <span className="inline-flex items-center gap-2 bg-pop text-pop-foreground rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest">
+          <span className="size-1.5 rounded-full bg-ink animate-pulse" />
+          Best Deal Today
+        </span>
+        <div className="mt-5 flex items-end gap-3">
+          <span className="relative text-6xl sm:text-7xl font-extrabold leading-none bg-gradient-to-br from-cream via-pop to-brand bg-clip-text text-transparent drop-shadow-[0_2px_8px_rgba(0,0,0,0.3)]">
+            40%
+          </span>
+          <span className="pb-2 text-xl font-bold uppercase tracking-wider opacity-90">Off</span>
+        </div>
+        <p className="mt-3 text-lg font-semibold">{title}</p>
+        <p className="text-sm opacity-90 mt-1">{description}</p>
+        <div className="mt-4 inline-flex items-center gap-2 text-xs font-semibold bg-white/15 backdrop-blur rounded-full px-3 py-1.5 ring-1 ring-white/20">
+          ⏳ Ends in <Countdown target={expiresAt} compact />
+        </div>
+
+        <button
+          onClick={onGrab}
+          className="ticket-btn group/tk mt-6 inline-flex items-center gap-2 rounded-full bg-cream text-ink px-4 py-2.5 text-xs font-bold uppercase tracking-[0.18em] shadow-lg transition-all duration-300 hover:-translate-y-0.5 active:scale-95"
+        >
+          <span className="ticket-dot" aria-hidden />
+          <span className="relative z-10">Get Code</span>
+          <span aria-hidden className="relative z-10 inline-block transition-transform duration-300 group-hover/tk:translate-x-0.5">→</span>
+          <span
+            aria-hidden
+            className="ticket-chip pointer-events-none absolute left-1/2 top-full mt-1.5 -translate-x-1/2 translate-y-1 opacity-0 rotate-[-4deg] rounded-md bg-[var(--gradient-shop)] text-ink font-mono text-[10px] font-extrabold tracking-[0.3em] px-2.5 py-1 shadow-md transition-all duration-300 ease-out group-hover/tk:opacity-100 group-hover/tk:translate-y-0 group-hover/tk:rotate-[-2deg] uppercase"
+          >
+            <span className="blur-[2.5px] select-none">{code}</span>
+          </span>
+        </button>
+      </div>
+    </div>
+  );
 }
+
+function LandingPage() {
   const sorted = useMemo(
     () => [...COUPONS].sort((a, b) => b.uses - a.uses),
     [],
