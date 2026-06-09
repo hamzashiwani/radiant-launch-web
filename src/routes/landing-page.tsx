@@ -457,7 +457,7 @@ function LandingPage() {
             { k: "♥", v: "Trusted by 250k+ shoppers" },
           ].map((i) => (
             <div key={i.v} className="flex flex-col items-center gap-1">
-              <span className="text-2xl text-emerald-600">{i.k}</span>
+              <span className="text-2xl text-brand">{i.k}</span>
               <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{i.v}</span>
             </div>
           ))}
@@ -467,7 +467,7 @@ function LandingPage() {
       {/* How to use */}
       <section id="how-to-use" className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20">
         <div className="text-center max-w-xl mx-auto mb-10">
-          <span className="text-[11px] font-bold uppercase tracking-widest text-emerald-600">3 simple steps</span>
+          <span className="text-[11px] font-bold uppercase tracking-widest text-brand">3 simple steps</span>
           <h2 className="text-2xl sm:text-4xl font-bold tracking-tight mt-2">How to use a coupon</h2>
         </div>
         <div className="grid sm:grid-cols-3 gap-4 sm:gap-6">
@@ -537,9 +537,9 @@ function LandingPage() {
                 type="email"
                 required
                 placeholder="you@email.com"
-                className="flex-1 min-w-0 rounded-lg border border-foreground/15 bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="flex-1 min-w-0 rounded-lg border border-foreground/15 bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand"
               />
-              <button className="rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold px-4 transition-colors">
+              <button className="rounded-lg bg-ink hover:bg-brand text-cream text-sm font-bold px-4 transition-colors">
                 Join
               </button>
             </div>
@@ -553,7 +553,7 @@ function LandingPage() {
       {/* Floating mobile CTA */}
       <a
         href="#coupons"
-        className="md:hidden fixed bottom-4 inset-x-4 z-40 inline-flex items-center justify-center gap-2 rounded-full bg-emerald-600 text-white font-bold py-3.5 text-sm uppercase tracking-widest shadow-2xl shadow-emerald-500/40"
+        className="md:hidden fixed bottom-4 inset-x-4 z-40 inline-flex items-center justify-center gap-2 rounded-full bg-ink text-cream font-bold py-3.5 text-sm uppercase tracking-widest shadow-[var(--shadow-pop)]"
       >
         🎟️ Grab a coupon
       </a>
