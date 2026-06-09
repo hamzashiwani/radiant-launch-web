@@ -298,6 +298,13 @@ function LandingPage() {
 
   const bestDeal = COUPONS[0];
 
+  const grabBestDeal = () => {
+    const code = bestDeal.code ?? "DEAL2024";
+    navigator.clipboard?.writeText(code).catch(() => {});
+    toast.success("Code copied to clipboard", { description: code });
+    window.open(bestDeal.url, "_blank", "noopener,noreferrer");
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Navbar */}
