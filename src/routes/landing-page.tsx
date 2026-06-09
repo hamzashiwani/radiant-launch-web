@@ -410,7 +410,7 @@ function LandingPage() {
                   className="group relative mt-5 w-full overflow-hidden bg-cream text-ink hover:text-cream font-bold rounded-xl py-3.5 text-sm uppercase tracking-[0.18em] shadow-lg transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.98] animate-ring-pulse"
                 >
                   <span aria-hidden className="absolute inset-0 -z-0 scale-0 group-hover:scale-150 origin-center transition-transform duration-700 ease-out bg-[var(--gradient-shop)] rounded-full" />
-                  <span aria-hidden className="pointer-events-none absolute inset-y-0 -left-1/2 w-1/2 bg-gradient-to-r from-transparent via-white/60 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-shimmer" />
+                  <span aria-hidden className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-cream/0 group-hover:ring-cream/50 transition-all duration-300" />
                   <span className="relative z-10 inline-flex items-center justify-center gap-2">
                     <span className="inline-block transition-transform duration-300 group-hover:-rotate-12">✂</span>
                     Get Code
