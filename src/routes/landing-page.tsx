@@ -37,10 +37,12 @@ type Coupon = {
   expiresAt: number; // ms timestamp
   addedAt: number;
   discountValue: number; // numeric for sorting (percent or $)
+  url: string;
 };
 
 const DAY = 24 * 60 * 60 * 1000;
 const now = Date.now();
+const MERCHANT_URL = "https://collarsandco.com";
 
 const COUPONS: Coupon[] = [
   {
@@ -56,6 +58,7 @@ const COUPONS: Coupon[] = [
     tags: ["Popular", "Sitewide"],
     expiresAt: now + 2 * DAY + 5 * 60 * 60 * 1000,
     addedAt: now - 4 * DAY,
+    url: MERCHANT_URL,
   },
   {
     id: "c2",
@@ -70,6 +73,7 @@ const COUPONS: Coupon[] = [
     tags: ["Popular"],
     expiresAt: now + 12 * 60 * 60 * 1000,
     addedAt: now - 1 * DAY,
+    url: MERCHANT_URL,
   },
   {
     id: "c3",
@@ -83,6 +87,7 @@ const COUPONS: Coupon[] = [
     tags: ["Free Shipping", "Sitewide"],
     expiresAt: now + 30 * DAY,
     addedAt: now - 10 * DAY,
+    url: MERCHANT_URL,
   },
   {
     id: "c4",
@@ -97,6 +102,7 @@ const COUPONS: Coupon[] = [
     tags: ["New"],
     expiresAt: now + 6 * DAY,
     addedAt: now - 12 * 60 * 60 * 1000,
+    url: MERCHANT_URL,
   },
   {
     id: "c5",
@@ -110,6 +116,7 @@ const COUPONS: Coupon[] = [
     tags: ["Popular"],
     expiresAt: now + 8 * DAY,
     addedAt: now - 3 * DAY,
+    url: MERCHANT_URL,
   },
   {
     id: "c6",
@@ -124,6 +131,7 @@ const COUPONS: Coupon[] = [
     tags: ["Sitewide"],
     expiresAt: now + 20 * DAY,
     addedAt: now - 6 * DAY,
+    url: MERCHANT_URL,
   },
   {
     id: "c7",
@@ -138,14 +146,9 @@ const COUPONS: Coupon[] = [
     tags: ["Expiring Soon"],
     expiresAt: now + 18 * 60 * 60 * 1000,
     addedAt: now - 2 * DAY,
+    url: MERCHANT_URL,
   },
 ];
-
-type Filter = "All" | "Verified" | "Deals" | "Expiring Soon";
-type Sort = "Popularity" | "Newest" | "Highest Discount";
-
-const filters: Filter[] = ["All", "Verified", "Deals", "Expiring Soon"];
-const sorts: Sort[] = ["Popularity", "Newest", "Highest Discount"];
 
 function useCountdown(target: number) {
   const [diff, setDiff] = useState(() => Math.max(0, target - Date.now()));
@@ -184,13 +187,13 @@ function Countdown({ target, compact = false }: { target: number; compact?: bool
 function tagStyle(tag: Tag) {
   switch (tag) {
     case "Popular":
-      return "bg-orange-500/15 text-orange-600 ring-1 ring-orange-500/30";
+      return "bg-pop/20 text-ink ring-1 ring-pop/40";
     case "Expiring Soon":
-      return "bg-red-500/15 text-red-600 ring-1 ring-red-500/30";
+      return "bg-brand/15 text-brand ring-1 ring-brand/30";
     case "New":
-      return "bg-blue-500/15 text-blue-600 ring-1 ring-blue-500/30";
+      return "bg-mint/25 text-ink ring-1 ring-mint/40";
     case "Free Shipping":
-      return "bg-emerald-500/15 text-emerald-600 ring-1 ring-emerald-500/30";
+      return "bg-mint/20 text-ink ring-1 ring-mint/40";
     case "Sitewide":
       return "bg-foreground/10 text-foreground ring-1 ring-foreground/15";
   }
@@ -204,27 +207,25 @@ function CouponCard({
   onCopy: (code: string) => void;
 }) {
   const [revealed, setRevealed] = useState(false);
+  const [hover, setHover] = useState(false);
   const isExpiringSoon = coupon.expiresAt - now < 2 * DAY;
 
   const handleClick = () => {
-    if (coupon.type === "deal") {
-      window.open("#", "_blank");
-      return;
-    }
-    if (!revealed) setRevealed(true);
     if (coupon.code) {
       navigator.clipboard?.writeText(coupon.code).catch(() => {});
       onCopy(coupon.code);
     }
+    setRevealed(true);
+    window.open(coupon.url, "_blank", "noopener,noreferrer");
   };
 
   return (
-    <article className="group relative flex flex-col sm:flex-row gap-4 sm:gap-6 items-stretch rounded-2xl border border-foreground/10 bg-background p-4 sm:p-5 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
-      <div className="sm:w-32 shrink-0 flex sm:flex-col items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 ring-1 ring-emerald-500/20 p-4 text-center">
-        <span className="text-2xl sm:text-3xl font-extrabold tracking-tight text-emerald-600">
+    <article className="group relative flex flex-col sm:flex-row gap-4 sm:gap-6 items-stretch rounded-2xl border border-foreground/10 bg-background p-4 sm:p-5 shadow-sm hover:shadow-[var(--shadow-pop)] hover:-translate-y-0.5 transition-all duration-300">
+      <div className="sm:w-32 shrink-0 flex sm:flex-col items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-brand/15 to-pop/15 ring-1 ring-brand/25 p-4 text-center">
+        <span className="text-2xl sm:text-3xl font-extrabold tracking-tight text-brand">
           {coupon.discount}
         </span>
-        <span className="text-[10px] font-semibold uppercase tracking-widest text-emerald-700/80">
+        <span className="text-[10px] font-semibold uppercase tracking-widest text-ink/70">
           {coupon.type === "code" ? "Promo Code" : "Deal"}
         </span>
       </div>
@@ -232,7 +233,7 @@ function CouponCard({
       <div className="flex-1 min-w-0 flex flex-col gap-2">
         <div className="flex flex-wrap items-center gap-1.5">
           {coupon.verified && (
-            <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-emerald-600">
+            <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-brand">
               <svg viewBox="0 0 20 20" fill="currentColor" className="size-3.5">
                 <path
                   fillRule="evenodd"
@@ -256,11 +257,11 @@ function CouponCard({
         <p className="text-sm text-muted-foreground line-clamp-2">{coupon.description}</p>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-muted-foreground mt-1">
           <span className="inline-flex items-center gap-1">
-            <span className="size-1.5 rounded-full bg-emerald-500" />
+            <span className="size-1.5 rounded-full bg-mint" />
             {coupon.uses.toLocaleString()} used
           </span>
           {isExpiringSoon && (
-            <span className="inline-flex items-center gap-1 text-red-600 font-semibold">
+            <span className="inline-flex items-center gap-1 text-brand font-semibold">
               Ends in <Countdown target={coupon.expiresAt} compact />
             </span>
           )}
@@ -270,60 +271,52 @@ function CouponCard({
       <div className="sm:w-44 flex sm:flex-col items-stretch justify-center">
         <button
           onClick={handleClick}
-          className="relative w-full overflow-hidden rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold text-sm py-3 px-4 shadow-md hover:shadow-lg transition-all active:scale-[0.98]"
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
+          aria-label={coupon.type === "deal" ? "Get deal" : revealed ? "Code copied" : "Reveal and copy code"}
+          className="relative w-full overflow-hidden rounded-xl bg-ink text-cream font-bold text-sm py-3 px-4 shadow-[var(--shadow-pop)] transition-all active:scale-[0.97] isolate"
         >
-          {coupon.type === "deal" ? (
-            <span>Get Deal →</span>
-          ) : revealed && coupon.code ? (
-            <span className="font-mono tracking-widest">{coupon.code}</span>
-          ) : (
-            <span>Get Code</span>
-          )}
-          <span className="absolute inset-y-0 right-0 w-1.5 bg-white/20" />
+          {/* liquid blob */}
+          <span
+            aria-hidden
+            className={`pointer-events-none absolute left-1/2 top-1/2 -z-10 size-8 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--gradient-shop)] transition-all duration-700 ease-out animate-blob ${
+              hover ? "scale-[14] opacity-100" : "scale-100 opacity-80"
+            }`}
+          />
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-0 -z-10 opacity-0 group-hover:opacity-100 bg-[radial-gradient(circle_at_var(--mx,50%)_50%,oklch(0.99_0.01_80/.25),transparent_60%)]"
+          />
+          <span className="relative z-10 inline-flex items-center justify-center gap-2">
+            {coupon.type === "deal" ? (
+              <>Get Deal <span aria-hidden>→</span></>
+            ) : revealed && coupon.code ? (
+              <span className="font-mono tracking-widest">{coupon.code}</span>
+            ) : (
+              <>
+                <span className="font-mono tracking-widest opacity-60">
+                  {coupon.code ? coupon.code.slice(0, 2) + "•".repeat(Math.max(0, coupon.code.length - 2)) : "•••"}
+                </span>
+                <span className="ml-1">Get Code</span>
+              </>
+            )}
+          </span>
+          <span className="pointer-events-none absolute inset-y-0 right-0 w-1.5 bg-pop/70" />
         </button>
         {coupon.type === "code" && revealed && (
-          <p className="text-center text-[10px] mt-1.5 text-emerald-600 font-semibold">Tap again to copy</p>
+          <p className="text-center text-[10px] mt-1.5 text-brand font-semibold">✓ Copied — opening store…</p>
         )}
       </div>
     </article>
   );
 }
 
-const FAQS = [
-  {
-    q: "How do I use a Collars & Co coupon code?",
-    a: "Click Get Code on any coupon to reveal and copy it. Then paste it at checkout on collarsandco.com in the promo code field.",
-  },
-  {
-    q: "Are these coupon codes verified?",
-    a: "Yes — our team hand-tests every code daily. Codes marked Verified were confirmed working within the last 24 hours.",
-  },
-  {
-    q: "Can I stack multiple coupon codes?",
-    a: "Typically only one promo code can be applied per order, but you can usually combine a code with free-shipping and sitewide deals.",
-  },
-  {
-    q: "What if a code doesn't work?",
-    a: "Try another code from this page — we list multiple working options. You can also report a broken code and our team will retest it.",
-  },
-];
-
 function LandingPage() {
-  const [filter, setFilter] = useState<Filter>("All");
-  const [sort, setSort] = useState<Sort>("Popularity");
   const [toast, setToast] = useState<string | null>(null);
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
-
-  const filtered = useMemo(() => {
-    let list = [...COUPONS];
-    if (filter === "Verified") list = list.filter((c) => c.verified);
-    if (filter === "Deals") list = list.filter((c) => c.type === "deal");
-    if (filter === "Expiring Soon") list = list.filter((c) => c.expiresAt - now < 2 * DAY);
-    if (sort === "Popularity") list.sort((a, b) => b.uses - a.uses);
-    if (sort === "Newest") list.sort((a, b) => b.addedAt - a.addedAt);
-    if (sort === "Highest Discount") list.sort((a, b) => b.discountValue - a.discountValue);
-    return list;
-  }, [filter, sort]);
+  const sorted = useMemo(
+    () => [...COUPONS].sort((a, b) => b.uses - a.uses),
+    [],
+  );
 
   const handleCopy = (code: string) => {
     setToast(code);
@@ -331,12 +324,6 @@ function LandingPage() {
   };
 
   const bestDeal = COUPONS[0];
-
-  const stats = {
-    active: COUPONS.length,
-    avgSaving: "28%",
-    lastVerified: "2 hours ago",
-  };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -367,25 +354,25 @@ function LandingPage() {
 
       {/* Hero */}
       <header className="relative overflow-hidden border-b border-foreground/5">
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-background to-orange-500/10" aria-hidden />
+        <div className="absolute inset-0 bg-[var(--gradient-cream)] opacity-80" aria-hidden />
         <div
-          className="absolute -top-32 -right-40 size-[420px] bg-emerald-500/20 blur-3xl rounded-full"
+          className="absolute -top-32 -right-40 size-[420px] bg-brand/25 blur-3xl rounded-full animate-blob"
           aria-hidden
         />
         <div
-          className="absolute -bottom-32 -left-40 size-[420px] bg-orange-500/20 blur-3xl rounded-full"
+          className="absolute -bottom-32 -left-40 size-[420px] bg-pop/25 blur-3xl rounded-full animate-blob"
           aria-hidden
         />
         <div className="relative max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20">
           <div className="grid lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-7">
-              <span className="inline-flex items-center gap-2 rounded-full bg-emerald-500/15 text-emerald-700 px-3 py-1 text-[11px] font-bold uppercase tracking-widest">
-                <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="inline-flex items-center gap-2 rounded-full bg-mint/25 text-ink px-3 py-1 text-[11px] font-bold uppercase tracking-widest">
+                <span className="size-1.5 rounded-full bg-brand animate-pulse" />
                 Hand-tested codes daily
               </span>
               <h1 className="mt-4 text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.05] text-balance">
                 Collars & Co Coupons & Promo Codes —{" "}
-                <span className="bg-gradient-to-r from-emerald-500 to-orange-500 bg-clip-text text-transparent">
+                <span className="bg-[var(--gradient-shop)] bg-clip-text text-transparent">
                   Up to 40% Off
                 </span>
               </h1>
@@ -395,7 +382,7 @@ function LandingPage() {
               <div className="mt-6 flex flex-wrap gap-3">
                 <a
                   href="#coupons"
-                  className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-5 sm:px-6 py-3 text-sm font-bold uppercase tracking-widest shadow-lg shadow-emerald-500/30 transition-all hover:scale-[1.03]"
+                  className="inline-flex items-center gap-2 bg-ink text-cream rounded-full px-5 sm:px-6 py-3 text-sm font-bold uppercase tracking-widest shadow-[var(--shadow-pop)] transition-all hover:scale-[1.04]"
                 >
                   See all coupons →
                 </a>
@@ -406,28 +393,14 @@ function LandingPage() {
                   How it works
                 </a>
               </div>
-
-              <dl className="mt-8 grid grid-cols-3 max-w-md gap-4">
-                <div>
-                  <dt className="text-[10px] uppercase tracking-widest text-muted-foreground">Active</dt>
-                  <dd className="text-2xl font-bold text-foreground">{stats.active}</dd>
-                </div>
-                <div>
-                  <dt className="text-[10px] uppercase tracking-widest text-muted-foreground">Avg. savings</dt>
-                  <dd className="text-2xl font-bold text-emerald-600">{stats.avgSaving}</dd>
-                </div>
-                <div>
-                  <dt className="text-[10px] uppercase tracking-widest text-muted-foreground">Last verified</dt>
-                  <dd className="text-sm font-semibold text-foreground pt-1">{stats.lastVerified}</dd>
-                </div>
-              </dl>
             </div>
 
             {/* Best deal card */}
             <div className="lg:col-span-5 lg:sticky lg:top-24">
-              <div className="relative rounded-3xl bg-gradient-to-br from-emerald-600 to-emerald-700 text-white p-6 sm:p-8 shadow-2xl shadow-emerald-500/30 overflow-hidden">
-                <div className="absolute -top-10 -right-10 size-40 bg-orange-400/30 rounded-full blur-2xl" aria-hidden />
-                <span className="inline-flex items-center gap-2 bg-orange-500 text-white rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest">
+              <div className="relative rounded-3xl bg-ink text-cream p-6 sm:p-8 shadow-[var(--shadow-pop)] overflow-hidden">
+                <div className="absolute -top-10 -right-10 size-40 bg-brand/40 rounded-full blur-2xl animate-blob" aria-hidden />
+                <div className="absolute -bottom-16 -left-10 size-48 bg-pop/30 rounded-full blur-3xl animate-blob" aria-hidden />
+                <span className="inline-flex items-center gap-2 bg-pop text-pop-foreground rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest">
                   ★ Best Deal Today
                 </span>
                 <div className="mt-5 flex items-end gap-3">
@@ -445,10 +418,12 @@ function LandingPage() {
                       navigator.clipboard?.writeText(bestDeal.code).catch(() => {});
                       handleCopy(bestDeal.code);
                     }
+                    window.open(bestDeal.url, "_blank", "noopener,noreferrer");
                   }}
-                  className="mt-5 w-full bg-white text-emerald-700 hover:bg-emerald-50 font-bold rounded-xl py-3.5 text-sm uppercase tracking-widest shadow-lg transition-all active:scale-[0.98]"
+                  className="group relative mt-5 w-full overflow-hidden bg-cream text-ink hover:text-cream font-bold rounded-xl py-3.5 text-sm uppercase tracking-widest shadow-lg transition-all active:scale-[0.98]"
                 >
-                  Get Code → {bestDeal.code}
+                  <span aria-hidden className="absolute inset-0 -z-0 scale-0 group-hover:scale-150 origin-center transition-transform duration-700 ease-out bg-[var(--gradient-shop)] rounded-full" />
+                  <span className="relative z-10">Get Code → <span className="font-mono">{bestDeal.code}</span></span>
                 </button>
               </div>
             </div>
@@ -456,55 +431,19 @@ function LandingPage() {
         </div>
       </header>
 
-      {/* Filters + coupons */}
+      {/* Coupons */}
       <section id="coupons" className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8">
-          <div>
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">All coupons & deals</h2>
-            <p className="text-sm text-muted-foreground mt-1">
-              {filtered.length} active {filtered.length === 1 ? "offer" : "offers"} ready to use
-            </p>
-          </div>
-          <label className="text-sm flex items-center gap-2">
-            <span className="text-muted-foreground">Sort:</span>
-            <select
-              value={sort}
-              onChange={(e) => setSort(e.target.value as Sort)}
-              className="bg-background border border-foreground/15 rounded-lg px-3 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            >
-              {sorts.map((s) => (
-                <option key={s}>{s}</option>
-              ))}
-            </select>
-          </label>
-        </div>
-
-        <div className="flex gap-2 overflow-x-auto scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0 pb-2 mb-6">
-          {filters.map((f) => {
-            const active = filter === f;
-            return (
-              <button
-                key={f}
-                onClick={() => setFilter(f)}
-                className={`shrink-0 inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-bold uppercase tracking-widest transition-all ${
-                  active
-                    ? "bg-foreground text-background shadow-md"
-                    : "bg-background border border-foreground/15 text-foreground/70 hover:border-foreground/40"
-                }`}
-              >
-                {f}
-              </button>
-            );
-          })}
+        <div className="mb-6 sm:mb-8">
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">All coupons & deals</h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            {sorted.length} active offers ready to use
+          </p>
         </div>
 
         <div className="grid grid-cols-1 gap-4">
-          {filtered.map((c) => (
+          {sorted.map((c) => (
             <CouponCard key={c.id} coupon={c} onCopy={handleCopy} />
           ))}
-          {filtered.length === 0 && (
-            <p className="text-center text-muted-foreground py-12">No coupons match this filter.</p>
-          )}
         </div>
       </section>
 
@@ -518,7 +457,7 @@ function LandingPage() {
             { k: "♥", v: "Trusted by 250k+ shoppers" },
           ].map((i) => (
             <div key={i.v} className="flex flex-col items-center gap-1">
-              <span className="text-2xl text-emerald-600">{i.k}</span>
+              <span className="text-2xl text-brand">{i.k}</span>
               <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{i.v}</span>
             </div>
           ))}
@@ -528,7 +467,7 @@ function LandingPage() {
       {/* How to use */}
       <section id="how-to-use" className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20">
         <div className="text-center max-w-xl mx-auto mb-10">
-          <span className="text-[11px] font-bold uppercase tracking-widest text-emerald-600">3 simple steps</span>
+          <span className="text-[11px] font-bold uppercase tracking-widest text-brand">3 simple steps</span>
           <h2 className="text-2xl sm:text-4xl font-bold tracking-tight mt-2">How to use a coupon</h2>
         </div>
         <div className="grid sm:grid-cols-3 gap-4 sm:gap-6">
@@ -553,7 +492,7 @@ function LandingPage() {
               key={s.t}
               className="relative rounded-2xl bg-background border border-foreground/10 p-6 shadow-sm hover:shadow-md transition-shadow"
             >
-              <div className="absolute -top-3 -left-3 size-8 rounded-full bg-emerald-600 text-white grid place-items-center text-xs font-bold">
+              <div className="absolute -top-3 -left-3 size-8 rounded-full bg-brand text-brand-foreground grid place-items-center text-xs font-bold animate-wiggle">
                 {i + 1}
               </div>
               <div className="text-3xl mb-3">{s.icon}</div>
@@ -565,42 +504,6 @@ function LandingPage() {
       </section>
 
       {/* FAQ */}
-      <section className="bg-foreground/[0.03] border-t border-foreground/5">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20">
-          <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-center mb-8">
-            Frequently asked questions
-          </h2>
-          <div className="space-y-3">
-            {FAQS.map((f, i) => {
-              const open = openFaq === i;
-              return (
-                <div key={f.q} className="rounded-xl bg-background border border-foreground/10 overflow-hidden">
-                  <button
-                    onClick={() => setOpenFaq(open ? null : i)}
-                    aria-expanded={open}
-                    className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-semibold hover:bg-foreground/[0.02] transition-colors"
-                  >
-                    <span>{f.q}</span>
-                    <span
-                      className={`shrink-0 size-7 rounded-full bg-emerald-500/15 text-emerald-600 grid place-items-center transition-transform ${
-                        open ? "rotate-45" : ""
-                      }`}
-                    >
-                      +
-                    </span>
-                  </button>
-                  {open && (
-                    <div className="px-5 pb-5 text-sm text-muted-foreground leading-relaxed animate-in fade-in">
-                      {f.a}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
       {/* Footer */}
       <footer className="border-t border-foreground/5">
         <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid gap-10 md:grid-cols-3">
@@ -634,9 +537,9 @@ function LandingPage() {
                 type="email"
                 required
                 placeholder="you@email.com"
-                className="flex-1 min-w-0 rounded-lg border border-foreground/15 bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="flex-1 min-w-0 rounded-lg border border-foreground/15 bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand"
               />
-              <button className="rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold px-4 transition-colors">
+              <button className="rounded-lg bg-ink hover:bg-brand text-cream text-sm font-bold px-4 transition-colors">
                 Join
               </button>
             </div>
@@ -650,7 +553,7 @@ function LandingPage() {
       {/* Floating mobile CTA */}
       <a
         href="#coupons"
-        className="md:hidden fixed bottom-4 inset-x-4 z-40 inline-flex items-center justify-center gap-2 rounded-full bg-emerald-600 text-white font-bold py-3.5 text-sm uppercase tracking-widest shadow-2xl shadow-emerald-500/40"
+        className="md:hidden fixed bottom-4 inset-x-4 z-40 inline-flex items-center justify-center gap-2 rounded-full bg-ink text-cream font-bold py-3.5 text-sm uppercase tracking-widest shadow-[var(--shadow-pop)]"
       >
         🎟️ Grab a coupon
       </a>
