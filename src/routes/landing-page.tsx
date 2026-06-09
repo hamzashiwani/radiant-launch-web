@@ -377,39 +377,13 @@ function LandingPage() {
 
             {/* Best deal card */}
             <div className="lg:col-span-5 lg:sticky lg:top-24">
-              <div className="relative rounded-3xl bg-ink text-cream p-6 sm:p-8 shadow-[var(--shadow-pop)] overflow-hidden">
-                <div className="absolute -top-10 -right-10 size-40 bg-brand/40 rounded-full blur-2xl animate-blob" aria-hidden />
-                <div className="absolute -bottom-16 -left-10 size-48 bg-pop/30 rounded-full blur-3xl animate-blob" aria-hidden />
-                <span className="inline-flex items-center gap-2 bg-pop text-pop-foreground rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest">
-                  ★ Best Deal Today
-                </span>
-                <div className="mt-5 flex items-end gap-3">
-                  <span className="text-6xl sm:text-7xl font-extrabold leading-none">40%</span>
-                  <span className="pb-2 text-xl font-bold uppercase tracking-wider opacity-90">Off</span>
-                </div>
-                <p className="mt-3 text-lg font-semibold">{bestDeal.title}</p>
-                <p className="text-sm opacity-90 mt-1">{bestDeal.description}</p>
-                <div className="mt-4 inline-flex items-center gap-2 text-xs font-semibold bg-white/15 rounded-full px-3 py-1.5">
-                  ⏳ Ends in <Countdown target={bestDeal.expiresAt} compact />
-                </div>
-                <button
-                  onClick={() => {
-                    const code = bestDeal.code ?? "DEAL2024";
-                    navigator.clipboard?.writeText(code).catch(() => {});
-                    toast.success("Code copied to clipboard", { description: code });
-                    window.open(bestDeal.url, "_blank", "noopener,noreferrer");
-                  }}
-                  className="group relative mt-5 w-full overflow-hidden bg-cream text-ink hover:text-cream font-bold rounded-xl py-3.5 text-sm uppercase tracking-[0.18em] shadow-lg transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.98] animate-ring-pulse"
-                >
-                  <span aria-hidden className="absolute inset-0 -z-0 scale-0 group-hover:scale-150 origin-center transition-transform duration-700 ease-out bg-[var(--gradient-shop)] rounded-full" />
-                  <span aria-hidden className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-cream/0 group-hover:ring-cream/50 transition-all duration-300" />
-                  <span className="relative z-10 inline-flex items-center justify-center gap-2">
-                    <span className="inline-block transition-transform duration-300 group-hover:-rotate-12">✂</span>
-                    Get Code
-                    <span aria-hidden className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
-                  </span>
-                </button>
-              </div>
+              <BestDealCard
+                title={bestDeal.title}
+                description={bestDeal.description}
+                code={bestDeal.code ?? "DEAL2024"}
+                expiresAt={bestDeal.expiresAt}
+                onGrab={grabBestDeal}
+              />
             </div>
           </div>
         </div>
